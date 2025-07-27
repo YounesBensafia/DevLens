@@ -8,10 +8,7 @@ def analyze(path: str = typer.Argument(".", help="Path to analyze")):
 
 @app.command()
 def summarize(path: str = typer.Argument(".", help="Path to summarize")):
-    summaries = summarize_code(path)
-   
-    for file, summary in summaries:
-        print(f"File: {file}\nSummary: {summary}\n")
+    summarize_code(path)
 
 
 def main():
