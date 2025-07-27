@@ -1,8 +1,8 @@
-import openai
+from openai import OpenAI
 from devlens.config import OPENAI_API_KEY
 import os
 
-openai.api_key = OPENAI_API_KEY
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 def summarize_code(path: str, max_files=1):
     summaries = []
@@ -14,8 +14,8 @@ def summarize_code(path: str, max_files=1):
                     content = f.read()[:3000]
                     prompt = f"Summarize what this Python file does:\n\n{content}"
                     try:
-                        response = openai.ChatCompletion.create(
-                            model="gpt-4",
+                        response = client.chat.completions.create(
+                            model="gpt-3.5-turbo",
                             messages=[{"role": "user", "content": prompt}],
                             temperature=0.2,
                         )
