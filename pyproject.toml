@@ -1,2 +1,8 @@
+[project]
+name = "devlens"
+version = "0.1.0"
+description = "Analyze & summarize any codebase"
+dependencies = ["typer", "rich", "GitPython", "openai"]
+
 [project.scripts]
 devlens = "devlens.cli:main"

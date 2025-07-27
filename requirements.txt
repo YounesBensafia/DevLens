@@ -1,0 +1,7 @@
+typer
+rich
+GitPython
+openai
+tree_sitter
+astroid
+build
