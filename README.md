@@ -28,14 +28,4 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
   <img width="1240" height="389" alt="image" src="https://github.com/user-attachments/assets/d38dada9-4f53-4711-ac41-30860426e6dc" width="45%" />
 </div>
 
-## Getting Started
-
-```bash
-# Install DevLens
-npm install -g devlens
-
-# Analyze your project
-devlens analyze path/to/project
-```
-
 DevLens helps engineering teams understand complex codebases quickly and efficiently.
