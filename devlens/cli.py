@@ -1,6 +1,7 @@
 import typer
 from devlens.analyzer.ai_summary import summarize_code
 from devlens.analyzer.summary import display_code_summary
+from devlens.analyzer.readme_gen import generate_readme
 
 app = typer.Typer()
 
@@ -20,11 +21,10 @@ def stats(path: str = typer.Argument(".", help="Path to get statistics")):
     display_code_summary(path)
 
 @app.command()
-def readme(path: str = typer.Argument(".", help="Path to generate README")):
-    """Generate a README file for the project"""
-    # Implementation for generating README goes here
-    print(f"Generating README for {path}... (not implemented yet)")
-
+def readme(path: str = typer.Argument(".", help="Path to generate README for")):
+    """Generate a professional README.md file"""
+    generate_readme(path)
+    
 def main():
     app()
 
