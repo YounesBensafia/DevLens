@@ -1,0 +1,4 @@
+DevLens Voice Summary
+==================
+
+DevLens Project Analysis Summary. This project contains 16 files with 590 lines of code. The project uses 2 programming languages: md, and py. The primary language is py with 536 lines of code. Analysis complete. Thank you for using DevLens.
