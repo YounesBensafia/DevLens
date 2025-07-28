@@ -25,9 +25,7 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
 
 <div align="center">
   <img width="1240" height="389" alt="image" src="https://github.com/user-attachments/assets/8e425469-7222-4eca-b939-b6fb384315ca" width="45%" />
-  <img width="1240" height="389" alt="image" src="https://github.com/user-attachments/assets/d38dada9-4f53-4711-ac41-30860426e6dc" width="45%" />
   <img width="1240" height="389" alt="image" src="https://github.com/user-attachments/assets/6898bbc2-56e7-4594-9656-b80073a993f1" width="90%"/>
-
 </div>
 
 DevLens helps engineering teams understand complex codebases quickly and efficiently.
