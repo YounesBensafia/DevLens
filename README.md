@@ -2,8 +2,8 @@
 
 <div align="center">
   
-  ![DevLens Logo](image.png)
-  
+  <img width="1396" height="366" alt="image" src="https://github.com/user-attachments/assets/d39e940a-059e-4e3a-af9e-b14e51bfd1af" />
+
   **Illuminate Your Codebase with Powerful Analysis**
 </div>
 
@@ -24,10 +24,8 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
 ## Screenshots
 
 <div align="center">
-  <img src="image-1.png" alt="analyze" width="45%" />
-  <img src="image-2.png" alt="analyze" width="45%" />
-  <img src="image-3.png" alt="Code Analysis" width="45%" />
-  <img src="image-4.png" alt="Code Analysis" width="45%" />
+  <img width="1240" height="389" alt="image" src="https://github.com/user-attachments/assets/8e425469-7222-4eca-b939-b6fb384315ca" width="45%" />
+  <img width="1240" height="389" alt="image" src="https://github.com/user-attachments/assets/d38dada9-4f53-4711-ac41-30860426e6dc" width="45%" />
 </div>
 
 ## Getting Started
