@@ -19,6 +19,11 @@ def stats(path: str = typer.Argument(".", help="Path to get statistics")):
     """Quick project statistics"""
     display_code_summary(path)
 
+@app.command()
+def readme(path: str = typer.Argument(".", help="Path to generate README")):
+    """Generate a README file for the project"""
+    # Implementation for generating README goes here
+    print(f"Generating README for {path}... (not implemented yet)")
 
 def main():
     app()

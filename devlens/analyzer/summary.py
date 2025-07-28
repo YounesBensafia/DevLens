@@ -16,14 +16,10 @@ def count_lines_by_language(path: str):
     summary = {}
     file_count = {}
     patterns, gitignore_path = get_gitignore_patterns(path)
-    
     for root, _, files in os.walk(path):
         for file in files:
-            if patterns:
-                print(f"Found .gitignore at: {gitignore_path}")
-                print("\nIgnored patterns:")
-                for pattern in patterns:
-                    print(f"- {pattern}")
+            if file in patterns:
+                exit()
             ext = os.path.splitext(file)[1].lower()
             if ext in [".py", ".js", ".ts", ".java", ".cpp", ".html", ".css", ".json", ".md", ".txt", ".yml", ".yaml", ".xml"]:
                 lang = ext.lstrip(".")
@@ -33,7 +29,7 @@ def count_lines_by_language(path: str):
                 
                 try:
                     with open(os.path.join(root, file), "r", errors="ignore") as f:
-                        lines = sum(1 for line in f if line.strip())  # Count non-empty lines
+                        lines = sum(1 for line in f if line.strip())
                         summary[lang] += lines
                 except:
                     continue
