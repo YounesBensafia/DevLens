@@ -21,12 +21,17 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
 - **Dead Code Detection**: Identify unused code to improve maintainability (done)
 - **README Generator**: Create comprehensive documentation automatically (done)
 
-| Command                  | Description                                                                                                                                 |
-|--------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| `devlens summary PATH`   | Provides an overview of the project including **total files**, **total lines**, **directory count**, **language breakdown**, and **project structure**. |
-| `devlens analyse PATH`   | Uses the AI model **meta-llama/llama-4-scout-17b-16e-instruct** to summarize what each file in the given path is doing.                  |
-| `devlens readme PATH`    | Generates a professional **README** for the specified project path based on its structure and contents.                                  |
-| `devlens empty PATH`  | Detects and lists **empty files** and **all files** in the given path, helping identify potential dead code.                                |
+## 🚀 DevLens CLI Commands
+
+| Command                   | Description                                                                                                                                                           | Status   |
+|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `devlens summary PATH`    | 📊 Generates a comprehensive summary of the project, including **total files**, **total lines**, **directory count**, **language breakdown**, and **project structure**. | ✅ Done   |
+| `devlens analyse PATH`    | 🤖 Uses **meta-llama/llama-4-scout-17b-16e-instruct** to analyze each file and provide a high-level summary of what it does.                                             | ✅ Done   |
+| `devlens readme PATH`     | 📝 Automatically creates a professional **README.md** tailored to the project's structure and content.                                                                | ✅ Done   |
+| `devlens empty PATH`      | 🧹 Scans the project and lists all **empty files** and a full **file inventory**.                                                                                      | ✅ Done   |
+| `devlens deadcode PATH`   | 🧠 Detects **unused functions** across the repository to help clean up dead code.                                                                                      | ❌ Not yet    |
+| `devlens graph PATH`      | 📈 Visualizes **module relationships** and project architecture through interactive graphs.                                                                            | ❌ Not yet |
+
 
 
 ## Screenshots
@@ -45,7 +50,7 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
     <td><img src="https://github.com/user-attachments/assets/641f665f-1a97-4ff2-a959-6ba5425ca4d9" alt="image" width="100%"></td>
   </tr>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/6e5fa11c-3c38-4907-8170-c4977c8aaaca" alt="image" width="100%"></td>
+    <td><img alt="image" src="https://github.com/user-attachments/assets/cd1183e2-66e3-444a-8483-544e4aa4afb3" width="100%"></td>
     <td><img src="https://github.com/user-attachments/assets/2f83a7ea-8b22-45b1-a3a8-3f5413844ada" alt="image" width="100%"></td>
 </td>    
   </tr>
