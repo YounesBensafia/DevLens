@@ -2,7 +2,7 @@ import typer
 from devlens.analyzer.ai_summary import summarize_code
 from devlens.analyzer.summary import display_code_summary
 from devlens.analyzer.readme_gen import generate_readme
-from devlens.analyzer.deadcode import all_functions, find_empty_files
+from devlens.analyzer.empty_functions import all_functions, find_empty_files
 
 app = typer.Typer()
 
@@ -22,7 +22,7 @@ def readme(path: str = typer.Argument(".", help="Path to generate README for")):
     generate_readme(path)
 
 @app.command()
-def deadcode(path: str = typer.Argument(".", help="Path to analyze for dead code")):
+def empty(path: str = typer.Argument(".", help="Path to analyze for dead code")):
     all_py_files, empty_files = find_empty_files(path)
     all_functions(path, empty_files, all_py_files)
     print("Dead code analysis completed.")

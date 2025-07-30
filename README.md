@@ -56,5 +56,6 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
   </tr>
 </table>
 
+Note that for now its only 
 
 DevLens helps engineering teams understand complex codebases quickly and efficiently.
