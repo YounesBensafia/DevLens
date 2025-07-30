@@ -24,11 +24,9 @@ def readme(path: str = typer.Argument(".", help="Path to generate README for")):
 @app.command()
 def deadcode(path: str = typer.Argument(".", help="Path to analyze for dead code")):
     all_py_files, empty_files = find_empty_files(path)
+
     dead_code(path, empty_files, all_py_files)
-
     print("Dead code analysis completed.")
-
-    
 
 def main():
     app()

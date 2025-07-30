@@ -59,21 +59,37 @@ def read_file_content(file_path: str) -> str:
 
 
 def dead_code(path: str, empty_files: list, all_py_files: set):
-    # print(all_py_files, empty_files)
+    all_functions = []
     for file in all_py_files:
         if file in empty_files:
             console.print(f"[bold yellow]Skipping empty file: {file}[/bold yellow]")
             continue
         file_content = read_file_content(os.path.join(path, file))
         file_content_splited= file_content.splitlines()
-        file_content_import = [line for line in file_content_splited if "import" in line or "from" in line]
+        function_names = []
+    
+        for line in file_content_splited:
+        
+            if line.strip().startswith("def "):
+                print(f"Found function definition in {file}: {line.strip()}")
+                function_name = line.split("def ")[1].split("(")[0].strip()
+                function_names.append(function_name)
+                all_functions.append(function_name)
+
         print(f"File: {file}")
-        print(f"Content: {file_content_import}")  # Print first
+        print(f"Functions found: {function_names}")
         for empty_file in empty_files:
              for line in file_content_splited:
                 if empty_file in line:
                     print(f"Found reference to empty file: {empty_file} in {file}")
                     print(f"Line: {line}")
-                    exit(0)
-        print(f"======")             
+
+    if not all_functions:
+        console.print("[bold red]No functions found in the analyzed files.[/bold red]")
+    else:
+        console.print("[bold green]Functions found in the analyzed files:[/bold green]")
+        for func in all_functions:
+            console.print(f"- {func}")
+    
+
     
