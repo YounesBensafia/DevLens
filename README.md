@@ -56,6 +56,5 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
   </tr>
 </table>
 
-Note that for now its only 
-
+⚠️ **Note:** It's available for **Python projects only**... for now 🤫.
 DevLens helps engineering teams understand complex codebases quickly and efficiently.
