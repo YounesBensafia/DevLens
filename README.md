@@ -13,19 +13,23 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
 
 ## Key Features
 
-- **Language Breakdown**: Visualize programming languages distribution
-- **Code Metrics**: Analyze lines of code and structural patterns
-- **Tech Stack Detection**: Automatically identify frameworks and libraries
-- **Dependency Mapping**: Generate interactive graphs of module relationships
-- **AI-Powered Documentation**: Get summaries of files, functions, and classes
-- **Dead Code Detection**: Identify unused code to improve maintainability
-- **README Generator**: Create comprehensive documentation automatically
+- **Language Breakdown**: Visualize programming languages distribution (done)
+- **Code Metrics**: Analyze lines of code and structural patterns (done)
+- **Dependency Mapping**: Generate interactive graphs of module relationships (not yet)
+- **AI-Powered Documentation**: Get summaries of files, functions, and classes (done)
+- **Dead Code Detection**: Identify unused code to improve maintainability (done)
+- **README Generator**: Create comprehensive documentation automatically (done)
 
 ## Screenshots
 
 <div align="center">
-  <img width="1240" height="389" alt="image" src="https://github.com/user-attachments/assets/8e425469-7222-4eca-b939-b6fb384315ca" width="45%" />
-  <img width="1240" height="389" alt="image" src="https://github.com/user-attachments/assets/6898bbc2-56e7-4594-9656-b80073a993f1" width="90%"/>
+  <img src="https://github.com/user-attachments/assets/8e425469-7222-4eca-b939-b6fb384315ca" alt="image" style="width: 80%; max-width: 800px;" />
+  <img src="https://github.com/user-attachments/assets/6898bbc2-56e7-4594-9656-b80073a993f1" alt="image" style="width: 90%; max-width: 900px;" />
+  <img src="https://github.com/user-attachments/assets/a40e0578-ad2d-4afb-b5cb-b5c3ca11a3b5" alt="image" style="width: 90%; max-width: 1000px;" />
+  <img src="https://github.com/user-attachments/assets/90639b81-dde2-4dcd-ae88-8d1fcaac8282" alt="image" style="width: 90%; max-width: 1000px;" />
+  <img src="https://github.com/user-attachments/assets/25b74930-b5f5-4047-a171-fdaa07fd5933" alt="image" style="width: 80%; max-width: 800px;" />
+  <img src="https://github.com/user-attachments/assets/641f665f-1a97-4ff2-a959-6ba5425ca4d9" alt="image" style="width: 85%; max-width: 900px;" />
 </div>
+
 
 DevLens helps engineering teams understand complex codebases quickly and efficiently.
