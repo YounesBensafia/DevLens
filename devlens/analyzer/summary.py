@@ -7,6 +7,7 @@ from rich.align import Align
 import os
 from pathlib import Path
 from devlens.utils.structure_counts import get_gitignore_patterns
+from devlens.analyzer.voice import summarize_code
 
 console = Console()
 
