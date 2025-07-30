@@ -77,7 +77,7 @@ def read_file_content(file_path: str) -> str:
         console.print(Text(f"Error reading file {file_path}: {e}", style="bold red"))
         return ""
 
-def dead_code(path: str, empty_files: list, all_py_files: set):
+def all_functions(path: str, empty_files: list, all_py_files: set):
     console.print(Panel.fit("[bold magenta]Analyzing code usage patterns...[/bold magenta]", 
                           border_style="magenta", 
                           title="Dead Code Detection"))
@@ -130,3 +130,6 @@ def dead_code(path: str, empty_files: list, all_py_files: set):
         for func in sorted(set(all_functions)):
             function_tree.add(Text(func, style="blue"))
         console.print(function_tree)
+
+
+# def 
