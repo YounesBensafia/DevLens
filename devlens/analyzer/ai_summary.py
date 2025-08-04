@@ -1,6 +1,7 @@
 import os
 import requests
-from devlens.config import GROQ_API_KEY  # Replace with your Groq key storage
+import fnmatch
+from devlens.config import GROQ_API_KEY 
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
@@ -19,6 +20,56 @@ HEADERS = {
 
 console = Console()
 
+def load_gitignore_patterns(path: str):
+    """Load patterns from .gitignore file"""
+    gitignore_path = os.path.join(path, '.gitignore')
+    patterns = []
+    
+    default_patterns = ['__pycache__/', '*.pyc', '*.pyo', '*.pyd', '.Python', 'build/', 'develop-eggs/', 'dist/', 'downloads/', 'eggs/', '.eggs/', 'lib/',
+        'lib64/', 'parts/', 'sdist/', 'var/', 'wheels/', '*.egg-info/', '.installed.cfg', '*.egg', 'venv/', 'env/', 'ENV/', '.venv/', '.env', '.idea/', '.vscode/',
+        '*.swp', '*.swo', '.DS_Store', 'Thumbs.db', 'node_modules/', '.git/', '.pytest_cache/', '.coverage', '.tox/', 'htmlcov/', '*.log', 'temp/', 'tmp/',
+        'cache/', 'output/'
+    ]
+    
+    patterns.extend(default_patterns)
+    
+    if os.path.exists(gitignore_path):
+        try:
+            with open(gitignore_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#'):
+                        patterns.append(line)
+        except Exception:
+            pass  
+    
+    return patterns
+
+def should_ignore_path(file_path: str, base_path: str, patterns: list):
+    """Check if a file path should be ignored based on gitignore patterns"""
+    relative_path = os.path.relpath(file_path, base_path)
+    
+    relative_path = relative_path.replace('\\', '/')
+    
+    for pattern in patterns:
+        if not pattern.strip():
+            continue
+            
+        if pattern.endswith('/'):
+            path_parts = relative_path.split('/')
+            for i in range(len(path_parts)):
+                partial_path = '/'.join(path_parts[:i+1]) + '/'
+                if fnmatch.fnmatch(partial_path, pattern):
+                    return True
+        else:
+            if fnmatch.fnmatch(relative_path, pattern):
+                return True
+            filename = os.path.basename(relative_path)
+            if fnmatch.fnmatch(filename, pattern):
+                return True
+    
+    return False
+
 def summarize_code(path: str, max_files=10):
     summaries = []
     
@@ -32,17 +83,28 @@ def summarize_code(path: str, max_files=10):
     console.print(header_panel)
     console.print()
     
+    ignore_patterns = load_gitignore_patterns(path)
+    console.print(f"📋 Loaded {len(ignore_patterns)} ignore patterns (including defaults)", style="dim")
+    
     python_files = []
-    for root, _, files in os.walk(path):
+    ignored_files = 0
+    
+    for root, dirs, files in os.walk(path):
+        dirs[:] = [d for d in dirs if not should_ignore_path(os.path.join(root, d), path, ignore_patterns)]
+        
         for file in files:
             if file.endswith(".py"):
-                python_files.append(os.path.join(root, file))
+                file_path = os.path.join(root, file)
+                if not should_ignore_path(file_path, path, ignore_patterns):
+                    python_files.append(file_path)
+                else:
+                    ignored_files += 1
     
     total_files = min(len(python_files), max_files)
     
     if total_files == 0:
         error_panel = Panel(
-            "❌ No Python files found in the specified path.",
+            f"❌ No Python files found in the specified path.\n📋 Ignored {ignored_files} files based on patterns.",
             title="⚠️  Warning",
             border_style="yellow",
             padding=(1, 2)
@@ -53,6 +115,7 @@ def summarize_code(path: str, max_files=10):
     info_table = Table(show_header=False, box=None, padding=(0, 1))
     info_table.add_row("📂 Path:", f"[cyan]{path}[/cyan]")
     info_table.add_row("📄 Files found:", f"[green]{len(python_files)}[/green]")
+    info_table.add_row("🚫 Files ignored:", f"[yellow]{ignored_files}[/yellow]")
     info_table.add_row("🔍 Files to analyze:", f"[blue]{total_files}[/blue]")
     
     info_panel = Panel(
@@ -80,8 +143,8 @@ def summarize_code(path: str, max_files=10):
             relative_path = os.path.relpath(file_path, path)
             progress.update(task, description=f"� Processing: {file}")
 
-            with open(file_path, "r") as f:
-                content = f.read()[:3000]  # Limit input size
+            with open(file_path, "r", encoding='utf-8', errors='ignore') as f:
+                content = f.read()[:3000]
                 prompt = f"Summarize what this Python file does:\n\n{content}"
                 
                 payload = {

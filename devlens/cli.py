@@ -2,7 +2,8 @@ import typer
 from devlens.analyzer.ai_summary import summarize_code
 from devlens.analyzer.summary import display_code_summary
 from devlens.analyzer.readme_gen import generate_readme
-from devlens.analyzer.empty_functions import all_functions, find_empty_files
+from devlens.analyzer.deadcode import find_dead_files
+from devlens.analyzer.voice import generate_ai_voice_summary
 
 app = typer.Typer()
 
@@ -17,15 +18,23 @@ def summary(path: str = typer.Argument(".", help="Path to summarize")):
     display_code_summary(path)
 
 @app.command()
+def stats(path: str = typer.Argument(".", help="Path to analyze")):
+    """Generate project statistics (alias for summary)"""
+    display_code_summary(path)
+
+@app.command()
 def readme(path: str = typer.Argument(".", help="Path to generate README for")):
     """Generate a professional README.md file"""
     generate_readme(path)
 
 @app.command()
-def empty(path: str = typer.Argument(".", help="Path to analyze for dead code")):
-    all_py_files, empty_files = find_empty_files(path)
-    all_functions(path, empty_files, all_py_files)
-    print("Dead code analysis completed.")
+def deadcode(
+    path: str = typer.Argument(".", help="Path to analyze for dead code"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed analysis")
+):
+    """🔍 Find dead code, empty files, and unused imports"""
+    find_dead_files(path)
+
 
 def main():
     app()

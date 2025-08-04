@@ -18,7 +18,6 @@ HEADERS = {
 def generate_readme(path: str):
     """Generate a comprehensive README.md file for the project"""
     
-    # Header
     console.print()
     header_text = Text("DevLens - README Generator", style="bold magenta")
     header_panel = Panel(
@@ -29,15 +28,12 @@ def generate_readme(path: str):
     console.print(header_panel)
     console.print()
     
-    # Analyze project
     console.print("🔍 Analyzing project structure...", style="blue")
     line_counts, file_counts = count_lines_by_language(path)
     structure = get_project_structure(path)
     
-    # Get project name from path
     project_name = os.path.basename(os.path.abspath(path))
     
-    # Scan for key files to understand project context
     key_files = []
     requirements_files = []
     config_files = []
@@ -52,7 +48,6 @@ def generate_readme(path: str):
             elif file_lower in ['config.py', '.env', 'settings.py', 'docker-compose.yml', 'dockerfile']:
                 config_files.append(file)
     
-    # Create context for AI
     project_context = f"""
     Project Name: {project_name}
     Languages Found: {', '.join(line_counts.keys())}
@@ -102,12 +97,10 @@ Make it professional, well-formatted with proper markdown, and include relevant 
         data = response.json()
         readme_content = data["choices"][0]["message"]["content"].strip()
         
-        # Save README.md
         readme_path = os.path.join(path, "README.md")
         with open(readme_path, "w", encoding="utf-8") as f:
             f.write(readme_content)
         
-        # Display success
         success_panel = Panel(
             f"✅ README.md generated successfully!\n📄 Saved to: {readme_path}",
             title="🎉 Success",
@@ -116,7 +109,6 @@ Make it professional, well-formatted with proper markdown, and include relevant 
         )
         console.print(success_panel)
         
-        # Show preview
         preview_panel = Panel(
             readme_content[:500] + "..." if len(readme_content) > 500 else readme_content,
             title="📖 README Preview",
