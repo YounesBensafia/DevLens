@@ -9,6 +9,10 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeEl
 from rich.table import Table
 from rich.align import Align
 from rich.layout import Layout
+from rich.style import Style
+from rich.tree import Tree
+from rich.columns import Columns
+from rich import box
 
 
 
@@ -73,18 +77,24 @@ def should_ignore_path(file_path: str, base_path: str, patterns: list):
 def summarize_code(path: str, max_files=10):
     summaries = []
     
-    console.print()
-    header_text = Text("DevLens - AI Code Analyzer", style="bold blue")
+    console.clear()
+    layout = Layout()
+    layout.split_column(
+        Layout(name="header"),
+        Layout(name="body", ratio=8)
+    )
+    
+    header_text = Text("✨ DevLens - AI Code Analyzer ✨", style="bold white on blue")
     header_panel = Panel(
         Align.center(header_text),
         border_style="blue",
+        box=box.DOUBLE,
         padding=(1, 2)
     )
     console.print(header_panel)
-    console.print()
     
     ignore_patterns = load_gitignore_patterns(path)
-    console.print(f"📋 Loaded {len(ignore_patterns)} ignore patterns (including defaults)", style="dim")
+    console.print(f"📋 [dim]Loaded {len(ignore_patterns)} ignore patterns (including defaults)[/dim]")
     
     python_files = []
     ignored_files = 0
@@ -107,30 +117,26 @@ def summarize_code(path: str, max_files=10):
             f"❌ No Python files found in the specified path.\n📋 Ignored {ignored_files} files based on patterns.",
             title="⚠️  Warning",
             border_style="yellow",
+            box=box.ROUNDED,
             padding=(1, 2)
         )
         console.print(error_panel)
         return summaries
     
-    info_table = Table(show_header=False, box=None, padding=(0, 1))
-    info_table.add_row("📂 Path:", f"[cyan]{path}[/cyan]")
-    info_table.add_row("📄 Files found:", f"[green]{len(python_files)}[/green]")
-    info_table.add_row("🚫 Files ignored:", f"[yellow]{ignored_files}[/yellow]")
-    info_table.add_row("🔍 Files to analyze:", f"[blue]{total_files}[/blue]")
+    stats_columns = Columns([
+        Panel(f"[cyan bold]{len(python_files)}[/]\n[blue]Found Files", border_style="blue", padding=(1, 2)),
+        Panel(f"[yellow bold]{ignored_files}[/]\n[blue]Ignored Files", border_style="blue", padding=(1, 2)),
+        Panel(f"[green bold]{total_files}[/]\n[blue]To Analyze", border_style="blue", padding=(1, 2)),
+        Panel(f"[magenta bold]{path}[/]\n[blue]Project Path", border_style="blue", padding=(1, 2))
+    ], expand=True)
     
-    info_panel = Panel(
-        info_table,
-        title="📊 Scan Information",
-        border_style="cyan",
-        padding=(1, 2)
-    )
-    console.print(info_panel)
+    console.print(stats_columns)
     console.print()
     
     with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        BarColumn(),
+        SpinnerColumn(style="green"),
+        TextColumn("[bold green]{task.description}"),
+        BarColumn(complete_style="green", finished_style="green"),
         TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
         TimeElapsedColumn(),
         console=console,
@@ -172,6 +178,7 @@ def summarize_code(path: str, max_files=10):
                         subtitle=f"[dim]{relative_path}[/dim]",
                         title_align="left",
                         border_style="green",
+                        box=box.ROUNDED,
                         padding=(1, 2)
                     )
                     console.print(result_panel)
@@ -186,6 +193,7 @@ def summarize_code(path: str, max_files=10):
                         subtitle=f"[dim]{relative_path}[/dim]",
                         title_align="left",
                         border_style="red",
+                        box=box.ROUNDED,
                         padding=(1, 2)
                     )
                     console.print(error_panel)
@@ -193,16 +201,24 @@ def summarize_code(path: str, max_files=10):
                 progress.advance(task)
     
     console.print()
-    summary_table = Table(show_header=False, box=None, padding=(0, 1))
-    summary_table.add_row("✅ Files processed:", f"[green]{len([s for s in summaries if not s[1].startswith('[ERROR]')])}[/green]")
-    summary_table.add_row("⏱️  Total files:", f"[blue]{len(summaries)}[/blue]")
     
-    final_panel = Panel(
-        summary_table,
-        title="🎯 Analysis Complete",
+    success_count = len([s for s in summaries if not s[1].startswith('❌')])
+    error_count = len(summaries) - success_count
+    
+    final_columns = Columns([
+        Panel(f"[green bold]{success_count}[/]\n[white]Successful", border_style="green", padding=(1, 2)),
+        Panel(f"[red bold]{error_count}[/]\n[white]Errors", border_style="red", padding=(1, 2)),
+        Panel(f"[blue bold]{len(summaries)}[/]\n[white]Total Files", border_style="blue", padding=(1, 2))
+    ], expand=True)
+    
+    console.print(final_columns)
+    
+    footer = Panel(
+        Align.center(Text("✅ AI Code Analysis Complete! ✅", style="bold green")),
         border_style="green",
-        padding=(1, 2)
+        box=box.ROUNDED
     )
-    console.print(final_panel)
+    console.print()
+    console.print(footer)
     
     return summaries

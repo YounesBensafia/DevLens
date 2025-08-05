@@ -6,6 +6,10 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 from rich.align import Align
+from rich.layout import Layout
+from rich.columns import Columns
+from rich import box
+from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
 
 console = Console()
 
@@ -18,19 +22,36 @@ HEADERS = {
 def generate_readme(path: str):
     """Generate a comprehensive README.md file for the project"""
     
-    console.print()
-    header_text = Text("DevLens - README Generator", style="bold magenta")
-    header_panel = Panel(
-        Align.center(header_text),
-        border_style="magenta",
-        padding=(1, 2)
+    console.clear()
+    layout = Layout()
+    layout.split_column(
+        Layout(Panel(
+            Align.center(Text("🎯 DevLens README Generator", style="bold white")),
+            border_style="bright_magenta",
+            box=box.DOUBLE,
+            padding=(1, 4),
+            title="[bold magenta]README GENERATION[/]",
+            subtitle="[italic]Professional Documentation Creator[/]"
+        ), name="header", size=5)
     )
-    console.print(header_panel)
+    console.print(layout)
     console.print()
     
-    console.print("🔍 Analyzing project structure...", style="blue")
-    line_counts, file_counts = count_lines_by_language(path)
-    structure = get_project_structure(path)
+    with Progress(
+        SpinnerColumn("dots", style="magenta"),
+        TextColumn("[bold blue]{task.description}"),
+        BarColumn(bar_width=40, style="magenta", complete_style="green"),
+        TimeElapsedColumn(),
+        console=console
+    ) as progress:
+        analyze_task = progress.add_task("🔍 Analyzing project structure...", total=100)
+        progress.advance(analyze_task, 30)
+        
+        line_counts, file_counts = count_lines_by_language(path)
+        progress.advance(analyze_task, 30)
+        
+        structure = get_project_structure(path)
+        progress.advance(analyze_task, 40)
     
     project_name = os.path.basename(os.path.abspath(path))
     
@@ -91,28 +112,51 @@ Make it professional, well-formatted with proper markdown, and include relevant 
     }
     
     try:
-        console.print("🤖 Generating README content...", style="green")
-        response = requests.post(GROQ_API_URL, headers=HEADERS, json=payload)
-        response.raise_for_status()
-        data = response.json()
-        readme_content = data["choices"][0]["message"]["content"].strip()
+        with Progress(
+            SpinnerColumn("dots", style="green"),
+            TextColumn("[bold green]{task.description}"),
+            BarColumn(bar_width=40, style="green", complete_style="cyan"),
+            TimeElapsedColumn(),
+            console=console
+        ) as progress:
+            api_task = progress.add_task("🤖 Generating README content...", total=100)
+            progress.advance(api_task, 30)
+            
+            response = requests.post(GROQ_API_URL, headers=HEADERS, json=payload)
+            progress.advance(api_task, 50)
+            
+            response.raise_for_status()
+            data = response.json()
+            readme_content = data["choices"][0]["message"]["content"].strip()
+            progress.advance(api_task, 20)
         
         readme_path = os.path.join(path, "README.md")
         with open(readme_path, "w", encoding="utf-8") as f:
             f.write(readme_content)
         
-        success_panel = Panel(
-            f"✅ README.md generated successfully!\n📄 Saved to: {readme_path}",
-            title="🎉 Success",
-            border_style="green",
-            padding=(1, 2)
-        )
-        console.print(success_panel)
+        success_columns = Columns([
+            Panel(
+                "[green bold]✅ SUCCESS[/]\n[white]README Generated", 
+                border_style="green", 
+                box=box.ROUNDED,
+                padding=(1, 2)
+            ),
+            Panel(
+                f"[cyan bold]📄 LOCATION[/]\n[white]{readme_path}", 
+                border_style="cyan", 
+                box=box.ROUNDED,
+                padding=(1, 2)
+            )
+        ], expand=True)
+        
+        console.print(success_columns)
+        console.print()
         
         preview_panel = Panel(
             readme_content[:500] + "..." if len(readme_content) > 500 else readme_content,
-            title="📖 README Preview",
+            title="[bold cyan]📖 README Preview[/]",
             border_style="cyan",
+            box=box.ROUNDED,
             padding=(1, 2)
         )
         console.print(preview_panel)
@@ -121,9 +165,10 @@ Make it professional, well-formatted with proper markdown, and include relevant 
         
     except Exception as e:
         error_panel = Panel(
-            f"❌ Failed to generate README: {str(e)}",
-            title="⚠️ Error",
+            f"[red bold]❌ FAILED[/]\n[white]{str(e)}",
+            title="[bold red]⚠️ Error[/]",
             border_style="red",
+            box=box.ROUNDED,
             padding=(1, 2)
         )
         console.print(error_panel)

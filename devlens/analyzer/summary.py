@@ -4,6 +4,11 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
 from rich.align import Align
+from rich.layout import Layout
+from rich.style import Style
+from rich.tree import Tree
+from rich.columns import Columns
+from rich import box
 import os
 from pathlib import Path
 from devlens.utils.structure_counts import get_gitignore_patterns
@@ -59,11 +64,18 @@ def get_project_structure(path: str, max_depth=3):
 def display_code_summary(path: str):
     """Display a comprehensive code summary with professional styling"""
     
-    console.print()
-    header_text = Text("DevLens - Project Summary", style="bold cyan")
+    console.clear()
+    layout = Layout()
+    layout.split_column(
+        Layout(name="header"),
+        Layout(name="body", ratio=8)
+    )
+    
+    header_text = Text("✨ DevLens - Project Summary ✨", style="bold white on cyan")
     header_panel = Panel(
         Align.center(header_text),
         border_style="cyan",
+        box=box.DOUBLE,
         padding=(1, 2)
     )
     console.print(header_panel)
@@ -77,6 +89,7 @@ def display_code_summary(path: str):
             "❌ No supported code files found in the specified path.",
             title="⚠️  Warning",
             border_style="yellow",
+            box=box.ROUNDED,
             padding=(1, 2)
         )
         console.print(error_panel)
@@ -85,22 +98,24 @@ def display_code_summary(path: str):
     total_files = sum(file_counts.values())
     total_lines = sum(line_counts.values())
     
-    info_table = Table(show_header=False, box=None, padding=(0, 1))
-    info_table.add_row("📂 Project Path:", f"[cyan]{path}[/cyan]")
-    info_table.add_row("📄 Total Files:", f"[green]{total_files}[/green]")
-    info_table.add_row("📝 Total Lines:", f"[blue]{total_lines:,}[/blue]")
-    info_table.add_row("🗂️  Directories:", f"[yellow]{len(structure)}[/yellow]")
+    stats_columns = Columns([
+        Panel(f"[green bold]{total_files}[/]\n[blue]Total Files", border_style="blue", padding=(1, 2)),
+        Panel(f"[cyan bold]{total_lines:,}[/]\n[blue]Total Lines", border_style="blue", padding=(1, 2)),
+        Panel(f"[yellow bold]{len(structure)}[/]\n[blue]Directories", border_style="blue", padding=(1, 2)),
+        Panel(f"[magenta bold]{len(line_counts)}[/]\n[blue]Languages", border_style="blue", padding=(1, 2))
+    ], expand=True)
     
-    info_panel = Panel(
-        info_table,
-        title="📊 Project Overview",
-        border_style="blue",
-        padding=(1, 2)
-    )
-    console.print(info_panel)
+    console.print(stats_columns)
     console.print()
     
-    lang_table = Table(title="📋 Language Breakdown", show_header=True, header_style="bold magenta")
+    lang_table = Table(
+        title="📋 Language Breakdown", 
+        show_header=True, 
+        header_style="bold white on magenta",
+        box=box.ROUNDED,
+        border_style="magenta",
+        title_style="bold magenta"
+    )
     lang_table.add_column("Language", style="cyan", no_wrap=True)
     lang_table.add_column("Files", justify="right", style="green")
     lang_table.add_column("Lines", justify="right", style="blue")
@@ -123,7 +138,14 @@ def display_code_summary(path: str):
     console.print()
     
     if len(structure) > 1:
-        struct_table = Table(title="🏗️  Project Structure", show_header=True, header_style="bold cyan")
+        struct_table = Table(
+            title="🏗️  Project Structure", 
+            show_header=True, 
+            header_style="bold white on cyan",
+            box=box.ROUNDED,
+            border_style="cyan",
+            title_style="bold cyan"
+        )
         struct_table.add_column("Directory", style="cyan")
         struct_table.add_column("Files", justify="right", style="green")
         struct_table.add_column("Subdirs", justify="right", style="yellow")

@@ -8,6 +8,11 @@ from rich.table import Table
 from rich.text import Text
 from rich.align import Align
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
+from rich.layout import Layout
+from rich.style import Style
+from rich.tree import Tree
+from rich.columns import Columns
+from rich import box
 
 console = Console()
 
@@ -132,19 +137,24 @@ def analyze_python_file(file_path: str):
 
 def find_dead_files(path: str):
     """Enhanced dead code analysis with comprehensive detection and gitignore support"""
+    console.clear()
+    layout = Layout()
+    layout.split_column(
+        Layout(name="header"),
+        Layout(name="body", ratio=8)
+    )
     
-    console.print()
-    header_text = Text("DevLens - Dead Code Analyzer", style="bold red")
+    header_text = Text("✨ DevLens - Dead Code Analyzer ✨", style="bold white on red")
     header_panel = Panel(
         Align.center(header_text),
         border_style="red",
+        box=box.DOUBLE,
         padding=(1, 2)
     )
     console.print(header_panel)
-    console.print()
     
     ignore_patterns = load_gitignore_patterns(path)
-    console.print(f"📋 Loaded {len(ignore_patterns)} ignore patterns (including defaults)", style="dim")
+    console.print(f"📋 [dim]Loaded {len(ignore_patterns)} ignore patterns (including defaults)[/dim]")
     
     python_files = []
     ignored_files = 0
@@ -165,33 +175,27 @@ def find_dead_files(path: str):
             f"❌ No Python files found in the specified path.\n📋 Ignored {ignored_files} files based on patterns.",
             title="⚠️  Warning",
             border_style="yellow",
+            box=box.ROUNDED,
             padding=(1, 2)
         )
         console.print(error_panel)
         return
     
-    info_table = Table(show_header=False, box=None, padding=(0, 1))
-    info_table.add_row("📂 Scan Path:", f"[cyan]{path}[/cyan]")
-    info_table.add_row("📄 Python Files Found:", f"[green]{len(python_files)}[/green]")
-    info_table.add_row("🚫 Files Ignored:", f"[yellow]{ignored_files}[/yellow]")
-    info_table.add_row("🔍 Analysis Type:", "[blue]Dead Code Detection[/blue]")
+    stats_columns = Columns([
+        Panel(f"[cyan bold]{len(python_files)}[/]\n[blue]Python Files", border_style="blue", padding=(1, 2)),
+        Panel(f"[yellow bold]{ignored_files}[/]\n[blue]Ignored Files", border_style="blue", padding=(1, 2)),
+        Panel(f"[green bold]{path}[/]\n[blue]Project Path", border_style="blue", padding=(1, 2))
+    ], expand=True)
     
-    info_panel = Panel(
-        info_table,
-        title="📊 Scan Information",
-        border_style="blue",
-        padding=(1, 2)
-    )
-    console.print(info_panel)
-    console.print()
+    console.print(stats_columns)
     
     dead_files = {}
     total_issues = 0
     
     with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        BarColumn(),
+        SpinnerColumn(style="green"),
+        TextColumn("[bold green]{task.description}"),
+        BarColumn(complete_style="green", finished_style="green"),
         TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
         TimeElapsedColumn(),
         console=console,
@@ -218,27 +222,35 @@ def find_dead_files(path: str):
             "✅ No dead code detected! All Python files appear to be in use.",
             title="🎉 Clean Code",
             border_style="green",
+            box=box.HEAVY,
             padding=(1, 2)
         )
         console.print(success_panel)
     else:
-        results_table = Table(title="🔍 Dead Code Analysis Results", show_header=True, header_style="bold red")
+        results_table = Table(
+            title="🔍 Dead Code Analysis Results", 
+            show_header=True, 
+            header_style="bold white on red",
+            box=box.ROUNDED,
+            title_style="bold red",
+            border_style="red"
+        )
         results_table.add_column("File", style="cyan", min_width=30)
         results_table.add_column("Issue Type", style="yellow", min_width=15)
         results_table.add_column("Description", style="white", min_width=40)
         
+        emoji_map = {
+            "empty": "🗑️",
+            "comments_only": "💬",
+            "imports_only": "📦",
+            "unused_imports": "🚫",
+            "syntax_error": "❌",
+            "read_error": "⚠️"
+        }
+        
         for file_path, issues in dead_files.items():
             for issue_type, description in issues:
-                emoji_map = {
-                    "empty": "🗑️",
-                    "comments_only": "💬",
-                    "imports_only": "📦",
-                    "unused_imports": "🚫",
-                    "syntax_error": "❌",
-                    "read_error": "⚠️"
-                }
                 emoji = emoji_map.get(issue_type, "🔍")
-                
                 results_table.add_row(
                     f"{emoji} {file_path}",
                     issue_type.replace("_", " ").title(),
@@ -246,31 +258,32 @@ def find_dead_files(path: str):
                 )
         
         console.print(results_table)
-        console.print()
-        
-        summary_table = Table(show_header=False, box=None, padding=(0, 1))
-        summary_table.add_row("📊 Total Files Scanned:", f"[blue]{len(python_files)}[/blue]")
-        summary_table.add_row("🔍 Files with Issues:", f"[yellow]{len(dead_files)}[/yellow]")
-        summary_table.add_row("⚠️  Total Issues Found:", f"[red]{total_issues}[/red]")
-        summary_table.add_row("✅ Clean Files:", f"[green]{len(python_files) - len(dead_files)}[/green]")
         
         issue_counts = {}
         for issues in dead_files.values():
             for issue_type, _ in issues:
                 issue_counts[issue_type] = issue_counts.get(issue_type, 0) + 1
         
+        summary_columns = Columns([
+            Panel(f"[blue bold]{len(python_files)}[/]\n[white]Total Files", border_style="blue", padding=(1, 2)),
+            Panel(f"[red bold]{len(dead_files)}[/]\n[white]Files with Issues", border_style="red", padding=(1, 2)),
+            Panel(f"[yellow bold]{total_issues}[/]\n[white]Total Issues", border_style="yellow", padding=(1, 2)),
+            Panel(f"[green bold]{len(python_files) - len(dead_files)}[/]\n[white]Clean Files", border_style="green", padding=(1, 2))
+        ], expand=True)
+        
         console.print()
-        summary_panel = Panel(
-            summary_table,
-            title="📈 Analysis Summary",
-            border_style="magenta",
-            padding=(1, 2)
-        )
-        console.print(summary_panel)
+        console.print(summary_columns)
         
         if issue_counts:
             console.print()
-            breakdown_table = Table(title="📋 Issue Breakdown", show_header=True, header_style="bold cyan")
+            breakdown_table = Table(
+                title="📋 Issue Breakdown", 
+                show_header=True, 
+                header_style="bold white on cyan",
+                box=box.ROUNDED,
+                border_style="cyan",
+                title_style="bold cyan"
+            )
             breakdown_table.add_column("Issue Type", style="yellow")
             breakdown_table.add_column("Count", style="red", justify="right")
             breakdown_table.add_column("Description", style="white")
@@ -284,7 +297,7 @@ def find_dead_files(path: str):
                 "read_error": "Files that couldn't be read"
             }
             
-            for issue_type, count in sorted(issue_counts.items()):
+            for issue_type, count in sorted(issue_counts.items(), key=lambda x: x[1], reverse=True):
                 breakdown_table.add_row(
                     issue_type.replace("_", " ").title(),
                     str(count),
@@ -293,5 +306,10 @@ def find_dead_files(path: str):
             
             console.print(breakdown_table)
     
+    footer = Panel(
+        Align.center(Text("✅ Dead code analysis complete! ✅", style="bold green")),
+        border_style="green",
+        box=box.ROUNDED
+    )
     console.print()
-    console.print("[bold green]✅ Dead code analysis complete![/bold green]")
+    console.print(footer)

@@ -3,7 +3,6 @@ from devlens.analyzer.ai_summary import summarize_code
 from devlens.analyzer.summary import display_code_summary
 from devlens.analyzer.readme_gen import generate_readme
 from devlens.analyzer.deadcode import find_dead_files
-from devlens.analyzer.voice import generate_ai_voice_summary
 
 app = typer.Typer()
 
