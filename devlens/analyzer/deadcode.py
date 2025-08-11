@@ -143,8 +143,8 @@ def find_dead_files(path: str):
         Layout(name="header"),
         Layout(name="body", ratio=8)
     )
-    
-    header_text = Text("✨ DevLens - Dead Code Analyzer ✨", style="bold white on red")
+
+    header_text = Text("DevLens - Dead Code Analyzer", style="bold white on red")
     header_panel = Panel(
         Align.center(header_text),
         border_style="red",
@@ -172,8 +172,8 @@ def find_dead_files(path: str):
     
     if not python_files:
         error_panel = Panel(
-            f"❌ No Python files found in the specified path.\n📋 Ignored {ignored_files} files based on patterns.",
-            title="⚠️  Warning",
+            f"No Python files found in the specified path.\n📋 Ignored {ignored_files} files based on patterns.",
+            title="Warning",
             border_style="yellow",
             box=box.ROUNDED,
             padding=(1, 2)
@@ -201,12 +201,12 @@ def find_dead_files(path: str):
         console=console,
         expand=True
     ) as progress:
-        task = progress.add_task("🔍 Analyzing files...", total=len(python_files))
+        task = progress.add_task("Analyzing files...", total=len(python_files))
         
         for file_path in python_files:
             file_name = os.path.basename(file_path)
             relative_path = os.path.relpath(file_path, path)
-            progress.update(task, description=f"🔍 Checking: {file_name}")
+            progress.update(task, description=f"Checking: {file_name}")
             
             issues = analyze_python_file(file_path)
             if issues:
@@ -219,8 +219,8 @@ def find_dead_files(path: str):
     
     if not dead_files:
         success_panel = Panel(
-            "✅ No dead code detected! All Python files appear to be in use.",
-            title="🎉 Clean Code",
+            "No dead code detected! All Python files appear to be in use.",
+            title="Clean Code",
             border_style="green",
             box=box.HEAVY,
             padding=(1, 2)
@@ -228,8 +228,8 @@ def find_dead_files(path: str):
         console.print(success_panel)
     else:
         results_table = Table(
-            title="🔍 Dead Code Analysis Results", 
-            show_header=True, 
+            title="Dead Code Analysis Results",
+            show_header=True,
             header_style="bold white on red",
             box=box.ROUNDED,
             title_style="bold red",
@@ -307,7 +307,7 @@ def find_dead_files(path: str):
             console.print(breakdown_table)
     
     footer = Panel(
-        Align.center(Text("✅ Dead code analysis complete! ✅", style="bold green")),
+        Align.center(Text("Dead code analysis complete!", style="bold green")),
         border_style="green",
         box=box.ROUNDED
     )

@@ -15,7 +15,7 @@ from devlens.utils.structure_counts import get_gitignore_patterns
 
 console = Console()
 
-
+SUPPORTED_FILE_TYPES = [".py", ".js", ".ts", ".java", ".cpp", ".html", ".css", ".json", ".md", ".txt", ".yml", ".yaml", ".xml"]
 
 def count_lines_by_language(path: str):
     summary = {}
@@ -26,7 +26,7 @@ def count_lines_by_language(path: str):
             if file in patterns:
                 exit()
             ext = os.path.splitext(file)[1].lower()
-            if ext in [".py", ".js", ".ts", ".java", ".cpp", ".html", ".css", ".json", ".md", ".txt", ".yml", ".yaml", ".xml"]:
+            if ext in SUPPORTED_FILE_TYPES:
                 lang = ext.lstrip(".")
                 summary.setdefault(lang, 0)
                 file_count.setdefault(lang, 0)
@@ -70,8 +70,8 @@ def display_code_summary(path: str):
         Layout(name="header"),
         Layout(name="body", ratio=8)
     )
-    
-    header_text = Text("✨ DevLens - Project Summary ✨", style="bold white on cyan")
+
+    header_text = Text("DevLens - Project Summary", style="bold white on cyan")
     header_panel = Panel(
         Align.center(header_text),
         border_style="cyan",
@@ -86,8 +86,8 @@ def display_code_summary(path: str):
     
     if not line_counts:
         error_panel = Panel(
-            "❌ No supported code files found in the specified path.",
-            title="⚠️  Warning",
+            "No supported code files found in the specified path.",
+            title="Warning",
             border_style="yellow",
             box=box.ROUNDED,
             padding=(1, 2)
@@ -109,7 +109,7 @@ def display_code_summary(path: str):
     console.print()
     
     lang_table = Table(
-        title="📋 Language Breakdown", 
+        title="Language Breakdown", 
         show_header=True, 
         header_style="bold white on magenta",
         box=box.ROUNDED,
@@ -139,7 +139,7 @@ def display_code_summary(path: str):
     
     if len(structure) > 1:
         struct_table = Table(
-            title="🏗️  Project Structure", 
+            title="Project Structure", 
             show_header=True, 
             header_style="bold white on cyan",
             box=box.ROUNDED,
@@ -162,8 +162,8 @@ def display_code_summary(path: str):
         console.print()
     
     console.print(Panel(
-        f"✅ Analysis complete! Found [green]{total_files}[/green] files with [blue]{total_lines:,}[/blue] lines of code across [cyan]{len(line_counts)}[/cyan] languages.",
-        title="🎯 Summary",
+        f"Analysis complete! Found [green]{total_files}[/green] files with [blue]{total_lines:,}[/blue] lines of code across [cyan]{len(line_counts)}[/cyan] languages.",
+        title="Summary",
         border_style="green",
         padding=(1, 2)
     ))

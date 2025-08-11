@@ -84,7 +84,7 @@ def summarize_code(path: str, max_files=10):
         Layout(name="body", ratio=8)
     )
     
-    header_text = Text("✨ DevLens - AI Code Analyzer ✨", style="bold white on blue")
+    header_text = Text("DevLens - AI Code Analyzer", style="bold white on blue")
     header_panel = Panel(
         Align.center(header_text),
         border_style="blue",
@@ -94,8 +94,8 @@ def summarize_code(path: str, max_files=10):
     console.print(header_panel)
     
     ignore_patterns = load_gitignore_patterns(path)
-    console.print(f"📋 [dim]Loaded {len(ignore_patterns)} ignore patterns (including defaults)[/dim]")
-    
+    console.print(f"[dim]Loaded {len(ignore_patterns)} ignore patterns (including defaults)[/dim]")
+
     python_files = []
     ignored_files = 0
     
@@ -114,8 +114,8 @@ def summarize_code(path: str, max_files=10):
     
     if total_files == 0:
         error_panel = Panel(
-            f"❌ No Python files found in the specified path.\n📋 Ignored {ignored_files} files based on patterns.",
-            title="⚠️  Warning",
+            f"No Python files found in the specified path.\nIgnored {ignored_files} files based on patterns.",
+            title="Warning",
             border_style="yellow",
             box=box.ROUNDED,
             padding=(1, 2)
@@ -142,7 +142,7 @@ def summarize_code(path: str, max_files=10):
         console=console,
         expand=True
     ) as progress:
-        task = progress.add_task("🚀 Analyzing files...", total=total_files)
+        task = progress.add_task("Analyzing files...", total=total_files)
         
         for i, file_path in enumerate(python_files[:max_files]):
             file = os.path.basename(file_path)
@@ -174,7 +174,7 @@ def summarize_code(path: str, max_files=10):
                     
                     result_panel = Panel(
                         content_text,
-                        title=f"📄 {file}",
+                        title=f"{file}",
                         subtitle=f"[dim]{relative_path}[/dim]",
                         title_align="left",
                         border_style="green",
@@ -214,7 +214,7 @@ def summarize_code(path: str, max_files=10):
     console.print(final_columns)
     
     footer = Panel(
-        Align.center(Text("✅ AI Code Analysis Complete! ✅", style="bold green")),
+        Align.center(Text("AI Code Analysis Complete!", style="bold green")),
         border_style="green",
         box=box.ROUNDED
     )

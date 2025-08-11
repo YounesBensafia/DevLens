@@ -136,7 +136,7 @@ Make it professional, well-formatted with proper markdown, and include relevant 
         
         success_columns = Columns([
             Panel(
-                "[green bold]✅ SUCCESS[/]\n[white]README Generated", 
+                "[green bold] SUCCESS[/]\n[white]README Generated", 
                 border_style="green", 
                 box=box.ROUNDED,
                 padding=(1, 2)

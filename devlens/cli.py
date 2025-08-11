@@ -12,11 +12,6 @@ def analyze(path: str = typer.Argument(".", help="Path to analyze")):
     summarize_code(path)
 
 @app.command()
-def summary(path: str = typer.Argument(".", help="Path to summarize")):
-    """Generate comprehensive project summary"""
-    display_code_summary(path)
-
-@app.command()
 def stats(path: str = typer.Argument(".", help="Path to analyze")):
     """Generate project statistics (alias for summary)"""
     display_code_summary(path)
@@ -31,9 +26,8 @@ def deadcode(
     path: str = typer.Argument(".", help="Path to analyze for dead code"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed analysis")
 ):
-    """🔍 Find dead code, empty files, and unused imports"""
+    """Find dead code, empty files, and unused imports"""
     find_dead_files(path)
-
 
 def main():
     app()
