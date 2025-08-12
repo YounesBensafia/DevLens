@@ -1,6 +1,6 @@
 # DevLens
 
-![DevLens](https://github.com/user-attachments/assets/1883a4eb-2892-4e9d-81cb-dc54cee2b0ea)
+<img width="100%" src="https://github.com/user-attachments/assets/1883a4eb-2892-4e9d-81cb-dc54cee2b0ea"/>
 
 <div align="center">
   
