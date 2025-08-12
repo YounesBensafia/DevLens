@@ -1,5 +1,7 @@
 # DevLens
 
+![DevLens](https://github.com/user-attachments/assets/1883a4eb-2892-4e9d-81cb-dc54cee2b0ea)
+
 <div align="center">
   
   <img width="1396" height="366" alt="image" src="https://github.com/user-attachments/assets/d39e940a-059e-4e3a-af9e-b14e51bfd1af" />
