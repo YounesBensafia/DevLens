@@ -58,8 +58,6 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
   </tr>
 </table>
 
-Got it 👍 Here’s your README rewritten in a **clean Markdown format** (no emojis, no extras, professional style):
-
 ---
 
 ````markdown
