@@ -154,7 +154,7 @@ def find_dead_files(path: str):
     console.print(header_panel)
     
     ignore_patterns = load_gitignore_patterns(path)
-    console.print(f"📋 [dim]Loaded {len(ignore_patterns)} ignore patterns (including defaults)[/dim]")
+    console.print(f"[dim]Loaded {len(ignore_patterns)} ignore patterns (including defaults)[/dim]")
     
     python_files = []
     ignored_files = 0
@@ -172,7 +172,7 @@ def find_dead_files(path: str):
     
     if not python_files:
         error_panel = Panel(
-            f"No Python files found in the specified path.\n📋 Ignored {ignored_files} files based on patterns.",
+            f"No Python files found in the specified path.\n Ignored {ignored_files} files based on patterns.",
             title="Warning",
             border_style="yellow",
             box=box.ROUNDED,
@@ -277,7 +277,7 @@ def find_dead_files(path: str):
         if issue_counts:
             console.print()
             breakdown_table = Table(
-                title="📋 Issue Breakdown", 
+                title="Issue Breakdown", 
                 show_header=True, 
                 header_style="bold white on cyan",
                 box=box.ROUNDED,
