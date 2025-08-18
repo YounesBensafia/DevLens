@@ -1,8 +1,26 @@
-# DevLens
+<img width="1721" height="490" alt="image" src="https://github.com/user-attachments/assets/cba1c923-0238-46ac-922e-392c39da8e54" /># DevLens
 
 <img width="100%" src="https://github.com/user-attachments/assets/1883a4eb-2892-4e9d-81cb-dc54cee2b0ea"/>
 
+<h2 align="center">How to Use It</h2>
+<p align="center"><i>Quick guide to start analyzing your codebase</i></p>
+
+<p align="center">
+  <img width="100%" src="https://github.com/user-attachments/assets/45b40043-b9a3-42b0-835e-9f26c68bb63f" />
+</p>
+
+---
+
 <h2 align="center">Illuminate Your Codebase with Powerful Analysis</h2>
+<p align="center"><i>AI-powered insights & detailed statistics for your repository</i></p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/de411846-3a3a-410d-9061-d9b69a5920a5" width="48%" />
+  <img src="https://github.com/user-attachments/assets/09d04c0e-8970-4958-8573-b5c1901743ef" width="48%" />
+</p>
+
+---
+<h2 align="center">Have </h2>
 <p align="center"><i>AI-powered insights & detailed statistics for your repository</i></p>
 
 <p align="center">
