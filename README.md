@@ -2,13 +2,13 @@
 
 <img width="100%" src="https://github.com/user-attachments/assets/1883a4eb-2892-4e9d-81cb-dc54cee2b0ea"/>
 
-<div align="center">
-  
-  <img width="1396" height="366" alt="image" src="https://github.com/user-attachments/assets/d39e940a-059e-4e3a-af9e-b14e51bfd1af" />
-  <img width="1396" height="366" alt="image" src="https://github.com/user-attachments/assets/49aef9f4-aa9c-46a3-93e8-e9a3d5d0bbdc" />
+<h2 align="center">Illuminate Your Codebase with Powerful Analysis</h2>
+<p align="center"><i>AI-powered insights & detailed statistics for your repository</i></p>
 
-  **Illuminate Your Codebase with Powerful Analysis**
-</div>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/de411846-3a3a-410d-9061-d9b69a5920a5" width="48%" />
+  <img src="https://github.com/user-attachments/assets/fd3ddc26-3517-4d2d-bae9-4429c3ed4cdb" width="48%" />
+</p>
 
 ## Overview
 
