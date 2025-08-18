@@ -1,4 +1,4 @@
-<img width="1721" height="490" alt="image" src="https://github.com/user-attachments/assets/cba1c923-0238-46ac-922e-392c39da8e54" /># DevLens
+# DevLens
 
 <img width="100%" src="https://github.com/user-attachments/assets/1883a4eb-2892-4e9d-81cb-dc54cee2b0ea"/>
 
@@ -20,12 +20,30 @@
 </p>
 
 ---
-<h2 align="center">Have </h2>
-<p align="center"><i>AI-powered insights & detailed statistics for your repository</i></p>
+<h2 align="center">Complete Codebase Insights</h2>
+<p align="center"><i>Total files, lines of code, directories, language breakdown, and detailed project structure</i></p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/de411846-3a3a-410d-9061-d9b69a5920a5" width="48%" />
-  <img src="https://github.com/user-attachments/assets/09d04c0e-8970-4958-8573-b5c1901743ef" width="48%" />
+
+  <img src="https://github.com/user-attachments/assets/e86c5b42-8894-4768-af8f-082604353748" width="48%" />
+  <img src="https://github.com/user-attachments/assets/54aeefb3-67bb-429e-b8c0-5e7fe729d6e8" width="48%" />
+</p>
+
+---
+<h2 align="center">Generate a Personalized README.md for Your Repository</h2>
+<p align="center"><i>Create a custom template to your project</i></p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3b8d85e3-ba41-4897-a8f5-7946afd1bc8e" width="100%"/>
+</p>
+
+---
+<h2 align="center">Identify Unused Files & Imports with Issue Breakdown</h2>
+<p align="center"><i>Detect empty files, unused imports, and get a full overview of project issues</i></p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3ca5b282-1515-4383-a7b2-e8384f770b3b" width="48%" />
+  <img src="https://github.com/user-attachments/assets/29052182-1961-428d-94eb-0c9017026d5f" width="48%" />
 </p>
 
 ## Overview
