@@ -58,5 +58,65 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
   </tr>
 </table>
 
+Got it 👍 Here’s your README rewritten in a **clean Markdown format** (no emojis, no extras, professional style):
+
+---
+
+````markdown
+# Devlens
+
+Devlens is a developer productivity tool that provides a CLI for project management and utilities.
+
+---
+
+## Installation
+
+Clone the repository and install it with:
+
+```bash
+pip install .
+````
+
+---
+
+## Environment Configuration
+
+Create a `.env` file (include your Groq API key:) at the root of your project.
+You can use `.env.example` as a reference.
+
+---
+
+## Add Devlens to PATH (Windows)
+
+To make `devlens` accessible from anywhere in the terminal:
+
+1. Press **Start** → search for **Environment Variables** → open **"Edit the system environment variables"**.
+
+2. Click **Environment Variables…**.
+
+3. Under **User variables**, select **Path** → **Edit**.
+
+4. Click **New** and paste:
+
+   ```
+   C:\Users\<YourUser>\AppData\Roaming\Python\Python313\Scripts
+   ```
+
+5. Open a new terminal and run:
+
+   ```bash
+   devlens --help
+   ```
+
+   You should see the CLI help menu.
+
+---
+
+## Troubleshooting
+
+* **`'devlens' is not recognized`**
+  Ensure the `Scripts` folder is correctly added to your PATH and restart your terminal.
+
+
 ⚠️ **Note:** It's available for **Python projects only**... for now 🤫.
 DevLens helps engineering teams understand complex codebases quickly and efficiently.
