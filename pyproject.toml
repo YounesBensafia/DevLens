@@ -7,8 +7,13 @@ name = "devlens"
 version = "0.1.0"
 description = "Test CLI"
 dependencies = [
-    { file = "requirements.txt" }
+    "click",
+    "httpx",
+    "pydantic",
+    "rich",
+    "typer",
+    "python-dotenv",
 ]
 
 [project.scripts]
-devlens = "devlens.cli:app"
+devlens =   "devlens.cli:app"

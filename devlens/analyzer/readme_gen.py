@@ -26,7 +26,7 @@ def generate_readme(path: str):
     layout = Layout()
     layout.split_column(
         Layout(Panel(
-            Align.center(Text("🎯 DevLens README Generator", style="bold white")),
+            Align.center(Text("DevLens README Generator", style="bold white")),
             border_style="bright_magenta",
             box=box.DOUBLE,
             padding=(1, 4),
@@ -44,7 +44,7 @@ def generate_readme(path: str):
         TimeElapsedColumn(),
         console=console
     ) as progress:
-        analyze_task = progress.add_task("🔍 Analyzing project structure...", total=100)
+        analyze_task = progress.add_task("Analyzing project structure...", total=100)
         progress.advance(analyze_task, 30)
         
         line_counts, file_counts = count_lines_by_language(path)
@@ -119,7 +119,7 @@ Make it professional, well-formatted with proper markdown, and include relevant 
             TimeElapsedColumn(),
             console=console
         ) as progress:
-            api_task = progress.add_task("🤖 Generating README content...", total=100)
+            api_task = progress.add_task("Generating README content...", total=100)
             progress.advance(api_task, 30)
             
             response = requests.post(GROQ_API_URL, headers=HEADERS, json=payload)
@@ -142,7 +142,7 @@ Make it professional, well-formatted with proper markdown, and include relevant 
                 padding=(1, 2)
             ),
             Panel(
-                f"[cyan bold]📄 LOCATION[/]\n[white]{readme_path}", 
+                f"[cyan bold] LOCATION[/]\n[white]{readme_path}", 
                 border_style="cyan", 
                 box=box.ROUNDED,
                 padding=(1, 2)
@@ -154,7 +154,7 @@ Make it professional, well-formatted with proper markdown, and include relevant 
         
         preview_panel = Panel(
             readme_content[:500] + "..." if len(readme_content) > 500 else readme_content,
-            title="[bold cyan]📖 README Preview[/]",
+            title="[bold cyan] README Preview[/]",
             border_style="cyan",
             box=box.ROUNDED,
             padding=(1, 2)
