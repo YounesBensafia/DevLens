@@ -6,7 +6,9 @@ build-backend = "setuptools.build_meta"
 name = "devlens"
 version = "0.1.0"
 description = "Test CLI"
-dependencies = ["typer"]
+dependencies = [
+    { file = "requirements.txt" }
+]
 
 [project.scripts]
 devlens = "devlens.cli:app"
