@@ -13,6 +13,7 @@ from rich.style import Style
 from rich.tree import Tree
 from rich.columns import Columns
 from rich import box
+from utils.gitignore import get_gitignore_folders_files
 
 
 
@@ -24,55 +25,6 @@ HEADERS = {
 
 console = Console()
 
-def load_gitignore_patterns(path: str):
-    """Load patterns from .gitignore file"""
-    gitignore_path = os.path.join(path, '.gitignore')
-    patterns = []
-    
-    default_patterns = ['__pycache__/', '*.pyc', '*.pyo', '*.pyd', '.Python', 'build/', 'develop-eggs/', 'dist/', 'downloads/', 'eggs/', '.eggs/', 'lib/',
-        'lib64/', 'parts/', 'sdist/', 'var/', 'wheels/', '*.egg-info/', '.installed.cfg', '*.egg', 'venv/', 'env/', 'ENV/', '.venv/', '.env', '.idea/', '.vscode/',
-        '*.swp', '*.swo', '.DS_Store', 'Thumbs.db', 'node_modules/', '.git/', '.pytest_cache/', '.coverage', '.tox/', 'htmlcov/', '*.log', 'temp/', 'tmp/',
-        'cache/', 'output/'
-    ]
-    
-    patterns.extend(default_patterns)
-    
-    if os.path.exists(gitignore_path):
-        try:
-            with open(gitignore_path, 'r', encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    if line and not line.startswith('#'):
-                        patterns.append(line)
-        except Exception:
-            pass  
-    
-    return patterns
-
-def should_ignore_path(file_path: str, base_path: str, patterns: list):
-    """Check if a file path should be ignored based on gitignore patterns"""
-    relative_path = os.path.relpath(file_path, base_path)
-    
-    relative_path = relative_path.replace('\\', '/')
-    
-    for pattern in patterns:
-        if not pattern.strip():
-            continue
-            
-        if pattern.endswith('/'):
-            path_parts = relative_path.split('/')
-            for i in range(len(path_parts)):
-                partial_path = '/'.join(path_parts[:i+1]) + '/'
-                if fnmatch.fnmatch(partial_path, pattern):
-                    return True
-        else:
-            if fnmatch.fnmatch(relative_path, pattern):
-                return True
-            filename = os.path.basename(relative_path)
-            if fnmatch.fnmatch(filename, pattern):
-                return True
-    
-    return False
 
 def summarize_code(path: str, max_files=10):
     summaries = []
@@ -93,22 +45,15 @@ def summarize_code(path: str, max_files=10):
     )
     console.print(header_panel)
     
-    ignore_patterns = load_gitignore_patterns(path)
+    ignore_patterns = get_gitignore_folders_files()
     console.print(f"[dim]Loaded {len(ignore_patterns)} ignore patterns (including defaults)[/dim]")
-
     python_files = []
-    ignored_files = 0
-    
-    for root, dirs, files in os.walk(path):
-        dirs[:] = [d for d in dirs if not should_ignore_path(os.path.join(root, d), path, ignore_patterns)]
-        
+    for root, files in os.walk(path):
         for file in files:
             if file.endswith(".py"):
                 file_path = os.path.join(root, file)
-                if not should_ignore_path(file_path, path, ignore_patterns):
+                if file_path not in ignore_patterns:
                     python_files.append(file_path)
-                else:
-                    ignored_files += 1
     
     total_files = min(len(python_files), max_files)
     
