@@ -1,7 +1,7 @@
 import os
 import requests
 import fnmatch
-from devlens.config import GROQ_API_KEY 
+from config import GROQ_API_KEY 
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text

@@ -9,8 +9,6 @@ from rich.text import Text
 from rich.align import Align
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
 from rich.layout import Layout
-from rich.style import Style
-from rich.tree import Tree
 from rich.columns import Columns
 from rich import box
 

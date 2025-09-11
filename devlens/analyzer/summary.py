@@ -11,7 +11,7 @@ from rich.columns import Columns
 from rich import box
 import os
 from pathlib import Path
-from devlens.utils.structure_counts import get_gitignore_patterns
+from utils.structure_counts import get_gitignore_patterns
 
 console = Console()
 

@@ -1,19 +1,12 @@
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "devlens"
 version = "0.1.0"
-description = "Test CLI"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
 dependencies = [
-    "click",
-    "httpx",
-    "pydantic",
-    "rich",
-    "typer",
-    "python-dotenv",
+    "python-dotenv>=1.1.1",
+    "requests>=2.32.5",
+    "rich>=14.1.0",
+    "typer>=0.17.4",
 ]
-
-[project.scripts]
-devlens =   "devlens.cli:app"

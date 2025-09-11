@@ -1,7 +1,7 @@
 import os
 import requests
-from devlens.config import GROQ_API_KEY
-from devlens.analyzer.summary import count_lines_by_language, get_project_structure
+from config import GROQ_API_KEY
+from analyzer.summary import count_lines_by_language, get_project_structure
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
