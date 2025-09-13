@@ -209,3 +209,5 @@ __marimo__/
 
 # uv 
 uv.lock
+
+devlens/utils/data.csv

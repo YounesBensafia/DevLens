@@ -44,6 +44,9 @@ def summarize_code(path: str, max_files=10):
     ignore_patterns = get_gitignore_folders_files()
     console.print(f"[dim]Loaded {len(ignore_patterns)} ignore patterns (including defaults)[/dim]")
     python_files = []
+    print([f for f in os.walk(path) if f not in ignore_patterns])
+
+    exit(1)
     for root, files in os.walk(path):
         for file in files:
             if file.endswith(".py"):
