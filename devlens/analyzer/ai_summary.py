@@ -1,4 +1,6 @@
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import requests
 from config.settings import GROQ_API_KEY 
 from rich.console import Console
@@ -9,7 +11,9 @@ from rich.align import Align
 from rich.layout import Layout
 from rich.columns import Columns
 from rich import box
-from utils.gitignore import get_gitignore_folders_files
+from utils.gitignore import list_non_ignored_files
+from prompt.ai_summary_prompt import generate_ai_summary_prompt as prompt
+from prompt.ai_summary_prompt import system_message as system_msg
 
 
 
@@ -18,13 +22,13 @@ HEADERS = {
     "Authorization": f"Bearer {GROQ_API_KEY}",
     "Content-Type": "application/json",
 }
+system_msg = system_msg()               
 
 console = Console()
 
 
 def summarize_code(path: str, max_files=10):
     summaries = []
-    
     console.clear()
     layout = Layout()
     layout.split_column(
@@ -40,25 +44,13 @@ def summarize_code(path: str, max_files=10):
         padding=(1, 2)
     )
     console.print(header_panel)
-    
-    ignore_patterns = get_gitignore_folders_files()
-    console.print(f"[dim]Loaded {len(ignore_patterns)} ignore patterns (including defaults)[/dim]")
-    python_files = []
-    print([f for f in os.walk(path) if f not in ignore_patterns])
 
-    exit(1)
-    for root, files in os.walk(path):
-        for file in files:
-            if file.endswith(".py"):
-                file_path = os.path.join(root, file)
-                if file_path not in ignore_patterns:
-                    python_files.append(file_path)
-    
-    total_files = min(len(python_files), max_files)
-    
-    if total_files == 0:
+    files_to_keep = list_non_ignored_files()
+    console.print(f"[dim]Loaded {len(files_to_keep)} files to analyze[/dim]")
+
+    if not files_to_keep:
         error_panel = Panel(
-            f"No Python files found in the specified path.\nIgnored {ignored_files} files based on patterns.",
+            f"No files found in the specified path.\nIgnored {len(files_to_keep)} files based on patterns.",
             title="Warning",
             border_style="yellow",
             box=box.ROUNDED,
@@ -66,16 +58,7 @@ def summarize_code(path: str, max_files=10):
         )
         console.print(error_panel)
         return summaries
-    
-    stats_columns = Columns([
-        Panel(f"[cyan bold]{len(python_files)}[/]\n[blue]Found Files", border_style="blue", padding=(1, 2)),
-        Panel(f"[yellow bold]{ignored_files}[/]\n[blue]Ignored Files", border_style="blue", padding=(1, 2)),
-        Panel(f"[green bold]{total_files}[/]\n[blue]To Analyze", border_style="blue", padding=(1, 2)),
-        Panel(f"[magenta bold]{path}[/]\n[blue]Project Path", border_style="blue", padding=(1, 2))
-    ], expand=True)
-    
-    console.print(stats_columns)
-    console.print()
+
     
     with Progress(
         SpinnerColumn(style="green"),
@@ -86,22 +69,21 @@ def summarize_code(path: str, max_files=10):
         console=console,
         expand=True
     ) as progress:
-        task = progress.add_task("Analyzing files...", total=total_files)
-        
-        for i, file_path in enumerate(python_files[:max_files]):
+        task = progress.add_task("Analyzing files...", total=len(files_to_keep))
+
+        for i, file_path in enumerate(files_to_keep[:max_files]):
             file = os.path.basename(file_path)
             relative_path = os.path.relpath(file_path, path)
             progress.update(task, description=f"� Processing: {file}")
 
             with open(file_path, "r", encoding='utf-8', errors='ignore') as f:
                 content = f.read()[:3000]
-                prompt = f"Summarize what this Python file does:\n\n{content}"
-                
+                prompt_message = prompt(content) 
                 payload = {
                     "model": "meta-llama/llama-4-scout-17b-16e-instruct",  
                     "messages": [
-                        {"role": "system", "content": "You are a code analysis assistant. Provide only a concise, direct summary of what the Python file does. Do not show your thinking process or reasoning steps. Just give the final summary in 1-3 sentences."},
-                        {"role": "user", "content": prompt}
+                        {"role": "system", "content": system_msg},
+                        {"role": "user", "content": prompt_message}
                     ],
                     "temperature": 0.2
                 }
