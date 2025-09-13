@@ -1,8 +1,6 @@
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import requests
-from config.settings import GROQ_API_URL, HEADERS
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
@@ -16,13 +14,15 @@ from prompt.ai_summary_prompt import generate_ai_summary_prompt as prompt
 from prompt.ai_summary_prompt import system_message as system_msg
 from llm.client import build_payload
 from llm.client import send_request
-system_msg = system_msg()               
 
+system_msg = system_msg()               
 console = Console()
 
 
 def summarize_code(path: str, max_files=10):
     summaries = []
+    files_to_keep = list_non_ignored_files(path)
+
     console.clear()
     layout = Layout()
     layout.split_column(
@@ -37,9 +37,8 @@ def summarize_code(path: str, max_files=10):
         box=box.DOUBLE,
         padding=(1, 2)
     )
+    
     console.print(header_panel)
-
-    files_to_keep = list_non_ignored_files(path)
     console.print(f"[dim]Loaded {len(files_to_keep)} files to analyze[/dim]")
 
     if not files_to_keep:
@@ -74,7 +73,6 @@ def summarize_code(path: str, max_files=10):
 
                 try:
                     data = send_request(payload)
-                    
                     summary = data["choices"][0]["message"]["content"].strip()
                     summaries.append((file_path, summary))
 
