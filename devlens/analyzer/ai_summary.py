@@ -29,14 +29,13 @@ def summarize_code(path: str, max_files=10):
         Layout(name="header"),
         Layout(name="body", ratio=8)
     )
-    
-    # styling
+
+    # start styling
     header_text = Text("DevLens - AI Code Analyzer", style="bold white on blue")
     header_panel = Panel(Align.center(header_text), border_style="blue", box=box.DOUBLE, padding=(1, 2))
     console.print(header_panel)
     console.print(f"[dim]Loaded {len(files_to_keep)} files to analyze[/dim]")
 
-    # start styling
     if not files_to_keep:
         error_panel = Panel(
             f"No files found in the specified path.\nIgnored {len(files_to_keep)} files based on patterns.",
@@ -69,7 +68,7 @@ def summarize_code(path: str, max_files=10):
             # end styling
             with open(file_path, "r", encoding='utf-8', errors='ignore') as f:
                 content = f.read()[:3000]
-                prompt_message = prompt(content) 
+                prompt_message = prompt(content, file_path) 
                 payload = build_payload(system_msg, prompt_message)
 
                 try:
