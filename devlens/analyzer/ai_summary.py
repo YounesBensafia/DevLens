@@ -30,17 +30,13 @@ def summarize_code(path: str, max_files=10):
         Layout(name="body", ratio=8)
     )
     
+    # styling
     header_text = Text("DevLens - AI Code Analyzer", style="bold white on blue")
-    header_panel = Panel(
-        Align.center(header_text),
-        border_style="blue",
-        box=box.DOUBLE,
-        padding=(1, 2)
-    )
-    
+    header_panel = Panel(Align.center(header_text), border_style="blue", box=box.DOUBLE, padding=(1, 2))
     console.print(header_panel)
     console.print(f"[dim]Loaded {len(files_to_keep)} files to analyze[/dim]")
 
+    # start styling
     if not files_to_keep:
         error_panel = Panel(
             f"No files found in the specified path.\nIgnored {len(files_to_keep)} files based on patterns.",
@@ -51,7 +47,9 @@ def summarize_code(path: str, max_files=10):
         )
         console.print(error_panel)
         return summaries
+    # end styling
 
+    # start styling
     with Progress(
         SpinnerColumn(style="green"),
         TextColumn("[bold green]{task.description}"),
@@ -61,11 +59,14 @@ def summarize_code(path: str, max_files=10):
         console=console,
         expand=True
     ) as progress:
+        # start styling
         task = progress.add_task("Analyzing files...", total=len(files_to_keep))
+        # end styling
 
         for file_path in files_to_keep[:max_files]:
+            # start styling
             progress.update(task, description=f"Processing: {file_path}")
-
+            # end styling
             with open(file_path, "r", encoding='utf-8', errors='ignore') as f:
                 content = f.read()[:3000]
                 prompt_message = prompt(content) 
@@ -76,9 +77,9 @@ def summarize_code(path: str, max_files=10):
                     summary = data["choices"][0]["message"]["content"].strip()
                     summaries.append((file_path, summary))
 
+                    # start styling
                     content_text = Text(summary)
                     content_text.stylize("white")
-                    
                     result_panel = Panel(
                         content_text,
                         title=f"{file_path}",
@@ -89,11 +90,12 @@ def summarize_code(path: str, max_files=10):
                         padding=(1, 2)
                     )
                     console.print(result_panel)
-                    
+                    # end styling
+
                 except Exception as e:
                     error_msg = f"❌ Analysis failed: {str(e)}"
                     summaries.append((file_path, error_msg))
-
+                    # start styling
                     error_panel = Panel(
                         Text(error_msg, style="red"),
                         title=f"⚠️  {file_path}",
@@ -104,14 +106,15 @@ def summarize_code(path: str, max_files=10):
                         padding=(1, 2)
                     )
                     console.print(error_panel)
-                
                 progress.advance(task)
     
     console.print()
-    
+    # end styling
+
     success_count = len([s for s in summaries if not s[1].startswith('❌')])
     error_count = len(summaries) - success_count
-    
+
+    # start styling
     final_columns = Columns([
         Panel(f"[green bold]{success_count}[/]\n[white]Successful", border_style="green", padding=(1, 2)),
         Panel(f"[red bold]{error_count}[/]\n[white]Errors", border_style="red", padding=(1, 2)),
@@ -127,5 +130,5 @@ def summarize_code(path: str, max_files=10):
     )
     console.print()
     console.print(footer)
-    
+    # end styling
     return summaries
