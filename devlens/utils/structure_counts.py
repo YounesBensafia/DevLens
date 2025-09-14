@@ -1,3 +1,4 @@
+tree -L 3 -I "$(git check-ignore *)"
 import os
 from pathlib import Path
 

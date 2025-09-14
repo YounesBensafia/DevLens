@@ -1,132 +1,75 @@
 # DevLens
+[![GitHub License](https://img.shields.io/github/license/your-username/DevLens)](https://github.com/your-username/DevLens/blob/main/LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/your-username/DevLens)](https://github.com/your-username/DevLens/releases)
+[![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
+[![Codecov](https://codecov.io/gh/your-username/DevLens/graph/badge.svg?token=your-token)](https://codecov.io/gh/your-username/DevLens)
 
-<img width="100%" src="https://github.com/user-attachments/assets/1883a4eb-2892-4e9d-81cb-dc54cee2b0ea"/>
+## Project Description
+DevLens is a cutting-edge, open-source project analysis tool designed to provide developers with deep insights into their projects. It leverages advanced technologies, including large language models (LLMs), to analyze project structures, dependencies, and code quality. DevLens aims to streamline project maintenance, enhance code readability, and facilitate better decision-making for developers.
 
-<h2 align="center">How to Use It</h2>
-<p align="center"><i>Quick guide to start analyzing your codebase</i></p>
-
-<p align="center">
-  <img width="100%" src="https://github.com/user-attachments/assets/45b40043-b9a3-42b0-835e-9f26c68bb63f" />
-</p>
-
----
-
-<h2 align="center">Illuminate Your Codebase with Powerful Analysis</h2>
-<p align="center"><i>AI-powered insights & detailed statistics for your repository</i></p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/de411846-3a3a-410d-9061-d9b69a5920a5" width="48%" />
-  <img src="https://github.com/user-attachments/assets/09d04c0e-8970-4958-8573-b5c1901743ef" width="48%" />
-</p>
-
----
-<h2 align="center">Complete Codebase Insights</h2>
-<p align="center"><i>Total files, lines of code, directories, language breakdown, and detailed project structure</i></p>
-
-<p align="center">
-
-  <img src="https://github.com/user-attachments/assets/e86c5b42-8894-4768-af8f-082604353748" width="48%" />
-  <img src="https://github.com/user-attachments/assets/54aeefb3-67bb-429e-b8c0-5e7fe729d6e8" width="48%" />
-</p>
-
----
-<h2 align="center">Generate a Personalized README.md for Your Repository</h2>
-<p align="center"><i>Create a custom template to your project</i></p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/3b8d85e3-ba41-4897-a8f5-7946afd1bc8e" width="100%"/>
-</p>
-
----
-<h2 align="center">Identify Unused Files & Imports with Issue Breakdown</h2>
-<p align="center"><i>Detect empty files, unused imports, and get a full overview of project issues</i></p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/3ca5b282-1515-4383-a7b2-e8384f770b3b" width="48%" />
-  <img src="https://github.com/user-attachments/assets/29052182-1961-428d-94eb-0c9017026d5f" width="48%" />
-</p>
-
-## Overview
-
-DevLens delivers comprehensive insights into your codebase, helping teams understand, document, and optimize their software projects with ease.
-
-## Key Features
-
-- **Language Breakdown**: Visualize programming languages distribution (done)
-- **Code Metrics**: Analyze lines of code and structural patterns (done)
-- **Dependency Mapping**: Generate interactive graphs of module relationships (not yet)
-- **AI-Powered Documentation**: Get summaries of files, functions, and classes (done)
-- **Dead Code Detection**: Identify unused code to improve maintainability (done)
-- **README Generator**: Create comprehensive documentation automatically (done)
-
-## 🚀 DevLens CLI Commands
-
-| Command                   | Description                                                                                                                                                           | Status   |
-|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
-| `devlens summary PATH`    | 📊 Generates a comprehensive summary of the project, including **total files**, **total lines**, **directory count**, **language breakdown**, and **project structure**. | ✅ Done   |
-| `devlens analyse PATH`    | 🤖 Uses **meta-llama/llama-4-scout-17b-16e-instruct** to analyze each file and provide a high-level summary of what it does.                                             | ✅ Done   |
-| `devlens readme PATH`     | 📝 Automatically creates a professional **README.md** tailored to the project's structure and content.                                                                | ✅ Done   |
-| `devlens empty PATH`      | 🧹 Scans the project and lists all **empty files** and a full **file inventory**.                                                                                      | ✅ Done   |
-| `devlens deadcode PATH`   | 🧠 Detects **unused functions** across the repository to help clean up dead code.                                                                                      | ✅ Done    |
-| `devlens graph PATH`      | 📈 Visualizes **module relationships** and project architecture through interactive graphs.                                                                            | ❌ Not yet |
-
----
-
-````markdown
-# Devlens
-
-Devlens is a developer productivity tool that provides a CLI for project management and utilities.
-
----
+## Features
+- **Project Analysis**: Analyzes project structures, including directories, files, and dependencies.
+- **Code Quality Insights**: Identifies dead code, summarizes codebases, and provides technical stack overviews.
+- **Automated README Generation**: Generates detailed README files for projects, enhancing documentation and discoverability.
+- **Large Language Model Integration**: Utilizes LLMs for advanced analysis, including AI-generated summaries and insights.
 
 ## Installation
+To install DevLens, ensure you have Python 3.10 or higher installed on your system. Then, follow these steps:
 
-Clone the repository and install it with:
-
-```bash
-pip install .
-````
-
----
-
-## Environment Configuration
-
-Create a `.env` file (include your Groq API key:) at the root of your project.
-You can use `.env.example` as a reference.
-
----
-
-## Add Devlens to PATH (Windows)
-
-To make `devlens` accessible from anywhere in the terminal:
-
-1. Press **Start** → search for **Environment Variables** → open **"Edit the system environment variables"**.
-
-2. Click **Environment Variables…**.
-
-3. Under **User variables**, select **Path** → **Edit**.
-
-4. Click **New** and paste:
-
-   ```
-   C:\Users\<YourUser>\AppData\Roaming\Python\Python313\Scripts
-   ```
-
-5. Open a new terminal and run:
-
+1. Clone the repository:
    ```bash
-   devlens --help
+   git clone https://github.com/your-username/DevLens.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd DevLens
+   ```
+3. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+   or if you're using `pyproject.toml`:
+   ```bash
+   pip install .
    ```
 
-   You should see the CLI help menu.
+## Usage Examples
+### Analyzing a Project
+To analyze a project, navigate to the project directory and run:
+```bash
+python main.py analyze --path /path/to/your/project
+```
+### Generating a README
+To generate a README for your project, use:
+```bash
+python main.py readme --path /path/to/your/project
+```
 
----
+## Project Structure Overview
+The DevLens project is structured as follows:
+- `devlens/`: Core package containing the analysis and rendering modules.
+  - `analyzer/`: Module for analyzing different aspects of a project.
+  - `cli.py`: Command-line interface for interacting with DevLens.
+  - `llm/`: Module for interacting with large language models.
+  - `prompt/`: Prompts for LLM interactions.
+  - `render/`: Module for rendering analysis results.
+  - `utils/`: Utility functions for project analysis.
+- `tests/`: Unit tests and integration tests for DevLens.
+- `main.py`: Entry point for running DevLens from the command line.
 
-## Troubleshooting
+## Technologies Used
+- **Python**: Primary programming language.
+- **Large Language Models (LLMs)**: For advanced analysis and insights.
+- **Pytest**: For unit testing and integration testing.
 
-* **`'devlens' is not recognized`**
-  Ensure the `Scripts` folder is correctly added to your PATH and restart your terminal.
+## Contributing Guidelines
+Contributions to DevLens are welcome! To contribute:
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Submit a pull request with a detailed description of your changes.
 
+## License
+DevLens is licensed under the [MIT License](https://opensource.org/licenses/MIT). See [LICENSE](https://github.com/your-username/DevLens/blob/main/LICENSE) for details.
 
-⚠️ **Note:** It's available for **Python projects only**... for now 🤫.
-DevLens helps engineering teams understand complex codebases quickly and efficiently.
+## Acknowledgements
+Special thanks to all contributors and the open-source community for their support and contributions to DevLens.

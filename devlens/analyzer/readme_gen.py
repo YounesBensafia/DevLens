@@ -1,7 +1,6 @@
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import requests
 from utils.structure_the_project import list_non_ignored_files
 from rich.console import Console
 from rich.panel import Panel
@@ -18,6 +17,7 @@ from utils.repo_file_finder import gather_files
 from prompt.readme_gen_prompt import generate_readme_prompt
 from prompt.readme_gen_prompt import project_context, system_message
 from llm.client import build_payload, send_request
+from utils.get_tree_project import git_tree
 
 sys_message = system_message()
 console = Console()
@@ -55,16 +55,16 @@ def generate_readme() -> str:
         progress.advance(analyze_task, 40)
 
     git_root_name, git_root_abs = get_git_root()
-    git_structure = list_non_ignored_files(git_root_abs)
+    get_tree = git_tree(git_root_abs)
     files_info = gather_files(git_root_abs)
 
     key_files = files_info[0]
     requirements_files = files_info[1]
     config_files = files_info[2]
 
-    context_project = project_context(git_root_name, git_structure, key_files, requirements_files, config_files)
-    print(context_project)
-    exit(0)
+    context_project = project_context(git_root_name, get_tree, key_files, requirements_files, config_files)
+    # print(context_project)
+    # exit(0)
     prompt = generate_readme_prompt(context_project)
     payload = build_payload(sys_message, prompt)
     
