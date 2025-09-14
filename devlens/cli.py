@@ -17,9 +17,9 @@ def stats(path: str = typer.Argument(".", show_default=True)):
     display_code_summary(path)
 
 @app.command()
-def readme(path: str = typer.Argument(".", show_default=True)):
+def readme():
     """Generate a professional README.md file"""
-    generate_readme(path)
+    generate_readme()
 
 @app.command()
 def deadcode(

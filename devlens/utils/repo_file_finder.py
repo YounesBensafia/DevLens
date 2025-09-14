@@ -17,10 +17,5 @@ def gather_files(path: str = "."):
             elif file_lower in CONFIG_FILES:
                 config_files.append(file)
 
-    return {
-        "key_files": key_files,
-        "requirements_files": requirements_files,
-        "config_files": config_files
-    }
+    return key_files, requirements_files, config_files
 
-print(gather_files())

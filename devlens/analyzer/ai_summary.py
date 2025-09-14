@@ -15,7 +15,7 @@ from prompt.ai_summary_prompt import system_message as system_msg
 from llm.client import build_payload
 from llm.client import send_request
 
-system_msg = system_msg()               
+sys_message = system_msg()               
 console = Console()
 
 

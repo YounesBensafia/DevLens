@@ -70,3 +70,5 @@ CONFIG_FILES = [
     "webpack.config.js",
     "vite.config.js",
 ]
+
+MAX_TOKENS = 3000

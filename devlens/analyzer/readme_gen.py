@@ -2,7 +2,6 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import requests
-from config.settings import GROQ_API_KEY
 from utils.structure_the_project import list_non_ignored_files
 from rich.console import Console
 from rich.panel import Panel
@@ -15,11 +14,15 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeEl
 from config.settings import GROQ_API_URL, HEADERS
 from utils.get_git_root import get_git_root
 from utils.structure_the_project import list_non_ignored_files
+from utils.repo_file_finder import gather_files
+from prompt.readme_gen_prompt import generate_readme_prompt
+from prompt.readme_gen_prompt import project_context, system_message
+from llm.client import build_payload, send_request
 
+sys_message = system_message()
 console = Console()
 
-
-def generate_readme(path: str):
+def generate_readme(path: str = ".") -> str:
     """Generate a comprehensive README.md file for the project"""
     
     console.clear()
@@ -53,54 +56,15 @@ def generate_readme(path: str):
     
     git_root_name = get_git_root()
     git_structure = list_non_ignored_files(path)
-    # print(git_structure)
-    # exit(0)
-    
-    key_files = []
-    requirements_files = []
-    config_files = []
-    
-    project_context = f"""
-    Project Name: {git_root_name}
-    Languages: {git_structure}
-    Total Files: {len(git_structure)}
-    Key Files: {', '.join(key_files) if key_files else 'None detected'}
-    Requirements Files: {', '.join(requirements_files) if requirements_files else 'None detected'}
-    Config Files: {', '.join(config_files) if config_files else 'None detected'}
-    """
-    print(project_context)
-    exit(0)
-    prompt = f"""Create a professional README.md file for this project. Based on the project analysis:
+    files_info = gather_files(path)
 
-{project_context}
+    key_files = files_info[0]
+    requirements_files = files_info[1]
+    config_files = files_info[2]
 
-Generate a complete README.md with:
-1. Project title and description
-2. Features section
-3. Installation instructions
-4. Usage examples
-5. Project structure overview
-6. Technologies used
-7. Contributing guidelines
-8. License section
-
-Make it professional, well-formatted with proper markdown, and include relevant badges if appropriate. The README should be comprehensive but concise."""
-
-    payload = {
-        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
-        "messages": [
-            {
-                "role": "system", 
-                "content": "You are a technical documentation expert. Create professional, well-structured README.md files with proper markdown formatting."
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        "temperature": 0.7,
-        "max_tokens": 2048
-    }
+    context_project = project_context(git_root_name, git_structure, key_files, requirements_files, config_files)
+    prompt = generate_readme_prompt(context_project)
+    payload = build_payload(sys_message, prompt)
     
     try:
         with Progress(
@@ -113,15 +77,15 @@ Make it professional, well-formatted with proper markdown, and include relevant 
             api_task = progress.add_task("Generating README content...", total=100)
             progress.advance(api_task, 30)
             
-            response = requests.post(GROQ_API_URL, headers=HEADERS, json=payload)
             progress.advance(api_task, 50)
-            
-            response.raise_for_status()
-            data = response.json()
+
+            data = send_request(payload)
             readme_content = data["choices"][0]["message"]["content"].strip()
             progress.advance(api_task, 20)
         
         readme_path = os.path.join(path, "README.md")
+        print(f"Writing README to {readme_path}")
+        # exit(0)
         with open(readme_path, "w", encoding="utf-8") as f:
             f.write(readme_content)
         
