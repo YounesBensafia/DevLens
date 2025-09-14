@@ -73,3 +73,20 @@ CONFIG_FILES = [
 ]
 
 MAX_TOKENS = 3000
+
+SUPPORTED_FILE_TYPES = {
+    ".py": "Python",
+    ".js": "JavaScript",
+    ".ts": "TypeScript",
+    ".java": "Java",
+    ".c": "C",
+    ".cpp": "C++",
+    ".go": "Go",
+    ".rb": "Ruby",
+    ".php": "PHP",
+    ".html": "HTML",
+    ".css": "CSS",
+    ".json": "JSON",
+    ".yaml": "YAML",
+    ".md": "Markdown",
+    }

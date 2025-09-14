@@ -1,7 +1,6 @@
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import questionary
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
@@ -17,7 +16,9 @@ from prompt.readme_gen_prompt import project_context, system_message
 from llm.client import build_payload, send_request
 from utils.get_tree_project import git_tree
 from utils.has_readme import has_readme
-from utils.questionary_readme import confirm_readme_rewrite
+from devlens.cli.questionary_readme import confirm_readme_rewrite
+
+# TODO: Support non-Git folders
 
 sys_message = system_message()
 console = Console()

@@ -37,3 +37,17 @@ def git_tree(path: str, level: int = 3) -> str:
         return f"Git error: {e.stderr}"
 
 
+# Example output:
+# devlens
+# ├── analyzer
+# │   ├── ai_summary.py
+# │   ├── deadcode.py
+# │   ├── dependencies.py
+# │   ├── readme_gen.py
+# │   ├── summary.py
+# │   ├── tech_stack.py
+# │   └── test.js
+# ├── cli
+# │   ├── cli.py
+# │   └── questionary_readme.py
+#

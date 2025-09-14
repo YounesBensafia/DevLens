@@ -11,4 +11,3 @@ def list_non_ignored_files(folder="."):
     )
     files = result.stdout.strip().split("\n")
     return [str(folder / f) for f in files if f]
-

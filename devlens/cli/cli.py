@@ -17,6 +17,7 @@ def stats(path: str = typer.Argument(".", show_default=True)):
     display_code_summary(path)
 
 @app.command()
+# FIXME: more tests for this function
 def readme():
     """Generate a professional README.md file"""
     generate_readme()

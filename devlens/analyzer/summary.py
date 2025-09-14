@@ -1,65 +1,23 @@
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
 from rich.align import Align
 from rich.layout import Layout
-from rich.style import Style
-from rich.tree import Tree
 from rich.columns import Columns
 from rich import box
-import os
-from pathlib import Path
-from utils.structure_counts import get_gitignore_patterns
+from config.settings import SUPPORTED_FILE_TYPES
+from utils.get_tree_project import git_tree
 
 console = Console()
 
-SUPPORTED_FILE_TYPES = [".py", ".js", ".ts", ".java", ".cpp", ".html", ".css", ".json", ".md", ".txt", ".yml", ".yaml", ".xml"]
 
 def count_lines_by_language(path: str):
-    summary = {}
-    file_count = {}
-    patterns, gitignore_path = get_gitignore_patterns(path)
-    for root, _, files in os.walk(path):
-        for file in files:
-            if file in patterns:
-                exit()
-            ext = os.path.splitext(file)[1].lower()
-            if ext in SUPPORTED_FILE_TYPES:
-                lang = ext.lstrip(".")
-                summary.setdefault(lang, 0)
-                file_count.setdefault(lang, 0)
-                file_count[lang] += 1
-                
-                try:
-                    with open(os.path.join(root, file), "r", errors="ignore") as f:
-                        lines = sum(1 for line in f if line.strip())
-                        summary[lang] += lines
-                except:
-                    continue
-                    
-    return summary, file_count
+    """Count lines of code by programming language in the given path"""
 
-def get_project_structure(path: str, max_depth=3):
-    structure = {}
-    
-    for root, dirs, files in os.walk(path):
-        depth = root.replace(path, '').count(os.sep)
-        if depth >= max_depth:
-            dirs[:] = [] 
-            continue
-            
-        rel_path = os.path.relpath(root, path)
-        if rel_path == '.':
-            rel_path = 'root'
-            
-        structure[rel_path] = {
-            'files': len(files),
-            'dirs': len(dirs)
-        }
-    
-    return structure
 
 def display_code_summary(path: str):
     """Display a comprehensive code summary with professional styling"""
@@ -82,8 +40,8 @@ def display_code_summary(path: str):
     console.print()
     
     line_counts, file_counts = count_lines_by_language(path)
-    structure = get_project_structure(path)
-    
+    project_structure = git_tree(path, level=3)
+
     if not line_counts:
         error_panel = Panel(
             "No supported code files found in the specified path.",
