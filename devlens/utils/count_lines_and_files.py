@@ -1,10 +1,11 @@
+from importlib.resources import files
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config.settings import SUPPORTED_FILE_TYPES
 from utils.structure_the_project import list_non_ignored_files
 
-files = []
+files_by_language = []
 
 def get_language(file_path: str) -> str:
     split_name = os.path.splitext(file_path)
@@ -25,8 +26,8 @@ def count_lines_by_language(files: list[str]):
                 content = get_content_of_file(file)
                 if content:
                     line_count = count_lines_in_file(content)
-                    files.append((line_count, lang))
-    return files
+                    files_by_language.append((lang, line_count))
+    return files_by_language
 
 def get_content_of_file(file_path: str) -> str:
     with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
@@ -38,5 +39,26 @@ def get_content_of_file(file_path: str) -> str:
             if not line.startswith('#') and line:
                 non_comment_lines.append(line)
         return '\n'.join(non_comment_lines)
+    
+def classify_files_by_language(files: list[str]) -> dict[str, list[str]]:
+    sum = 0
+    classified_files = {lang: [sum] for lang in SUPPORTED_FILE_TYPES.values()}
+    for file in files:
+        lang, line_count = file
+        if lang in classified_files:
+            classified_files[lang][0] += line_count
+        else:
+            classified_files[lang] = [line_count]
+    return classified_files
 
-print(count_lines_by_language(list_non_ignored_files("devlens")))
+
+def count_lines_by_language_in_project(path: str) -> dict[str, int]:
+    all_files = list_non_ignored_files(path)
+    classified_files = count_lines_by_language(all_files)
+    classified_files = classify_files_by_language(classified_files)
+    classified_files_copy = classified_files.copy()
+    for file in classified_files:
+        if classified_files_copy[file] == [0]:
+            del classified_files_copy[file]
+    return classified_files_copy
+

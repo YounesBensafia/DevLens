@@ -11,17 +11,13 @@ from rich.columns import Columns
 from rich import box
 from config.settings import SUPPORTED_FILE_TYPES
 from utils.get_tree_project import git_tree
+from utils.count_lines_and_files import count_lines_by_language_in_project
+from utils.structure_the_project import list_non_ignored_files
 
 console = Console()
 
-
-def count_lines_by_language(path: str):
-    """Count lines of code by programming language in the given path"""
-
-
 def display_code_summary(path: str):
     """Display a comprehensive code summary with professional styling"""
-    
     console.clear()
     layout = Layout()
     layout.split_column(
@@ -38,11 +34,10 @@ def display_code_summary(path: str):
     )
     console.print(header_panel)
     console.print()
-    
-    line_counts, file_counts = count_lines_by_language(path)
+    line_counts_by_language = count_lines_by_language_in_project(path)
     project_structure = git_tree(path, level=3)
 
-    if not line_counts:
+    if line_counts_by_language is None:
         error_panel = Panel(
             "No supported code files found in the specified path.",
             title="Warning",
@@ -52,8 +47,9 @@ def display_code_summary(path: str):
         )
         console.print(error_panel)
         return
-    
-    total_files = sum(file_counts.values())
+    total_files = sum(list_non_ignored_files(path).__len__() for _ in [0])
+    print(total_files)
+    exit(0)
     total_lines = sum(line_counts.values())
     
     stats_columns = Columns([
