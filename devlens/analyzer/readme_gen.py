@@ -1,7 +1,9 @@
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import requests
 from config.settings import GROQ_API_KEY
-from analyzer.summary import count_lines_by_language, get_project_structure
+from utils.structure_the_project import list_non_ignored_files
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
@@ -10,14 +12,12 @@ from rich.layout import Layout
 from rich.columns import Columns
 from rich import box
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
+from config.settings import GROQ_API_URL, HEADERS
+from utils.get_git_root import get_git_root
+from utils.structure_the_project import list_non_ignored_files
 
 console = Console()
 
-GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-HEADERS = {
-    "Authorization": f"Bearer {GROQ_API_KEY}",
-    "Content-Type": "application/json",
-}
 
 def generate_readme(path: str):
     """Generate a comprehensive README.md file for the project"""
@@ -47,38 +47,29 @@ def generate_readme(path: str):
         analyze_task = progress.add_task("Analyzing project structure...", total=100)
         progress.advance(analyze_task, 30)
         
-        line_counts, file_counts = count_lines_by_language(path)
         progress.advance(analyze_task, 30)
         
-        structure = get_project_structure(path)
         progress.advance(analyze_task, 40)
     
-    project_name = os.path.basename(os.path.abspath(path))
+    git_root_name = get_git_root()
+    git_structure = list_non_ignored_files(path)
+    # print(git_structure)
+    # exit(0)
     
     key_files = []
     requirements_files = []
     config_files = []
     
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            file_lower = file.lower()
-            if file_lower in ['package.json', 'setup.py', 'pyproject.toml', 'cargo.toml', 'pom.xml']:
-                key_files.append(file)
-            elif file_lower in ['requirements.txt', 'package-lock.json', 'yarn.lock', 'pipfile']:
-                requirements_files.append(file)
-            elif file_lower in ['config.py', '.env', 'settings.py', 'docker-compose.yml', 'dockerfile']:
-                config_files.append(file)
-    
     project_context = f"""
-    Project Name: {project_name}
-    Languages Found: {', '.join(line_counts.keys())}
-    Total Files: {sum(file_counts.values())}
-    Total Lines: {sum(line_counts.values())}
+    Project Name: {git_root_name}
+    Languages: {git_structure}
+    Total Files: {len(git_structure)}
     Key Files: {', '.join(key_files) if key_files else 'None detected'}
     Requirements Files: {', '.join(requirements_files) if requirements_files else 'None detected'}
     Config Files: {', '.join(config_files) if config_files else 'None detected'}
     """
-    
+    print(project_context)
+    exit(0)
     prompt = f"""Create a professional README.md file for this project. Based on the project analysis:
 
 {project_context}
