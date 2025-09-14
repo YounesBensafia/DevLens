@@ -22,7 +22,7 @@ from llm.client import build_payload, send_request
 sys_message = system_message()
 console = Console()
 
-def generate_readme(path: str = ".") -> str:
+def generate_readme() -> str:
     """Generate a comprehensive README.md file for the project"""
     
     console.clear()
@@ -53,18 +53,21 @@ def generate_readme(path: str = ".") -> str:
         progress.advance(analyze_task, 30)
         
         progress.advance(analyze_task, 40)
-    
-    git_root_name = get_git_root()
-    git_structure = list_non_ignored_files(path)
-    files_info = gather_files(path)
+
+    git_root_name, git_root_abs = get_git_root()
+    git_structure = list_non_ignored_files(git_root_abs)
+    files_info = gather_files(git_root_abs)
 
     key_files = files_info[0]
     requirements_files = files_info[1]
     config_files = files_info[2]
 
     context_project = project_context(git_root_name, git_structure, key_files, requirements_files, config_files)
+    print(context_project)
+    exit(0)
     prompt = generate_readme_prompt(context_project)
     payload = build_payload(sys_message, prompt)
+    
     
     try:
         with Progress(
@@ -82,10 +85,10 @@ def generate_readme(path: str = ".") -> str:
             data = send_request(payload)
             readme_content = data["choices"][0]["message"]["content"].strip()
             progress.advance(api_task, 20)
-        
-        readme_path = os.path.join(path, "README.md")
+
+        readme_path = os.path.join(git_root_abs, "README.md")
         print(f"Writing README to {readme_path}")
-        # exit(0)
+
         with open(readme_path, "w", encoding="utf-8") as f:
             f.write(readme_content)
         

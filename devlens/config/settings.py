@@ -18,7 +18,6 @@ HEADERS = {
 KEY_FILES = [
     "package.json",
     "setup.py",
-    "pyproject.toml",
     "cargo.toml",
     "pom.xml",
     "build.gradle",          
@@ -30,11 +29,13 @@ KEY_FILES = [
     "Gemfile",               
     "go.mod",                
     "go.sum",                
-    "Rakefile",               
+    "Rakefile",
+    "uv.lock",            
 ]
 
 REQUIREMENTS_FILES = [
     "requirements.txt",
+    "pyproject.toml",
     "requirements-dev.txt",  
     "package-lock.json",
     "yarn.lock",

@@ -8,6 +8,6 @@ def get_git_root(path="") -> str | None:
         )
         repo_name_abs = result.stdout.strip()
         repo_name = repo_name_abs.split('/')[-1]
-        return repo_name
+        return repo_name, repo_name_abs
     except subprocess.CalledProcessError:
-        return None
+        return None, None
