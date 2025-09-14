@@ -90,3 +90,11 @@ SUPPORTED_FILE_TYPES = {
     ".yaml": "YAML",
     ".md": "Markdown",
     }
+
+BOLD_GREEN = (".py")
+BOLD_YELLOW = (".js", ".ts", ".jsx", ".tsx")
+BOLD_MAGENTA = (".json", ".toml", ".yaml", ".yml")
+BOLD_BLUE = (".md", ".txt")
+
+LEVEL_OF_TREE = 3
+
