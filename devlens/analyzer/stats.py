@@ -18,6 +18,8 @@ from utils.get_size_project import get_logical_size_of_the_project
 
 console = Console()
 
+# TODO: to enhace with more stats
+
 def display_code_summary(path: str):
     """Display a comprehensive code summary with professional styling"""
     console.clear()

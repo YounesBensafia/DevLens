@@ -15,7 +15,7 @@ from prompt.readme_gen_prompt import generate_readme_prompt
 from prompt.readme_gen_prompt import project_context, system_message
 from llm.client import build_payload, send_request
 from utils.get_tree_project import git_tree
-from utils.questionary_readme import confirm_readme_rewrite
+from devlens.utils.questionary_file import confirm_readme_rewrite
 
 # TODO: Support non-Git folders
 
