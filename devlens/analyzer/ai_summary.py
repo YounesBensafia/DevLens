@@ -9,7 +9,7 @@ from rich.align import Align
 from rich.layout import Layout
 from rich.columns import Columns
 from rich import box
-from devlens.utils.structure_the_project import list_non_ignored_files
+from utils.structure_the_project import list_non_ignored_files
 from prompt.ai_summary_prompt import generate_ai_summary_prompt as prompt
 from prompt.ai_summary_prompt import system_message as system_msg
 from llm.client import build_payload
