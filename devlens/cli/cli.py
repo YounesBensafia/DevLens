@@ -1,6 +1,6 @@
 import typer
 from analyzer.ai_summary import summarize_code
-from analyzer.summary import display_code_summary
+from devlens.analyzer.stats import display_code_summary
 from analyzer.readme_gen import generate_readme
 from analyzer.deadcode import find_dead_files
 

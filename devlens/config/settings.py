@@ -89,6 +89,8 @@ SUPPORTED_FILE_TYPES = {
     ".json": "JSON",
     ".yaml": "YAML",
     ".md": "Markdown",
+    ".jsx": "JSX",
+    ".tsx": "TSX",
     }
 
 BOLD_GREEN = (".py")
