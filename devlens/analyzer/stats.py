@@ -14,6 +14,7 @@ from utils.get_tree_project import git_tree_with_styles
 from utils.count_lines_and_files import count_lines_by_language_in_project
 from utils.structure_the_project import list_non_ignored_files
 from utils.count_folders import count_directories
+from utils.get_size_project import get_logical_size_of_the_project
 
 console = Console()
 
@@ -104,5 +105,12 @@ def display_code_summary(path: str):
         f"Analysis complete! Found [green]{total_files}[/green] files with [blue]{total_lines:,}[/blue] lines of code across [cyan]{len(line_counts_by_language)}[/cyan] languages (Markdown + Programming Languages).",
         title="Summary",
         border_style="green",
+        padding=(1, 2)
+    ))
+    console.print()
+    console.print(Panel(
+        f"Logical Size of the Project: [bold yellow]{get_logical_size_of_the_project(path)} MB[/bold yellow]",
+        title="Project Size",
+        border_style="yellow",
         padding=(1, 2)
     ))
