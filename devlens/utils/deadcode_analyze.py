@@ -1,5 +1,19 @@
 import ast
 
+def analyze_imports(issues, tree, has_functions, has_classes, has_imports):
+    if has_imports and not has_functions and not has_classes:
+        non_import_code = []
+        for node in tree.body:
+            if not isinstance(node, (ast.Import, ast.ImportFrom)):
+                non_import_code.append(node)
+        if not non_import_code:
+            issues.append(("imports_only", "File contains only imports"))
+
+def read_file_content(file_path):
+    with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+        content = f.read()
+    return content
+
 def check_code_structure(content, tree):
     has_functions = False
     has_classes = False
@@ -25,23 +39,26 @@ def check_code_structure(content, tree):
                     unused_imports.append(import_name)
     return has_functions,has_classes,has_imports,unused_imports
 
+def extract_code_lines(content):
+    lines = content.split('\n')
+    code_lines = []
+    for line in lines:
+        stripped = line.strip()
+        if stripped and not stripped.startswith('#'):
+            code_lines.append(stripped)
+    return code_lines
+
 def analyze_python_file(file_path: str):
     """Analyze a Python file for dead code patterns"""
     issues = []
     try:
-        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-            content = f.read()
+        content = read_file_content(file_path)
         
         if not content.strip():
             issues.append(("empty", "File is completely empty"))
             return issues
         
-        lines = content.split('\n')
-        code_lines = []
-        for line in lines:
-            stripped = line.strip()
-            if stripped and not stripped.startswith('#'):
-                code_lines.append(stripped)
+        code_lines = extract_code_lines(content)
         
         if not code_lines:
             issues.append(("comments_only", "File contains only comments"))
@@ -58,18 +75,12 @@ def analyze_python_file(file_path: str):
         if unused_imports:
             issues.append(("unused_imports", f"Potentially unused imports: {', '.join(unused_imports)}"))
         
-        print(issues)
-        exit(0)
-        if has_imports and not has_functions and not has_classes:
-            non_import_code = []
-            for node in tree.body:
-                if not isinstance(node, (ast.Import, ast.ImportFrom)):
-                    non_import_code.append(node)
-            
-            if not non_import_code:
-                issues.append(("imports_only", "File contains only imports"))
+
+        analyze_imports(issues, tree, has_functions, has_classes, has_imports)
     
     except Exception as e:
         issues.append(("read_error", f"Error reading file: {str(e)}"))
     
     return issues
+
+
