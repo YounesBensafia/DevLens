@@ -14,60 +14,9 @@ from rich import box
 
 console = Console()
 
-def load_gitignore_patterns(path: str):
-    """Load patterns from .gitignore file"""
-    gitignore_path = os.path.join(path, '.gitignore')
-    patterns = []
-    
-    default_patterns = ['__pycache__/', '*.pyc', '*.pyo', '*.pyd', '.Python', 'build/', 'develop-eggs/', 'dist/', 'downloads/', 'eggs/', '.eggs/', 'lib/',
-        'lib64/', 'parts/', 'sdist/', 'var/', 'wheels/', '*.egg-info/', '.installed.cfg', '*.egg', 'venv/', 'env/', 'ENV/', '.venv/', '.env', '.idea/', '.vscode/',
-        '*.swp', '*.swo', '.DS_Store', 'Thumbs.db', 'node_modules/', '.git/', '.pytest_cache/', '.coverage', '.tox/', 'htmlcov/', '*.log', 'temp/', 'tmp/',
-        'cache/', 'output/'
-    ]
-    
-    patterns.extend(default_patterns)
-    
-    if os.path.exists(gitignore_path):
-        try:
-            with open(gitignore_path, 'r', encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    if line and not line.startswith('#'):
-                        patterns.append(line)
-        except Exception:
-            pass
-    
-    return patterns
-
-def should_ignore_path(file_path: str, base_path: str, patterns: list):
-    """Check if a file path should be ignored based on gitignore patterns"""
-    relative_path = os.path.relpath(file_path, base_path)
-    
-    relative_path = relative_path.replace('\\', '/')
-    
-    for pattern in patterns:
-        if not pattern.strip():
-            continue
-            
-        if pattern.endswith('/'):
-            path_parts = relative_path.split('/')
-            for i in range(len(path_parts)):
-                partial_path = '/'.join(path_parts[:i+1]) + '/'
-                if fnmatch.fnmatch(partial_path, pattern):
-                    return True
-        else:
-            if fnmatch.fnmatch(relative_path, pattern):
-                return True
-            filename = os.path.basename(relative_path)
-            if fnmatch.fnmatch(filename, pattern):
-                return True
-    
-    return False
-
 def analyze_python_file(file_path: str):
     """Analyze a Python file for dead code patterns"""
     issues = []
-    
     try:
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
             content = f.read()
@@ -77,6 +26,7 @@ def analyze_python_file(file_path: str):
             return issues
         
         lines = content.split('\n')
+        print(lines)
         code_lines = []
         for line in lines:
             stripped = line.strip()
