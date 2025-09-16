@@ -40,25 +40,3 @@ def confirm_readme_rewrite() -> bool:
     language = str(language).lower()
     return language == "yes"
 
-def confirm_env() -> bool:
-    env = questionary.select(
-        "Its seems you don't have a .env file which is required for ai summarization. Do you want to create one?",
-        choices=[
-            "Yes",
-            "No"
-        ],
-        style=custom_style
-    ).ask()
-
-    env = str(env).lower()
-    
-    if env == "yes" and not has_file(".env"):
-        with open(".env", "w") as f:
-            f.write("GROQ_API_KEY=<your_api_key_here>\n")
-        console.print("Created: .env file. Please add your GROQ_API_KEY.")
-        return True
-    else:
-        console.print("[bold cyan] Already exists: .env file.")
-    return False
-
-print(confirm_env())

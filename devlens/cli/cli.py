@@ -7,6 +7,7 @@ from analyzer.stats import display_code_summary
 from analyzer.readme_gen import generate_readme
 from analyzer.deadcode import find_dead_files
 from utils.check_the_path import check_path
+
 app = typer.Typer(add_completion=False, help="DevLens: AI-powered code analysis and documentation tool")
 
 @app.command()
