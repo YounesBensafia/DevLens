@@ -19,7 +19,6 @@ from utils.questionary_file import confirm_readme_rewrite
 
 # TODO: Support non-Git folders
 
-sys_message = system_message()
 console = Console()
 
 def generate_readme() -> str:
@@ -59,8 +58,7 @@ def generate_readme() -> str:
             progress.advance(analyze_task, 40)
 
         context_project = project_context(git_root_name, get_tree, key_files, requirements_files, config_files)
-        prompt = generate_readme_prompt(context_project)
-        payload = build_payload(sys_message, prompt)
+        payload = build_payload(system_message(), generate_readme_prompt(context_project))
         
         
         try:

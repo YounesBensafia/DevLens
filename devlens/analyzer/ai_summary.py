@@ -11,11 +11,10 @@ from rich.columns import Columns
 from rich import box
 from utils.structure_the_project import list_non_ignored_files
 from prompt.ai_summary_prompt import generate_ai_summary_prompt as prompt
-from prompt.ai_summary_prompt import system_message as system_msg
+from prompt.ai_summary_prompt import system_message
 from llm.client import build_payload
 from llm.client import send_request
 
-sys_message = system_msg()               
 console = Console()
 
 
@@ -68,8 +67,7 @@ def summarize_code(path: str, max_files=10):
             # end styling
             with open(file_path, "r", encoding='utf-8', errors='ignore') as f:
                 content = f.read()[:3000]
-                prompt_message = prompt(content, file_path) 
-                payload = build_payload(system_msg, prompt_message)
+                payload = build_payload(system_message(), prompt(content, file_path))
 
                 try:
                     data = send_request(payload)
