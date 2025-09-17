@@ -1,6 +1,6 @@
 import os
-import ast
-import fnmatch
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
@@ -12,8 +12,27 @@ from rich.layout import Layout
 from rich.columns import Columns
 from rich import box
 from utils.deadcode_analyze import analyze_python_file
+from utils.structure_the_project import list_non_ignored_files
 
 console = Console()
+
+def analyze_python_files(python_files, dead_files, progress, task):
+    total_issues = 0
+    for file_path in python_files:
+        progress.update(task, description=f"Checking: {file_path}")
+        issues = analyze_python_file(file_path)
+        if issues:
+            dead_files[file_path] = issues
+            total_issues += len(issues)
+            
+        progress.advance(task)
+    return total_issues
+
+def get_python_files_and_ignored_count(path):
+    non_ignored_files_in_the_repo = list_non_ignored_files(path)
+    python_files = [f for f in non_ignored_files_in_the_repo if f.endswith('.py')]
+    ignored_files = len(non_ignored_files_in_the_repo) - len(python_files)
+    return python_files,ignored_files
 
 def find_dead_files(path: str):
     """Enhanced dead code analysis with comprehensive detection and gitignore support"""
@@ -32,24 +51,9 @@ def find_dead_files(path: str):
         padding=(1, 2)
     )
     console.print(header_panel)
-    
-    ignore_patterns = load_gitignore_patterns(path)
-    console.print(f"[dim]Loaded {len(ignore_patterns)} ignore patterns (including defaults)[/dim]")
-    
-    python_files = []
-    ignored_files = 0
-    
-    for root, dirs, files in os.walk(path):
-        dirs[:] = [d for d in dirs if not should_ignore_path(os.path.join(root, d), path, ignore_patterns)]
-        
-        for file in files:
-            if file.endswith(".py"):
-                file_path = os.path.join(root, file)
-                if not should_ignore_path(file_path, path, ignore_patterns):
-                    python_files.append(file_path)
-                else:
-                    ignored_files += 1
-    
+
+    python_files, ignored_files = get_python_files_and_ignored_count(path)
+
     if not python_files:
         error_panel = Panel(
             f"No Python files found in the specified path.\n Ignored {ignored_files} files based on patterns.",
@@ -64,7 +68,7 @@ def find_dead_files(path: str):
     stats_columns = Columns([
         Panel(f"[cyan bold]{len(python_files)}[/]\n[blue]Python Files", border_style="blue", padding=(1, 2)),
         Panel(f"[yellow bold]{ignored_files}[/]\n[blue]Ignored Files", border_style="blue", padding=(1, 2)),
-        Panel(f"[green bold]{path}[/]\n[blue]Project Path", border_style="blue", padding=(1, 2))
+        Panel(f"[green bold]{os.path.join(os.path.abspath(path))}[/]\n[blue]Project Path", border_style="blue", padding=(1, 2))
     ], expand=True)
     
     console.print(stats_columns)
@@ -82,18 +86,7 @@ def find_dead_files(path: str):
         expand=True
     ) as progress:
         task = progress.add_task("Analyzing files...", total=len(python_files))
-        
-        for file_path in python_files:
-            file_name = os.path.basename(file_path)
-            relative_path = os.path.relpath(file_path, path)
-            progress.update(task, description=f"Checking: {file_name}")
-            
-            issues = analyze_python_file(file_path)
-            if issues:
-                dead_files[relative_path] = issues
-                total_issues += len(issues)
-            
-            progress.advance(task)
+        total_issues = analyze_python_files(python_files, dead_files, progress, task)
     
     console.print()
     
@@ -193,3 +186,5 @@ def find_dead_files(path: str):
     )
     console.print()
     console.print(footer)
+
+
