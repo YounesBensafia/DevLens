@@ -1,7 +1,6 @@
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
