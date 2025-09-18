@@ -18,9 +18,15 @@ from llm.client import send_request
 console = Console()
 
 
-def summarize_code(path: str, max_files=10):
+def ai_summarize_code(path: str, max_files=10):
     summaries = []
-    files_to_keep = list_non_ignored_files(path)
+    one_file = False
+    if os.path.isfile(path):
+        files_to_keep = [path]
+        one_file = True
+
+    else:
+        files_to_keep = list_non_ignored_files(path)
 
     console.clear()
     layout = Layout()
@@ -48,6 +54,8 @@ def summarize_code(path: str, max_files=10):
     # end styling
 
     # start styling
+    if one_file:
+        console.print(Panel(f"Analyzing single file: [bold]{os.path.basename(path)}[/bold]", border_style="green", padding=(1, 2)))
     with Progress(
         SpinnerColumn(style="green"),
         TextColumn("[bold green]{task.description}"),
@@ -112,20 +120,21 @@ def summarize_code(path: str, max_files=10):
     error_count = len(summaries) - success_count
 
     # start styling
-    final_columns = Columns([
-        Panel(f"[green bold]{success_count}[/]\n[white]Successful", border_style="green", padding=(1, 2)),
-        Panel(f"[red bold]{error_count}[/]\n[white]Errors", border_style="red", padding=(1, 2)),
-        Panel(f"[blue bold]{len(summaries)}[/]\n[white]Total Files", border_style="blue", padding=(1, 2))
-    ], expand=True)
+    if not one_file: 
+        final_columns = Columns([
+            Panel(f"[green bold]{success_count}[/]\n[white]Successful", border_style="green", padding=(1, 2)),
+            Panel(f"[red bold]{error_count}[/]\n[white]Errors", border_style="red", padding=(1, 2)),
+            Panel(f"[blue bold]{len(summaries)}[/]\n[white]Total Files", border_style="blue", padding=(1, 2))
+        ], expand=True)
+        
+        console.print(final_columns)
     
-    console.print(final_columns)
-    
-    footer = Panel(
-        Align.center(Text("AI Code Analysis Complete!", style="bold green")),
-        border_style="green",
-        box=box.ROUNDED
-    )
-    console.print()
-    console.print(footer)
+        footer = Panel(
+            Align.center(Text("AI Code Analysis Complete!", style="bold green")),
+            border_style="green",
+            box=box.ROUNDED
+        )
+        console.print()
+        console.print(footer)
     # end styling
     return summaries

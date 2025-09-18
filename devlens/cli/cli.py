@@ -2,7 +2,7 @@ import typer
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from analyzer.ai_summary import summarize_code
+from analyzer.ai_summary import ai_summarize_code
 from analyzer.stats import display_code_summary
 from analyzer.readme_gen import generate_readme
 from analyzer.deadcode import find_dead_files
@@ -14,7 +14,7 @@ app = typer.Typer(add_completion=False, help="DevLens: AI-powered code analysis 
 def analyze(path: str = typer.Argument(".", show_default=True)):
     """Analyze code with AI-powered summaries"""
     check_path(path)
-    summarize_code(path)
+    ai_summarize_code(path)
 
 @app.command()
 def stats(path: str = typer.Argument(".", show_default=True)):

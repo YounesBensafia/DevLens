@@ -29,14 +29,19 @@ def check_code_structure(content, tree):
             has_imports = True
             for alias in node.names:
                 import_name = alias.name
+                if alias.asname:
+                    import_name = alias.asname
                 if content.count(import_name) == 1:
                     unused_imports.append(import_name)
         elif isinstance(node, ast.ImportFrom):
             has_imports = True
             for alias in node.names:
                 import_name = alias.name
+                if alias.asname:
+                    import_name = alias.asname
                 if import_name != '*' and content.count(import_name) == 1:
                     unused_imports.append(import_name)
+                        
     return has_functions,has_classes,has_imports,unused_imports
 
 def extract_code_lines(content):
@@ -82,5 +87,3 @@ def analyze_python_file(file_path: str):
         issues.append(("read_error", f"Error reading file: {str(e)}"))
     
     return issues
-
-
