@@ -1,5 +1,4 @@
 import typer
-import os
 from devlens.analyzer.ai_summary import ai_summarize_code
 from devlens.analyzer.stats import display_code_summary
 from devlens.analyzer.readme_gen import generate_readme
