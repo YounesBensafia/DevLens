@@ -72,23 +72,15 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
 
 ---
 
-````markdown
-# Devlens
-
-Devlens is a developer productivity tool that provides a CLI for project management and utilities.
-
----
-
 ## Installation
 
-Clone the repository and install it with:
+**Clone the repository:**
 
 ```bash
-pip install .
-````
+git clone https://github.com/YounesBensafia/DevLens.git
+```
 
 ---
-
 
 ## Add Devlens (uv tools) to PATH
 
@@ -117,7 +109,8 @@ devlens --help
 
 * If you have issues, please **open an issue** in the repository so we can help.
 
-⚠️ **Note:** Currently, the **`deadecode`** option is available for **Python projects only**… for now 🤫.
+⚠️ **Note:** Currently, the **`deadecode`** option is available for **Python projects only**.
+
 DevLens is designed to help engineering teams understand complex codebases quickly and efficiently.
 
 ---
