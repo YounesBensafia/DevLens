@@ -1,6 +1,4 @@
 import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
@@ -9,13 +7,13 @@ from rich.layout import Layout
 from rich.columns import Columns
 from rich import box
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
-from utils.get_git_root import get_git_root
-from utils.repo_file_finder import gather_files
-from prompt.readme_gen_prompt import generate_readme_prompt
-from prompt.readme_gen_prompt import project_context, system_message
-from llm.client import build_payload, send_request
-from utils.get_tree_project import git_tree
-from utils.questionary_file import confirm_readme_rewrite
+from devlens.utils.get_git_root import get_git_root
+from devlens.utils.repo_file_finder import gather_files
+from devlens.prompt.readme_gen_prompt import generate_readme_prompt
+from devlens.prompt.readme_gen_prompt import project_context, system_message
+from devlens.llm.client import build_payload, send_request
+from devlens.utils.get_tree_project import git_tree
+from devlens.utils.questionary_file import confirm_readme_rewrite
 
 # TODO: Support non-Git folders
 

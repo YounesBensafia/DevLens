@@ -1,6 +1,4 @@
 import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -10,8 +8,8 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeEl
 from rich.layout import Layout
 from rich.columns import Columns
 from rich import box
-from utils.deadcode_analyze import analyze_python_file
-from utils.structure_the_project import list_non_ignored_files
+from devlens.utils.deadcode_analyze import analyze_python_file
+from devlens.utils.structure_the_project import list_non_ignored_files
 
 console = Console()
 

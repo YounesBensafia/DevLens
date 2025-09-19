@@ -1,9 +1,6 @@
-from importlib.resources import files
 import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config.settings import SUPPORTED_FILE_TYPES
-from utils.structure_the_project import list_non_ignored_files
+from devlens.config.settings import SUPPORTED_FILE_TYPES
+from devlens.utils.structure_the_project import list_non_ignored_files
 
 files_by_language = []
 

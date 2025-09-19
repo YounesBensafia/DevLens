@@ -1,7 +1,5 @@
 import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config.settings import KEY_FILES, REQUIREMENTS_FILES, CONFIG_FILES
+from devlens.config.settings import KEY_FILES, REQUIREMENTS_FILES, CONFIG_FILES
 
 def gather_files(path: str = "."):
     key_files = []

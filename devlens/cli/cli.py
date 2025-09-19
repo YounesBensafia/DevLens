@@ -1,12 +1,10 @@
 import typer
 import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from analyzer.ai_summary import ai_summarize_code
-from analyzer.stats import display_code_summary
-from analyzer.readme_gen import generate_readme
-from analyzer.deadcode import find_dead_files
-from utils.check_the_path import check_path
+from devlens.analyzer.ai_summary import ai_summarize_code
+from devlens.analyzer.stats import display_code_summary
+from devlens.analyzer.readme_gen import generate_readme
+from devlens.analyzer.deadcode import find_dead_files
+from devlens.utils.check_the_path import check_path
 
 app = typer.Typer(add_completion=False, help="DevLens: AI-powered code analysis and documentation tool")
 

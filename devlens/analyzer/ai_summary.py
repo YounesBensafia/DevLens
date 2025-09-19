@@ -1,6 +1,4 @@
 import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
@@ -9,11 +7,11 @@ from rich.align import Align
 from rich.layout import Layout
 from rich.columns import Columns
 from rich import box
-from utils.structure_the_project import list_non_ignored_files
-from prompt.ai_summary_prompt import generate_ai_summary_prompt as prompt
-from prompt.ai_summary_prompt import system_message
-from llm.client import build_payload
-from llm.client import send_request
+from devlens.utils.structure_the_project import list_non_ignored_files
+from devlens.prompt.ai_summary_prompt import generate_ai_summary_prompt as prompt
+from devlens.prompt.ai_summary_prompt import system_message
+from devlens.llm.client import build_payload
+from devlens.llm.client import send_request
 
 console = Console()
 

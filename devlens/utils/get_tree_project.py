@@ -1,5 +1,5 @@
 import subprocess
-from config.settings import LEVEL_OF_TREE
+from devlens.config.settings import LEVEL_OF_TREE
 def git_tree(path: str, level: int = LEVEL_OF_TREE) -> str:
     try:
         result = subprocess.run(

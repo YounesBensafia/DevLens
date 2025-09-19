@@ -1,10 +1,7 @@
-import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import requests
-from config.settings import GROQ_API_URL, HEADERS
-from config.settings import MODEL_NAME, TEMPERATURE, MAX_TOKENS
-from llm.exception import LLMClientError
+from devlens.config.settings import GROQ_API_URL, HEADERS
+from devlens.config.settings import MODEL_NAME, TEMPERATURE, MAX_TOKENS
+from devlens.llm.exception import LLMClientError
 
 def build_payload(system_msg: str, prompt_msg: str) -> dict:
     return {

@@ -1,6 +1,4 @@
 import os
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
@@ -9,12 +7,12 @@ from rich.align import Align
 from rich.layout import Layout
 from rich.columns import Columns
 from rich import box    
-from config.settings import LEVEL_OF_TREE
-from utils.get_tree_project import git_tree_with_styles
-from utils.count_lines_and_files import count_lines_by_language_in_project
-from utils.structure_the_project import list_non_ignored_files
-from utils.count_folders import count_directories
-from utils.get_size_project import get_logical_size_of_the_project
+from devlens.config.settings import LEVEL_OF_TREE
+from devlens.utils.get_tree_project import git_tree_with_styles
+from devlens.utils.count_lines_and_files import count_lines_by_language_in_project
+from devlens.utils.structure_the_project import list_non_ignored_files
+from devlens.utils.count_folders import count_directories
+from devlens.utils.get_size_project import get_logical_size_of_the_project
 
 console = Console()
 
