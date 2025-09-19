@@ -1,7 +1,7 @@
 [project]
 name = "devlens"
 version = "0.1.0"
-description = "Add your description here"
+description = "A cli tool to help developers understand and manage their codebases."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -12,6 +12,11 @@ dependencies = [
     "rich>=14.1.0",
     "typer>=0.17.4",
 ]
+authors = [{ name = "Younes BENSAFIA", email = "bensafia.younes.usthb@gmail.com" }]
+
 
 [tool.uv]
 package = true
+
+[project.scripts]
+devlens = "devlens.cli.cli:main"
