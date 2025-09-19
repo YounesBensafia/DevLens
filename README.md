@@ -89,44 +89,35 @@ pip install .
 
 ---
 
-## Environment Configuration
 
-Create a `.env` file (include your Groq API key:) at the root of your project.
-You can use `.env.example` as a reference.
-
----
-
-## Add Devlens to PATH (Windows)
+## Add Devlens (uv tools) to PATH
 
 To make `devlens` accessible from anywhere in the terminal:
 
-1. Press **Start** → search for **Environment Variables** → open **"Edit the system environment variables"**.
+**1. Export the api key (set the environment variable GROQ_API_KEY with the value of the key you got from [Groq](https://groq.com/)):**
 
-2. Click **Environment Variables…**.
+```bash
+export GROQ_API_KEY=your_real_api_key_here
+```
 
-3. Under **User variables**, select **Path** → **Edit**.
+**2. Execute this command:**
 
-4. Click **New** and paste:
+```bash
+uv tool install .
+```
 
-   ```
-   C:\Users\<YourUser>\AppData\Roaming\Python\Python313\Scripts
-   ```
+**3. After that, execute:**
 
-5. Open a new terminal and run:
+```bash
+devlens --help
+```
 
-   ```bash
-   devlens --help
-   ```
-
-   You should see the CLI help menu.
-
----
 
 ## Troubleshooting
 
-* **`'devlens' is not recognized`**
-  Ensure the `Scripts` folder is correctly added to your PATH and restart your terminal.
+* If you have issues, please **open an issue** in the repository so we can help.
 
+⚠️ **Note:** Currently, the **`deadecode`** option is available for **Python projects only**… for now 🤫.
+DevLens is designed to help engineering teams understand complex codebases quickly and efficiently.
 
-⚠️ **Note:** It's available for **Python projects only**... for now 🤫.
-DevLens helps engineering teams understand complex codebases quickly and efficiently.
+---
