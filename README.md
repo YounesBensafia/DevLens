@@ -6,17 +6,17 @@
 <p align="center"><i>Quick guide to start analyzing your codebase</i></p>
 
 <p align="center">
-  <img width="100%" src="https://github.com/user-attachments/assets/45b40043-b9a3-42b0-835e-9f26c68bb63f" />
+  <img width="100%" src="https://github.com/user-attachments/assets/b0e6681b-9c2d-4cae-b3dd-71d599594abf" />
 </p>
 
 ---
 
 <h2 align="center">Illuminate Your Codebase with Powerful Analysis</h2>
-<p align="center"><i>AI-powered insights & detailed statistics for your repository</i></p>
+<p align="center"><i>AI-powered insights & detailed statistics for your repository</i></p> 
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/de411846-3a3a-410d-9061-d9b69a5920a5" width="48%" />
-  <img src="https://github.com/user-attachments/assets/09d04c0e-8970-4958-8573-b5c1901743ef" width="48%" />
+  <img src="https://github.com/user-attachments/assets/b8e9fdb9-2b19-4ff6-9c6d-72d785ce02e6" width="48%" />
+  <img src="" width="48%" />
 </p>
 
 ---
@@ -26,7 +26,7 @@
 <p align="center">
 
   <img src="https://github.com/user-attachments/assets/e86c5b42-8894-4768-af8f-082604353748" width="48%" />
-  <img src="https://github.com/user-attachments/assets/54aeefb3-67bb-429e-b8c0-5e7fe729d6e8" width="48%" />
+  <img src="https://github.com/user-attachments/assets/e270477d-612e-4b2b-bbe9-42847e22e70d" width="48%" />
 </p>
 
 ---
@@ -34,7 +34,8 @@
 <p align="center"><i>Create a custom template to your project</i></p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/3b8d85e3-ba41-4897-a8f5-7946afd1bc8e" width="100%"/>
+  <img src="https://github.com/user-attachments/assets/085614d7-3b5f-42b8-8cb4-4e821937ef82" width="48%"/>
+  <img src="https://github.com/user-attachments/assets/52b7ae01-62a2-486b-89cd-af5e55d67b4d" width="48%"/>
 </p>
 
 ---
