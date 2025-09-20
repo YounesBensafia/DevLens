@@ -1,3 +1,3 @@
 # Fixes
 
-Fixed.
+[ ] Usage: devlens readme [OPTIONS]
