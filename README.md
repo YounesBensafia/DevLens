@@ -16,7 +16,7 @@
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/b8e9fdb9-2b19-4ff6-9c6d-72d785ce02e6" width="48%" />
-  <img src="" width="48%" />
+  <img src="https://github.com/user-attachments/assets/e86c5b42-8894-4768-af8f-082604353748" width="48%" />
 </p>
 
 ---
@@ -24,9 +24,8 @@
 <p align="center"><i>Total files, lines of code, directories, language breakdown, and detailed project structure</i></p>
 
 <p align="center">
-
-  <img src="https://github.com/user-attachments/assets/e86c5b42-8894-4768-af8f-082604353748" width="48%" />
-  <img src="https://github.com/user-attachments/assets/e270477d-612e-4b2b-bbe9-42847e22e70d" width="48%" />
+<img src="https://github.com/user-attachments/assets/88402183-93e9-48f2-bce5-2a9ae79d8fb0" width="48%"/>
+<img src="https://github.com/user-attachments/assets/c32a43d2-1d00-4ea3-bec2-186efe2ea74e" width="48%"/>
 </p>
 
 ---
@@ -43,8 +42,8 @@
 <p align="center"><i>Detect empty files, unused imports, and get a full overview of project issues</i></p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/3ca5b282-1515-4383-a7b2-e8384f770b3b" width="48%" />
-  <img src="https://github.com/user-attachments/assets/29052182-1961-428d-94eb-0c9017026d5f" width="48%" />
+  <img src="https://github.com/user-attachments/assets/9ba1ed63-2809-41b5-94a3-9c8e8c25a50f" width="48%" />
+  <img src="https://github.com/user-attachments/assets/1ac36c69-7e68-4e93-af23-1c344b8de47a" width="48%" />
 </p>
 
 ## Overview
