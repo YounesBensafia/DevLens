@@ -15,8 +15,8 @@
 <p align="center"><i>AI-powered insights & detailed statistics for your repository</i></p> 
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/b8e9fdb9-2b19-4ff6-9c6d-72d785ce02e6" width="48%" />
-  <img src="https://github.com/user-attachments/assets/e86c5b42-8894-4768-af8f-082604353748" width="48%" />
+  <img src="https://github.com/user-attachments/assets/b8e9fdb9-2b19-4ff6-9c6d-72d785ce02e6" width="48%"/>
+  <img src="https://github.com/user-attachments/assets/990308a1-83a2-40ba-bb99-182b5ba41434" width="48%"/>
 </p>
 
 ---
