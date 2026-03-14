@@ -1,5 +1,9 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "devlens"
+name = "devlens-cli"
 version = "0.1.0"
 description = "A cli tool to help developers understand and manage their codebases."
 readme = "README.md"
@@ -13,6 +17,18 @@ dependencies = [
     "typer>=0.17.4",
 ]
 authors = [{ name = "Younes BENSAFIA", email = "bensafia.younes.usthb@gmail.com" }]
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+]
+
+[project.urls]
+Homepage = "https://github.com/YounesBensafia/DevLens"
+Repository = "https://github.com/YounesBensafia/DevLens"
+Issues = "https://github.com/YounesBensafia/DevLens/issues"
 
 
 [tool.uv]

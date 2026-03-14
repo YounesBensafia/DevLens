@@ -80,6 +80,12 @@ DevLens delivers comprehensive insights into your codebase, helping teams unders
 git clone https://github.com/YounesBensafia/DevLens.git
 ```
 
+**Install from PyPI:**
+
+```bash
+pip install devlens-cli
+```
+
 ---
 
 ## Add Devlens (uv tools) to PATH
