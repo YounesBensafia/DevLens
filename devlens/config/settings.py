@@ -10,10 +10,11 @@ TEMPERATURE = float(os.getenv("TEMPERATURE", "0.2"))
 
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
-HEADERS = {
-    "Authorization": f"Bearer {GROQ_API_KEY}",
-    "Content-Type": "application/json",
-}
+def get_headers():
+    return {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json",
+    }
 
 KEY_FILES = [
     "package.json",
@@ -93,7 +94,7 @@ SUPPORTED_FILE_TYPES = {
     ".tsx": "TSX",
     }
 
-BOLD_GREEN = (".py")
+BOLD_GREEN = (".py",)
 BOLD_YELLOW = (".js", ".ts", ".jsx", ".tsx")
 BOLD_MAGENTA = (".json", ".toml", ".yaml", ".yml")
 BOLD_BLUE = (".md", ".txt")

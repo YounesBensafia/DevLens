@@ -2,7 +2,6 @@ import os
 from devlens.config.settings import SUPPORTED_FILE_TYPES
 from devlens.utils.structure_the_project import list_non_ignored_files
 
-files_by_language = []
 
 def get_language(file_path: str) -> str:
     split_name = os.path.splitext(file_path)
@@ -15,6 +14,7 @@ def count_lines_in_file(content: str) -> int:
     return sum(1 for _ in content.splitlines())
 
 def count_lines_by_language(files: list[str]):
+    files_by_language = []
     abs_files = [os.path.abspath(file) for file in files]
     for file in abs_files:
         if os.path.exists(file):
@@ -38,8 +38,8 @@ def get_content_of_file(file_path: str) -> str:
         return '\n'.join(non_comment_lines)
     
 def classify_files_by_language(files: list[str]) -> dict[str, list[str]]:
-    sum = 0
-    classified_files = {lang: [sum] for lang in SUPPORTED_FILE_TYPES.values()}
+    total = 0
+    classified_files = {lang: [total] for lang in SUPPORTED_FILE_TYPES.values()}
     for file in files:
         lang, line_count = file
         if lang in classified_files:
@@ -58,4 +58,3 @@ def count_lines_by_language_in_project(path: str) -> dict[str, int]:
         if classified_files_copy[file] == [0]:
             del classified_files_copy[file]
     return classified_files_copy
-

@@ -16,7 +16,7 @@ custom_style = Style([
 
 def confirm_readme_rewrite() -> bool:
     if has_file("README.md"):
-        language = questionary.select(
+        answer = questionary.select(
             "README.md already exists. are you sure you want to overwrite it?\n",
             choices=[
                 "Yes",
@@ -25,7 +25,7 @@ def confirm_readme_rewrite() -> bool:
         style=custom_style
         ).ask()
     else:
-        language = questionary.select(
+        answer = questionary.select(
             "No README.md found. Do you want to generate one?\n",
             choices=[
                 "Yes",
@@ -34,6 +34,6 @@ def confirm_readme_rewrite() -> bool:
         style=custom_style
         ).ask()
 
-    language = str(language).lower()
-    return language == "yes"
+    answer = str(answer).lower()
+    return answer == "yes"
 

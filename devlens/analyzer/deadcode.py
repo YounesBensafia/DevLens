@@ -65,7 +65,7 @@ def find_dead_files(path: str):
     stats_columns = Columns([
         Panel(f"[cyan bold]{len(python_files)}[/]\n[blue]Python Files", border_style="blue", padding=(1, 2)),
         Panel(f"[yellow bold]{ignored_files}[/]\n[blue]Ignored Files", border_style="blue", padding=(1, 2)),
-        Panel(f"[green bold]{os.path.join(os.path.abspath(path))}[/]\n[blue]Project Path", border_style="blue", padding=(1, 2))
+        Panel(f"[green bold]{os.path.abspath(path)}[/]\n[blue]Project Path", border_style="blue", padding=(1, 2))
     ], expand=True)
     
     console.print(stats_columns)
