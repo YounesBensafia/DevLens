@@ -5,6 +5,11 @@ from devlens.llm.client import send_request
 from devlens.llm.exception import LLMClientError
 
 
+@pytest.fixture(autouse=True)
+def mock_api_key(monkeypatch):
+    monkeypatch.setattr("devlens.llm.client.GROQ_API_KEY", "fake_key")
+
+
 class _DummyResponse:
     def __init__(self, payload):
         self._payload = payload

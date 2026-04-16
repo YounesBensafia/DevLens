@@ -1,8 +1,3 @@
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/1883a4eb-2892-4e9d-81cb-dc54cee2b0ea" alt="DevLens Logo" width="100%">
-</div>
-<br />
-
 # DevLens v0.2.0
 
 [![PyPI version](https://img.shields.io/pypi/v/devlens-tool?color=blue&label=PyPI)](https://pypi.org/project/devlens-tool/)
@@ -34,6 +29,7 @@ This release focuses on **correctness**, **dependency cleanup**, and **wider com
 | **Removed `numpy` dependency** | 16 MB install for a single `np.round()` call | Uses Python's built-in `round()` — zero extra bytes |
 | **Python version requirement** | `>= 3.13` (only latest Python) | `>= 3.10` (covers 4 major versions) |
 | **API auth headers** | Baked at import time with potentially `None` key | Lazy-loaded via `get_headers()` function |
+| **Developer Experience** | Missing `pytest` in dev environment | Added `pytest` to `dependency-groups` for easy testing |
 | **Package name** | `devlens-cli` (owned by another account) | `devlens-tool` |
 
 ## Install / Upgrade
