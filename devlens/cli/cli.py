@@ -1,47 +1,38 @@
 import typer
 from devlens.analyzer.ai_summary import ai_summarize_code
 from devlens.analyzer.stats import display_code_summary
-from devlens.analyzer.readme_gen import generate_readme
-from devlens.analyzer.deadcode import find_dead_files
 from devlens.utils.check_the_path import check_path
 
 app = typer.Typer(
     add_completion=False,
-    help="DevLens: AI-powered code analysis and documentation tool",
+    help="DevLens: Comprehension debt scanner + AI code analysis",
 )
 
 
 @app.callback(invoke_without_command=True)
-def _root(ctx: typer.Context, 
-    
+def _root(
+    ctx: typer.Context,
+
     st: str | None = typer.Option(
-        None, 
-        "-st", "--st", 
-        metavar="PATH", 
+        None, "-st", "--st", metavar="PATH",
         help="Generate project statistics"
     ),
-
     an: str | None = typer.Option(
-        None,
-        "-an",
-        "--an",
-        metavar="PATH",
+        None, "-an", "--an", metavar="PATH",
         help="Analyze code with AI-powered summaries",
     ),
-    dc: str | None = typer.Option(
-        None,
-        "-deadcode",
-        "--deadcode",
-        metavar="PATH",
-        help="Find dead code and unused imports",
+    scan: str | None = typer.Option(
+        None, "-scan", "--scan", metavar="PATH",
+        help="Scan comprehension debt - score every file by how hard it is to understand"
     ),
-    rd: bool = typer.Option(
-        False, "-rd", "--rd", help="Generate a professional README.md file"
+    no_llm: bool = typer.Option(
+        False, "--no-llm",
+        help="Run -scan without LLM (faster, fully deterministic)"
     ),
 ):
-    chosen = sum([st is not None, an is not None, dc is not None, rd])
+    chosen = sum([st is not None, an is not None, scan is not None])
     if chosen > 1:
-        raise typer.BadParameter("Choose only one option: -st / -an / -dc / -rd")
+        raise typer.BadParameter("Choose only one option at a time.")
 
     if st is not None:
         check_path(st)
@@ -53,18 +44,27 @@ def _root(ctx: typer.Context,
         ai_summarize_code(an)
         raise typer.Exit()
 
-    if dc is not None:
-        check_path(dc)
-        find_dead_files(dc)
-        raise typer.Exit()
-
-    if rd:
-        generate_readme()
+    if scan is not None:
+        check_path(scan)
+        _run_scan(scan, use_llm=not no_llm)
         raise typer.Exit()
 
     if ctx.invoked_subcommand is None:
         typer.echo(ctx.get_help())
         raise typer.Exit()
+
+
+def _run_scan(path: str, use_llm: bool):
+    from devlens.analyzer.scan_display import run_scan_with_progress, display_scan_results
+    from devlens.llm.client import build_payload, send_request
+
+    report = run_scan_with_progress(
+        project_path=path,
+        use_llm=use_llm,
+        send_request_fn=send_request if use_llm else None,
+        build_payload_fn=build_payload if use_llm else None,
+    )
+    display_scan_results(report)
 
 
 def main():
