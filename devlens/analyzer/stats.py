@@ -7,8 +7,6 @@ from rich.align import Align
 from rich.layout import Layout
 from rich.columns import Columns
 from rich import box    
-from devlens.config.settings import LEVEL_OF_TREE
-from devlens.utils.get_tree_project import git_tree_with_styles
 from devlens.utils.count_lines_and_files import count_lines_by_language_in_project
 from devlens.utils.structure_the_project import list_non_ignored_files
 from devlens.utils.count_folders import count_directories
@@ -37,7 +35,6 @@ def display_code_summary(path: str):
     console.print(header_panel)
     console.print()
     line_counts_by_language = count_lines_by_language_in_project(path)
-    project_structure = git_tree_with_styles(path, LEVEL_OF_TREE)
 
     if line_counts_by_language is None:
         error_panel = Panel(
@@ -77,16 +74,6 @@ def display_code_summary(path: str):
     lang_table.add_column("Language", style="cyan", no_wrap=True)
     lang_table.add_column("Lines", justify="right", style="green")
     lang_table.add_column("Percentage", justify="right", style="yellow")
-    
-    # styling
-    console.print(Panel(
-        project_structure,
-        title="[bold cyan]Project Structure[/bold cyan]",
-        border_style="cyan",
-        box=box.ROUNDED,
-        padding=(1, 2),
-        expand=False
-    ))
     
     sorted_languages = sorted(line_counts_by_language.items(), key=lambda x: x[1][0], reverse=True)
 
