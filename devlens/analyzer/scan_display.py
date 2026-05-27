@@ -24,6 +24,12 @@ from devlens.analyzer.scanner import (
     _get_top_issues,
 )
 from devlens.core.git_signals import get_git_signals, get_repo_root
+from devlens.core.history import (
+    compare_snapshots,
+    load_closest_snapshot,
+    load_snapshots,
+    save_snapshot,
+)
 from devlens.core.llm_judge import SYSTEM_PROMPT, build_llm_prompt, parse_llm_response
 from devlens.core.metrics import analyze_file
 
@@ -206,10 +212,79 @@ def _print_footer(report: ProjectReport):
     )
 
 
-def display_scan_results(report: ProjectReport):
+def _print_trend(snapshots):
+    if len(snapshots) < 2:
+        return
+    score_color = _trend_color
+    lines = ["Project Score Trend (last {} scans):".format(len(snapshots))]
+    for i, s in enumerate(snapshots[-6:]):
+        ts = s.timestamp[:10] if len(s.timestamp) >= 10 else s.timestamp
+        filled = int((s.avg_score / 100) * 25)
+        bar = "█" * filled + "░" * (25 - filled)
+        delta = ""
+        if i > 0:
+            prev = snapshots[-6:][i - 1]
+            d = s.avg_score - prev.avg_score
+            symbol = "▲" if d > 0 else "▼" if d < 0 else "─"
+            delta = f"  {symbol} {abs(d):+.1f}"
+        marker = "  ← current" if i == len(snapshots[-6:]) - 1 else ""
+        lines.append(f"  {ts}  {bar}  {s.avg_score:.0f}{delta}{marker}")
+    console.print(Panel("\n".join(lines), title="Trend", border_style="cyan"))
+    console.print()
+
+
+def _trend_color(score: float) -> str:
+    return "green" if score >= 70 else "yellow" if score >= 50 else "red"
+
+
+def _print_regressions(deltas):
+    regressions = {k: v for k, v in deltas.items() if v["delta"] < -5}
+    if not regressions:
+        return
+    regressions = dict(sorted(regressions.items(), key=lambda x: x[1]["delta"]))
+    lines = []
+    for path, d in regressions.items():
+        lines.append(f"  [red]✗[/] {path}  {d['from']:.0f} → {d['to']:.0f}  [red]{d['delta']:+.1f}[/]")
+    console.print(Panel("\n".join(lines), title="Regressions", border_style="red"))
+    console.print()
+
+
+def _print_improvements(deltas):
+    improvements = {k: v for k, v in deltas.items() if v["delta"] > 5}
+    if not improvements:
+        return
+    improvements = dict(sorted(improvements.items(), key=lambda x: -x[1]["delta"]))
+    lines = []
+    for path, d in improvements.items():
+        lines.append(f"  [green]✓[/] {path}  {d['from']:.0f} → {d['to']:.0f}  [green]{d['delta']:+.1f}[/]")
+    console.print(Panel("\n".join(lines), title="Improvements", border_style="green"))
+    console.print()
+
+
+def display_scan_results(
+    report: ProjectReport,
+    show_trend: bool = False,
+    show_regression: bool = False,
+    since_days: int | None = None,
+):
     console.clear()
     _print_header()
     _print_summary(report)
+
+    if show_trend:
+        snapshots = load_snapshots(report.project_path)
+        _print_trend(snapshots)
+
+    if show_regression and since_days is not None:
+        baseline = load_closest_snapshot(report.project_path, since_days)
+        if baseline:
+            snapshots = load_snapshots(report.project_path)
+            current = snapshots[-1] if snapshots else None
+            if current:
+                deltas = compare_snapshots(baseline, current)
+                _print_regressions(deltas)
+                _print_improvements(deltas)
+
     _print_table(report)
     _print_critical(report)
     _print_bus_factor(report)
@@ -297,7 +372,7 @@ def run_scan_with_progress(
     for r in file_reports:
         risk_dist[r.risk_level] = risk_dist.get(r.risk_level, 0) + 1
 
-    return ProjectReport(
+    report = ProjectReport(
         project_path=project_path,
         files=file_reports,
         avg_score=round(avg_score, 1),
@@ -307,3 +382,6 @@ def run_scan_with_progress(
             r for r in file_reports if r.git and r.git.is_orphan and r.final_score < 65
         ],
     )
+    with contextlib.suppress(Exception):
+        save_snapshot(report)
+    return report
