@@ -18,7 +18,7 @@ console = Console()
 
 
 def ai_summarize_code(path: str, max_files=10):
-    summaries = []
+    summaries: list[tuple[str, str]] = []
     one_file = False
     if os.path.isfile(path):
         files_to_keep = [path]

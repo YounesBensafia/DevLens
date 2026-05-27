@@ -42,11 +42,10 @@ def get_content_of_file(file_path: str) -> str:
         return "\n".join(non_comment_lines)
 
 
-def classify_files_by_language(files: list[str]) -> dict[str, list[str]]:
+def classify_files_by_language(files: list[tuple[str, int]]) -> dict[str, list[int]]:
     total = 0
-    classified_files = {lang: [total] for lang in SUPPORTED_FILE_TYPES.values()}
-    for file in files:
-        lang, line_count = file
+    classified_files: dict[str, list[int]] = {lang: [total] for lang in SUPPORTED_FILE_TYPES.values()}
+    for lang, line_count in files:
         if lang in classified_files:
             classified_files[lang][0] += line_count
         else:
@@ -54,7 +53,7 @@ def classify_files_by_language(files: list[str]) -> dict[str, list[str]]:
     return classified_files
 
 
-def count_lines_by_language_in_project(path: str) -> dict[str, int]:
+def count_lines_by_language_in_project(path: str) -> dict[str, list[int]]:
     all_files = list_non_ignored_files(path)
     classified_files = count_lines_by_language(all_files)
     classified_files = classify_files_by_language(classified_files)

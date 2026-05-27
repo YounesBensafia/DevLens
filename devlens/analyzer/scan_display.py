@@ -202,6 +202,8 @@ def _print_bus_factor(report: ProjectReport):
     )
     for r in report.bus_factor_risks:
         g = r.git
+        if g is None:
+            continue
         console.print(
             f"  [yellow]solo[/yellow]  [cyan]{r.path}[/cyan]  "
             f"[dim]({g.unique_authors} author, {g.total_commits} commits, "
