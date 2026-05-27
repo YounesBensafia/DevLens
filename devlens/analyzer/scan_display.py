@@ -215,8 +215,7 @@ def _print_footer(report: ProjectReport):
 def _print_trend(snapshots):
     if len(snapshots) < 2:
         return
-    score_color = _trend_color
-    lines = ["Project Score Trend (last {} scans):".format(len(snapshots))]
+    lines = [f"Project Score Trend (last {len(snapshots)} scans):"]
     for i, s in enumerate(snapshots[-6:]):
         ts = s.timestamp[:10] if len(s.timestamp) >= 10 else s.timestamp
         filled = int((s.avg_score / 100) * 25)
@@ -244,7 +243,9 @@ def _print_regressions(deltas):
     regressions = dict(sorted(regressions.items(), key=lambda x: x[1]["delta"]))
     lines = []
     for path, d in regressions.items():
-        lines.append(f"  [red]✗[/] {path}  {d['from']:.0f} → {d['to']:.0f}  [red]{d['delta']:+.1f}[/]")
+        lines.append(
+            f"  [red]✗[/] {path}  {d['from']:.0f} → {d['to']:.0f}  [red]{d['delta']:+.1f}[/]"
+        )
     console.print(Panel("\n".join(lines), title="Regressions", border_style="red"))
     console.print()
 
@@ -256,7 +257,9 @@ def _print_improvements(deltas):
     improvements = dict(sorted(improvements.items(), key=lambda x: -x[1]["delta"]))
     lines = []
     for path, d in improvements.items():
-        lines.append(f"  [green]✓[/] {path}  {d['from']:.0f} → {d['to']:.0f}  [green]{d['delta']:+.1f}[/]")
+        lines.append(
+            f"  [green]✓[/] {path}  {d['from']:.0f} → {d['to']:.0f}  [green]{d['delta']:+.1f}[/]"
+        )
     console.print(Panel("\n".join(lines), title="Improvements", border_style="green"))
     console.print()
 

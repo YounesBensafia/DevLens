@@ -33,6 +33,18 @@ def _root(
     no_llm: bool = typer.Option(
         False, "--no-llm", help="Run -scan without LLM (faster, fully deterministic)"
     ),
+    trend: bool = typer.Option(
+        False, "--trend", help="Show score trajectory across past snapshots"
+    ),
+    regression: bool = typer.Option(
+        False, "--regression", help="Flag files that worsened since last scan"
+    ),
+    since: int | None = typer.Option(
+        None,
+        "--since",
+        metavar="DAYS",
+        help="Compare against snapshot from N days ago (implies --regression)",
+    ),
 ):
     chosen = sum([st is not None, an is not None, scan is not None])
     if chosen > 1:
@@ -50,7 +62,13 @@ def _root(
 
     if scan is not None:
         check_path(scan)
-        _run_scan(scan, use_llm=not no_llm)
+        _run_scan(
+            scan,
+            use_llm=not no_llm,
+            show_trend=trend,
+            show_regression=regression or since is not None,
+            since_days=since,
+        )
         raise typer.Exit()
 
     if ctx.invoked_subcommand is None:
@@ -58,7 +76,13 @@ def _root(
         raise typer.Exit()
 
 
-def _run_scan(path: str, use_llm: bool):
+def _run_scan(
+    path: str,
+    use_llm: bool,
+    show_trend: bool = False,
+    show_regression: bool = False,
+    since_days: int | None = None,
+):
     from devlens.analyzer.scan_display import display_scan_results, run_scan_with_progress
     from devlens.llm.client import build_payload, send_request
 
@@ -68,7 +92,12 @@ def _run_scan(path: str, use_llm: bool):
         send_request_fn=send_request if use_llm else None,
         build_payload_fn=build_payload if use_llm else None,
     )
-    display_scan_results(report)
+    display_scan_results(
+        report,
+        show_trend=show_trend,
+        show_regression=show_regression,
+        since_days=since_days,
+    )
 
 
 def main():

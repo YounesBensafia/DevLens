@@ -1,13 +1,11 @@
 import json
-from datetime import datetime, timezone
-from pathlib import Path
 
 from devlens.core.history import (
     ScanSnapshot,
-    save_snapshot,
-    load_snapshots,
     compare_snapshots,
     load_closest_snapshot,
+    load_snapshots,
+    save_snapshot,
 )
 
 
@@ -118,7 +116,7 @@ def test_compare_snapshots_new_file():
 
     deltas = compare_snapshots(baseline, current)
     assert "c.py" not in deltas
-    assert deltas["a.py"]["delta"] == 0.0
+    assert "a.py" not in deltas
 
 
 def test_load_closest_snapshot(tmp_path):

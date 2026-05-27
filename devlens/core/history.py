@@ -1,6 +1,6 @@
 import json
 import subprocess
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -44,14 +44,12 @@ def save_snapshot(report) -> Path:
         avg_score=report.avg_score,
         risk_distribution=report.risk_distribution,
         file_count=len(report.files),
-        critical_count=sum(
-            1 for f in report.files if f.risk_level in ("critical", "high")
-        ),
+        critical_count=sum(1 for f in report.files if f.risk_level in ("critical", "high")),
         bus_factor_count=len(report.bus_factor_risks),
         per_file_scores={f.path: f.final_score for f in report.files},
     )
 
-    filename = f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S')}_{commit}.json"
+    filename = f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f')}_{commit}.json"
     path = history_path / filename
     path.write_text(json.dumps(asdict(snap), indent=2))
     return path
