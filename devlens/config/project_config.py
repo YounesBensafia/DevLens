@@ -1,6 +1,6 @@
-import tomllib
 from pathlib import Path
 
+import tomllib
 
 DEFAULT_WEIGHTS = {"metrics": 0.50, "git": 0.30, "llm": 0.20}
 

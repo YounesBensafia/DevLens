@@ -7,7 +7,7 @@ from devlens.llm.exception import LLMClientError
 
 @pytest.fixture(autouse=True)
 def mock_api_key(monkeypatch):
-    monkeypatch.setattr("devlens.llm.client.GROQ_API_KEY", "fake_key")
+    monkeypatch.setattr("devlens.llm.client.LLM_API_KEY", "fake_key")
 
 
 class _DummyResponse:

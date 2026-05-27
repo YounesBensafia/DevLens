@@ -25,7 +25,6 @@ from devlens.analyzer.scanner import (
     _get_top_issues,
     score_breakdown,
 )
-from devlens.config.project_config import load_weights
 from devlens.core.git_signals import get_git_signals, get_repo_root
 from devlens.core.history import (
     compare_snapshots,
@@ -83,7 +82,9 @@ def _print_summary(report: ProjectReport):
     weight_info = ""
     if report.weights_used and report.weights_used != DEFAULT_WEIGHTS:
         w = report.weights_used
-        weight_info = f"\n[dim]weights: mét {w['metrics']:.0%} git {w['git']:.0%} llm {w['llm']:.0%}[/dim]"
+        weight_info = (
+            f"\n[dim]weights: mét {w['metrics']:.0%} git {w['git']:.0%} llm {w['llm']:.0%}[/dim]"
+        )
 
     console.print(
         Columns(
@@ -279,6 +280,7 @@ def display_scan_results(
     show_trend: bool = False,
     show_regression: bool = False,
     since_days: int | None = None,
+    weights: dict | None = None,
 ):
     console.clear()
     _print_header()
@@ -309,6 +311,7 @@ def run_scan_with_progress(
     use_llm: bool,
     send_request_fn,
     build_payload_fn,
+    weights: dict | None = None,
 ) -> ProjectReport:
     from devlens.utils.structure_the_project import list_non_ignored_files
 
@@ -360,9 +363,10 @@ def run_scan_with_progress(
                 except Exception:
                     pass
 
-            final_score = _compute_final_score(metrics, git, llm)
+            final_score = _compute_final_score(metrics, git, llm, weights)
             risk_level = _get_risk_level(final_score)
             top_issues = _get_top_issues(metrics, git, llm)
+            breakdown = score_breakdown(metrics, git, llm, weights)
 
             file_reports.append(
                 FileReport(
@@ -373,6 +377,7 @@ def run_scan_with_progress(
                     final_score=final_score,
                     risk_level=risk_level,
                     top_issues=top_issues,
+                    breakdown=breakdown,
                 )
             )
             progress.advance(task)
@@ -394,6 +399,7 @@ def run_scan_with_progress(
         bus_factor_risks=[
             r for r in file_reports if r.git and r.git.is_orphan and r.final_score < 65
         ],
+        weights_used=weights,
     )
     with contextlib.suppress(Exception):
         save_snapshot(report)

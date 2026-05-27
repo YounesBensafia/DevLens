@@ -39,6 +39,7 @@ package = true
 [dependency-groups]
 dev = [
     "build>=1.4.2",
+    "mypy>=1.0.0",
     "pytest>=8.0.0",
     "pytest-cov>=4.0.0",
     "ruff>=0.4.0",

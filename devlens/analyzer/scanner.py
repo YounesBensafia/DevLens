@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Optional
 
 from devlens.core.git_signals import GitSignals
 from devlens.core.llm_judge import LLMJudgment
@@ -37,7 +36,7 @@ class FileReport:
     final_score: float
     risk_level: str
     top_issues: list[str] = field(default_factory=list)
-    breakdown: Optional[ScoreBreakdown] = None
+    breakdown: ScoreBreakdown | None = None
 
 
 @dataclass
@@ -48,7 +47,7 @@ class ProjectReport:
     risk_distribution: dict[str, int]
     most_critical: list[FileReport]
     bus_factor_risks: list[FileReport]
-    weights_used: Optional[dict[str, float]] = None
+    weights_used: dict[str, float] | None = None
 
 
 def _compute_layer_scores(
@@ -73,7 +72,7 @@ def _compute_final_score(
     metrics: FileMetrics,
     git: GitSignals | None,
     llm: LLMJudgment | None,
-    weights: Optional[dict[str, float]] = None,
+    weights: dict[str, float] | None = None,
 ) -> float:
     w = weights or DEFAULT_WEIGHTS
     m_score, g_score, l_score = _compute_layer_scores(metrics, git, llm)
@@ -99,7 +98,7 @@ def score_breakdown(
     metrics: FileMetrics,
     git: GitSignals | None,
     llm: LLMJudgment | None,
-    weights: Optional[dict[str, float]] = None,
+    weights: dict[str, float] | None = None,
 ) -> ScoreBreakdown:
     w = weights or DEFAULT_WEIGHTS
     m_score, g_score, l_score = _compute_layer_scores(metrics, git, llm)

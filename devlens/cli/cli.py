@@ -84,13 +84,17 @@ def _run_scan(
     since_days: int | None = None,
 ):
     from devlens.analyzer.scan_display import display_scan_results, run_scan_with_progress
+    from devlens.config.project_config import load_weights
     from devlens.llm.client import build_payload, send_request
+
+    weights = load_weights(path)
 
     report = run_scan_with_progress(
         project_path=path,
         use_llm=use_llm,
         send_request_fn=send_request if use_llm else None,
         build_payload_fn=build_payload if use_llm else None,
+        weights=weights,
     )
     display_scan_results(
         report,

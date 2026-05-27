@@ -3,20 +3,29 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-MODEL_NAME = os.getenv("MODEL_NAME", "meta-llama/llama-4-scout-17b-16e-instruct")
+LLM_API_KEY = os.getenv("LLM_API_KEY") or os.getenv("GROQ_API_KEY")
+
+LLM_MODEL = os.getenv("LLM_MODEL") or os.getenv(
+    "MODEL_NAME", "meta-llama/llama-4-scout-17b-16e-instruct"
+)
 
 TEMPERATURE = float(os.getenv("TEMPERATURE", "0.2"))
 
-GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+LLM_API_URL = os.getenv("LLM_API_URL", "https://api.groq.com/openai/v1/chat/completions")
 
 
 def get_headers():
     return {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Authorization": f"Bearer {LLM_API_KEY}",
         "Content-Type": "application/json",
     }
+
+
+# Backward compatibility aliases
+GROQ_API_KEY = LLM_API_KEY
+MODEL_NAME = LLM_MODEL
+GROQ_API_URL = LLM_API_URL
 
 
 KEY_FILES = [

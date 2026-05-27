@@ -1,10 +1,10 @@
 import requests
 
 from devlens.config.settings import (
-    GROQ_API_KEY,
-    GROQ_API_URL,
+    LLM_API_KEY,
+    LLM_API_URL,
+    LLM_MODEL,
     MAX_TOKENS,
-    MODEL_NAME,
     TEMPERATURE,
     get_headers,
 )
@@ -13,7 +13,7 @@ from devlens.llm.exception import LLMClientError
 
 def build_payload(system_msg: str, prompt_msg: str) -> dict:
     return {
-        "model": MODEL_NAME,
+        "model": LLM_MODEL,
         "messages": [
             {"role": "system", "content": system_msg},
             {"role": "user", "content": prompt_msg},
@@ -25,14 +25,13 @@ def build_payload(system_msg: str, prompt_msg: str) -> dict:
 
 def send_request(payload: dict) -> dict:
     """Send payload to the LLM API and return parsed JSON response."""
-    if not GROQ_API_KEY:
+    if not LLM_API_KEY:
         raise LLMClientError(
-            "GROQ_API_KEY is not set. "
-            "Get a free key at https://console.groq.com/keys and run:\n"
-            "  export GROQ_API_KEY=your_key_here"
+            "LLM_API_KEY is not set. "
+            "Set LLM_API_KEY (or GROQ_API_KEY) in your environment or .env file."
         )
     try:
-        response = requests.post(GROQ_API_URL, headers=get_headers(), json=payload, timeout=30)
+        response = requests.post(LLM_API_URL, headers=get_headers(), json=payload, timeout=30)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
