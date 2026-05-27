@@ -44,7 +44,9 @@ def get_content_of_file(file_path: str) -> str:
 
 def classify_files_by_language(files: list[tuple[str, int]]) -> dict[str, list[int]]:
     total = 0
-    classified_files: dict[str, list[int]] = {lang: [total] for lang in SUPPORTED_FILE_TYPES.values()}
+    classified_files: dict[str, list[int]] = {
+        lang: [total] for lang in SUPPORTED_FILE_TYPES.values()
+    }
     for lang, line_count in files:
         if lang in classified_files:
             classified_files[lang][0] += line_count
