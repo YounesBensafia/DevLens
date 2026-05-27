@@ -55,11 +55,12 @@ RISK_EMOJI = {
 }
 
 
-def _score_bar(score: float, width: int = 20) -> str:
+def _score_bar(score: float, width: int = 20, confidence: str = "") -> str:
     filled = int((score / 100) * width)
     color = "red" if score < 35 else "yellow" if score < 55 else "cyan" if score < 70 else "green"
     bar = "█" * filled + "░" * (width - filled)
-    return f"[{color}]{bar}[/] {score:.0f}"
+    suffix = f" {confidence}" if confidence else ""
+    return f"[{color}]{bar}[/] {score:.0f}{suffix}"
 
 
 def _print_header():
@@ -79,11 +80,16 @@ def _print_summary(report: ProjectReport):
     color = "red" if score < 35 else "yellow" if score < 55 else "cyan" if score < 70 else "green"
     dist = report.risk_distribution
 
+    weight_info = ""
+    if report.weights_used and report.weights_used != DEFAULT_WEIGHTS:
+        w = report.weights_used
+        weight_info = f"\n[dim]weights: mét {w['metrics']:.0%} git {w['git']:.0%} llm {w['llm']:.0%}[/dim]"
+
     console.print(
         Columns(
             [
                 Panel(
-                    f"[{color} bold]{score}[/]\n[white]Project Score",
+                    f"[{color} bold]{score}[/]\n[white]Project Score{weight_info}",
                     border_style=color,
                     padding=(1, 2),
                 ),
@@ -119,7 +125,7 @@ def _print_table(report: ProjectReport):
     )
     table.add_column("Risk", width=6, justify="center")
     table.add_column("File", style="cyan", min_width=30)
-    table.add_column("Score", min_width=26)
+    table.add_column("Score", min_width=30)
     table.add_column("CC", justify="right", width=5)
     table.add_column("MI", justify="right", width=6)
     table.add_column("Docs", justify="right", width=6)
@@ -139,10 +145,11 @@ def _print_table(report: ProjectReport):
             top_issue = top_issue[:42] + "..."
 
         color = RISK_COLORS.get(r.risk_level, "white")
+        confidence = r.breakdown.confidence_band if r.breakdown else ""
         table.add_row(
             f"[{color}]{RISK_EMOJI.get(r.risk_level, '')}[/]",
             r.path,
-            _score_bar(r.final_score),
+            _score_bar(r.final_score, confidence=confidence),
             str(r.metrics.max_cyclomatic_complexity or "-"),
             str(r.metrics.maintainability_index or "-"),
             f"{int(r.metrics.docstring_ratio * 100)}%",
