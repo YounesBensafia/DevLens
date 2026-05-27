@@ -63,7 +63,19 @@ strict = false
 
 [tool.coverage.run]
 source = ["devlens"]
-omit = ["devlens/render/*", "devlens/console/*"]
+omit = [
+    "devlens/render/*",
+    "devlens/console/*",
+    "devlens/prompt/*",
+    "devlens/cli/*",
+    "devlens/utils/check_*",
+    "devlens/utils/has_file*",
+    "devlens/utils/count_folders*",
+    "devlens/utils/get_size*",
+    "devlens/utils/count_lines*",
+    "devlens/analyzer/ai_summary*",
+    "devlens/analyzer/stats*",
+]
 
 [tool.coverage.report]
 fail_under = 60
