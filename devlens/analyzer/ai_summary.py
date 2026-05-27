@@ -1,17 +1,18 @@
 import os
-from rich.console import Console
-from rich.panel import Panel
-from rich.text import Text
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
-from rich.align import Align
-from rich.layout import Layout
-from rich.columns import Columns
+
 from rich import box
-from devlens.utils.structure_the_project import list_non_ignored_files
+from rich.align import Align
+from rich.columns import Columns
+from rich.console import Console
+from rich.layout import Layout
+from rich.panel import Panel
+from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
+from rich.text import Text
+
+from devlens.llm.client import build_payload, send_request
 from devlens.prompt.ai_summary_prompt import generate_ai_summary_prompt as prompt
 from devlens.prompt.ai_summary_prompt import system_message
-from devlens.llm.client import build_payload
-from devlens.llm.client import send_request
+from devlens.utils.structure_the_project import list_non_ignored_files
 
 console = Console()
 
@@ -71,7 +72,7 @@ def ai_summarize_code(path: str, max_files=10):
             # start styling
             progress.update(task, description=f"Processing: {file_path}")
             # end styling
-            with open(file_path, "r", encoding='utf-8', errors='ignore') as f:
+            with open(file_path, encoding='utf-8', errors='ignore') as f:
                 content = f.read()[:3000]
                 payload = build_payload(system_message(), prompt(content, file_path))
 
@@ -110,7 +111,7 @@ def ai_summarize_code(path: str, max_files=10):
                     )
                     console.print(error_panel)
                 progress.advance(task)
-    
+
     console.print()
     # end styling
 
@@ -118,15 +119,15 @@ def ai_summarize_code(path: str, max_files=10):
     error_count = len(summaries) - success_count
 
     # start styling
-    if not one_file: 
+    if not one_file:
         final_columns = Columns([
             Panel(f"[green bold]{success_count}[/]\n[white]Successful", border_style="green", padding=(1, 2)),
             Panel(f"[red bold]{error_count}[/]\n[white]Errors", border_style="red", padding=(1, 2)),
             Panel(f"[blue bold]{len(summaries)}[/]\n[white]Total Files", border_style="blue", padding=(1, 2))
         ], expand=True)
-        
+
         console.print(final_columns)
-    
+
         footer = Panel(
             Align.center(Text("AI Code Analysis Complete!", style="bold green")),
             border_style="green",

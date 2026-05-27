@@ -1,9 +1,9 @@
 import pytest
 
 from devlens.analyzer.scanner import _compute_final_score, _get_risk_level, _get_top_issues
-from devlens.core.metrics import FileMetrics
 from devlens.core.git_signals import GitSignals
 from devlens.core.llm_judge import LLMJudgment
+from devlens.core.metrics import FileMetrics
 
 
 def _make_metrics(comprehension_score=50.0, cc=5, mi=60, doc_ratio=0.5,

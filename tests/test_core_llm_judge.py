@@ -1,6 +1,6 @@
 import pytest
 
-from devlens.core.llm_judge import parse_llm_response, build_llm_prompt
+from devlens.core.llm_judge import build_llm_prompt, parse_llm_response
 
 
 def test_parse_valid_json():

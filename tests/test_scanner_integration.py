@@ -2,7 +2,6 @@ from pathlib import Path
 
 from devlens.analyzer.scan_display import run_scan_with_progress
 
-
 FIXTURES = str(Path(__file__).parent / "fixtures")
 
 

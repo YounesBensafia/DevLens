@@ -1,7 +1,15 @@
 import requests
-from devlens.config.settings import GROQ_API_URL, GROQ_API_KEY, get_headers
-from devlens.config.settings import MODEL_NAME, TEMPERATURE, MAX_TOKENS
+
+from devlens.config.settings import (
+    GROQ_API_KEY,
+    GROQ_API_URL,
+    MAX_TOKENS,
+    MODEL_NAME,
+    TEMPERATURE,
+    get_headers,
+)
 from devlens.llm.exception import LLMClientError
+
 
 def build_payload(system_msg: str, prompt_msg: str) -> dict:
     return {
@@ -32,6 +40,6 @@ def send_request(payload: dict) -> dict:
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        raise LLMClientError(f"Request failed: {e}")
+        raise LLMClientError(f"Request failed: {e}") from e
     except ValueError:
-        raise LLMClientError("Invalid JSON response from API")
+        raise LLMClientError("Invalid JSON response from API") from None

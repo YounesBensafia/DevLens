@@ -1,7 +1,5 @@
 import os
 import subprocess
-from pathlib import Path
-import pytest
 
 from devlens.core.git_signals import get_git_signals, get_repo_root
 

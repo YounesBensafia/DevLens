@@ -1,6 +1,7 @@
 import subprocess
 from pathlib import Path
 
+
 def list_non_ignored_files(folder="."):
     folder = Path(folder)
     result = subprocess.run(

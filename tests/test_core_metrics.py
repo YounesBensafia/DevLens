@@ -1,8 +1,6 @@
 from pathlib import Path
-import pytest
 
 from devlens.core.metrics import analyze_file
-
 
 FIXTURES = Path(__file__).parent / "fixtures"
 

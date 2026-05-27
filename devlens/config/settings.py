@@ -1,4 +1,5 @@
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -21,33 +22,33 @@ KEY_FILES = [
     "setup.py",
     "cargo.toml",
     "pom.xml",
-    "build.gradle",          
-    "build.gradle.kts",     
-    "Makefile",              
-    "CMakeLists.txt",        
-    "requirements.in",       
-    "composer.json",         
-    "Gemfile",               
-    "go.mod",                
-    "go.sum",                
+    "build.gradle",
+    "build.gradle.kts",
+    "Makefile",
+    "CMakeLists.txt",
+    "requirements.in",
+    "composer.json",
+    "Gemfile",
+    "go.mod",
+    "go.sum",
     "Rakefile",
-    "uv.lock",            
+    "uv.lock",
 ]
 
 REQUIREMENTS_FILES = [
     "requirements.txt",
     "pyproject.toml",
-    "requirements-dev.txt",  
+    "requirements-dev.txt",
     "package-lock.json",
     "yarn.lock",
-    "pnpm-lock.yaml",         
+    "pnpm-lock.yaml",
     "pipfile",
     "pipfile.lock",
     "poetry.lock",
-    "environment.yml",       
-    "composer.lock",         
-    "Gemfile.lock",          
-    "go.sum",                
+    "environment.yml",
+    "composer.lock",
+    "Gemfile.lock",
+    "go.sum",
 ]
 
 CONFIG_FILES = [

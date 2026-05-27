@@ -7,10 +7,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 try:
-    from radon.complexity import cc_visit, cc_rank
-    from radon.metrics import mi_visit
+    from radon.complexity import cc_rank, cc_visit
+    from radon.metrics import h_visit, mi_visit
     from radon.raw import analyze
-    from radon.metrics import h_visit
     HAS_RADON = True
 except ImportError:
     HAS_RADON = False
@@ -80,9 +79,8 @@ def _get_bad_name_ratio(tree: ast.AST) -> float:
     for node in ast.walk(tree):
         if isinstance(node, ast.Name):
             names.append(node.id)
-        elif isinstance(node, ast.arg):
-            if node.arg not in ('self', 'cls'):
-                names.append(node.arg)
+        elif isinstance(node, ast.arg) and node.arg not in ('self', 'cls'):
+            names.append(node.arg)
     if not names:
         return 0.0
     bad = sum(1 for n in names if n in BAD_NAMES or (len(n) == 1 and n.isalpha()))

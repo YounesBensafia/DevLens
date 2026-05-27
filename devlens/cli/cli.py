@@ -1,4 +1,5 @@
 import typer
+
 from devlens.analyzer.ai_summary import ai_summarize_code
 from devlens.analyzer.stats import display_code_summary
 from devlens.utils.check_the_path import check_path
@@ -55,7 +56,7 @@ def _root(
 
 
 def _run_scan(path: str, use_llm: bool):
-    from devlens.analyzer.scan_display import run_scan_with_progress, display_scan_results
+    from devlens.analyzer.scan_display import display_scan_results, run_scan_with_progress
     from devlens.llm.client import build_payload, send_request
 
     report = run_scan_with_progress(

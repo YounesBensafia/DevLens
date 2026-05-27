@@ -1,4 +1,5 @@
 import os
+
 from devlens.config.settings import SUPPORTED_FILE_TYPES
 from devlens.utils.structure_the_project import list_non_ignored_files
 
@@ -6,7 +7,7 @@ from devlens.utils.structure_the_project import list_non_ignored_files
 def get_language(file_path: str) -> str:
     split_name = os.path.splitext(file_path)
     for extension in split_name:
-        if extension in SUPPORTED_FILE_TYPES.keys():
+        if extension in SUPPORTED_FILE_TYPES:
             return SUPPORTED_FILE_TYPES[extension]
     return "N/A"
 
@@ -27,7 +28,7 @@ def count_lines_by_language(files: list[str]):
     return files_by_language
 
 def get_content_of_file(file_path: str) -> str:
-    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+    with open(file_path, encoding="utf-8", errors="ignore") as f:
         content = f.read()
         non_comment_lines = []
         lines = content.split('\n')
@@ -36,7 +37,7 @@ def get_content_of_file(file_path: str) -> str:
             if not line.startswith('#') and line:
                 non_comment_lines.append(line)
         return '\n'.join(non_comment_lines)
-    
+
 def classify_files_by_language(files: list[str]) -> dict[str, list[str]]:
     total = 0
     classified_files = {lang: [total] for lang in SUPPORTED_FILE_TYPES.values()}

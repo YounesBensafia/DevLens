@@ -2,23 +2,29 @@
 Rich UI for Comprehension Debt Scanner.
 Pure display — zero business logic here.
 """
+import contextlib
 from pathlib import Path
-from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
-from rich.text import Text
+
+from rich import box
 from rich.align import Align
 from rich.columns import Columns
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
-from rich import box
+from rich.console import Console
+from rich.panel import Panel
+from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
+from rich.table import Table
+from rich.text import Text
 
 from devlens.analyzer.scanner import (
-    ProjectReport, FileReport, RISK_THRESHOLDS,
-    _compute_final_score, _get_risk_level, _get_top_issues,
+    RISK_THRESHOLDS,
+    FileReport,
+    ProjectReport,
+    _compute_final_score,
+    _get_risk_level,
+    _get_top_issues,
 )
-from devlens.core.metrics import analyze_file
 from devlens.core.git_signals import get_git_signals, get_repo_root
-from devlens.core.llm_judge import build_llm_prompt, parse_llm_response, SYSTEM_PROMPT
+from devlens.core.llm_judge import SYSTEM_PROMPT, build_llm_prompt, parse_llm_response
+from devlens.core.metrics import analyze_file
 
 console = Console()
 
@@ -225,10 +231,8 @@ def run_scan_with_progress(
 
             git = None
             if repo_root:
-                try:
+                with contextlib.suppress(Exception):
                     git = get_git_signals(file_path, repo_root)
-                except Exception:
-                    pass
 
             llm = None
             if use_llm and send_request_fn and build_payload_fn:

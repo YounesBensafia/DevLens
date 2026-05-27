@@ -1,6 +1,9 @@
 import os
+
 import typer
+
 from devlens.console.incorrect_path import show_path_error
+
 
 def check_path(path: str):
     exist = os.path.exists(os.path.abspath(path))

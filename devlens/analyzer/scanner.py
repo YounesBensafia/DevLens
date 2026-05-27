@@ -7,12 +7,10 @@ Final score formula:
   20% LLM qualitative judgment (binary questions)
 """
 from dataclasses import dataclass, field
-from pathlib import Path
 
-from devlens.core.metrics import FileMetrics, analyze_file
-from devlens.core.git_signals import GitSignals, get_git_signals, get_repo_root
-from devlens.core.llm_judge import LLMJudgment, build_llm_prompt, parse_llm_response, SYSTEM_PROMPT
-
+from devlens.core.git_signals import GitSignals
+from devlens.core.llm_judge import LLMJudgment
+from devlens.core.metrics import FileMetrics
 
 RISK_THRESHOLDS = {
     "critical": (0, 35),
