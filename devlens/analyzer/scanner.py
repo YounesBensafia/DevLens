@@ -1,13 +1,5 @@
-"""
-Comprehension Debt Scanner — orchestrates all 3 layers.
-
-Final score formula:
-  50% deterministic metrics (radon + AST)
-  30% git signals
-  20% LLM qualitative judgment (binary questions)
-"""
-
 from dataclasses import dataclass, field
+from typing import Optional
 
 from devlens.core.git_signals import GitSignals
 from devlens.core.llm_judge import LLMJudgment
@@ -21,6 +13,20 @@ RISK_THRESHOLDS = {
     "good": (85, 100),
 }
 
+DEFAULT_WEIGHTS = {"metrics": 0.50, "git": 0.30, "llm": 0.20}
+
+
+@dataclass
+class ScoreBreakdown:
+    metrics_score: float
+    git_score: float
+    llm_score: float
+    metrics_weight: float
+    git_weight: float
+    llm_weight: float
+    confidence_band: str
+    confidence_label: str
+
 
 @dataclass
 class FileReport:
@@ -31,6 +37,7 @@ class FileReport:
     final_score: float
     risk_level: str
     top_issues: list[str] = field(default_factory=list)
+    breakdown: Optional[ScoreBreakdown] = None
 
 
 @dataclass
@@ -41,14 +48,15 @@ class ProjectReport:
     risk_distribution: dict[str, int]
     most_critical: list[FileReport]
     bus_factor_risks: list[FileReport]
+    weights_used: Optional[dict[str, float]] = None
 
 
-def _compute_final_score(
+def _compute_layer_scores(
     metrics: FileMetrics,
     git: GitSignals | None,
     llm: LLMJudgment | None,
-) -> float:
-    base = metrics.comprehension_score
+) -> tuple[float, float, float]:
+    metrics_score = metrics.comprehension_score
 
     git_score = 100.0
     if git is not None:
@@ -58,8 +66,54 @@ def _compute_final_score(
 
     llm_score = llm.llm_score if llm is not None else 50.0
 
-    final = 0.50 * base + 0.30 * git_score + 0.20 * llm_score
+    return metrics_score, git_score, llm_score
+
+
+def _compute_final_score(
+    metrics: FileMetrics,
+    git: GitSignals | None,
+    llm: LLMJudgment | None,
+    weights: Optional[dict[str, float]] = None,
+) -> float:
+    w = weights or DEFAULT_WEIGHTS
+    m_score, g_score, l_score = _compute_layer_scores(metrics, git, llm)
+    final = w["metrics"] * m_score + w["git"] * g_score + w["llm"] * l_score
     return round(final, 1)
+
+
+def compute_confidence_band(
+    metrics: FileMetrics,
+    git: GitSignals | None,
+    llm: LLMJudgment | None,
+) -> tuple[str, str]:
+    m_score, g_score, l_score = _compute_layer_scores(metrics, git, llm)
+    spread = max(m_score, g_score, l_score) - min(m_score, g_score, l_score)
+    if spread <= 15:
+        return "±2", "high"
+    if spread <= 25:
+        return "±5", "medium"
+    return "±8", "low"
+
+
+def score_breakdown(
+    metrics: FileMetrics,
+    git: GitSignals | None,
+    llm: LLMJudgment | None,
+    weights: Optional[dict[str, float]] = None,
+) -> ScoreBreakdown:
+    w = weights or DEFAULT_WEIGHTS
+    m_score, g_score, l_score = _compute_layer_scores(metrics, git, llm)
+    band, label = compute_confidence_band(metrics, git, llm)
+    return ScoreBreakdown(
+        metrics_score=round(m_score, 1),
+        git_score=round(g_score, 1),
+        llm_score=round(l_score, 1),
+        metrics_weight=w["metrics"],
+        git_weight=w["git"],
+        llm_weight=w["llm"],
+        confidence_band=band,
+        confidence_label=label,
+    )
 
 
 def _get_risk_level(score: float) -> str:

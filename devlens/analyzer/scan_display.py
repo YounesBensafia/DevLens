@@ -16,13 +16,16 @@ from rich.table import Table
 from rich.text import Text
 
 from devlens.analyzer.scanner import (
+    DEFAULT_WEIGHTS,
     RISK_THRESHOLDS,
     FileReport,
     ProjectReport,
     _compute_final_score,
     _get_risk_level,
     _get_top_issues,
+    score_breakdown,
 )
+from devlens.config.project_config import load_weights
 from devlens.core.git_signals import get_git_signals, get_repo_root
 from devlens.core.history import (
     compare_snapshots,
