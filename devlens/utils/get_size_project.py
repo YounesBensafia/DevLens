@@ -6,7 +6,7 @@ def get_logical_size_of_the_project(path: str) -> float:
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(path):
         # Skip hidden directories like .git, .venv, etc.
-        dirnames[:] = [d for d in dirnames if not d.startswith('.')]
+        dirnames[:] = [d for d in dirnames if not d.startswith(".")]
         for f in filenames:
             fp = os.path.join(dirpath, f)
             if os.path.exists(fp) and not os.path.islink(fp):

@@ -2,6 +2,7 @@
 LLM layer — qualitative judgment via binary questions only.
 Binary answers = low variance, reproducible across runs.
 """
+
 import json
 import re
 from dataclasses import dataclass
@@ -54,18 +55,22 @@ def parse_llm_response(response_text: str) -> LLMJudgment:
             single_responsibility=True,
             magic_values=False,
             llm_score=50.0,
-            explanation="Could not parse LLM response."
+            explanation="Could not parse LLM response.",
         )
 
-    good = sum([
-        data.get("function_names_clear", True),
-        data.get("junior_friendly", True),
-        data.get("single_responsibility", True),
-    ])
-    bad = sum([
-        data.get("undocumented_side_effects", False),
-        data.get("magic_values", False),
-    ])
+    good = sum(
+        [
+            data.get("function_names_clear", True),
+            data.get("junior_friendly", True),
+            data.get("single_responsibility", True),
+        ]
+    )
+    bad = sum(
+        [
+            data.get("undocumented_side_effects", False),
+            data.get("magic_values", False),
+        ]
+    )
     llm_score = (good / 3) * 70 + ((2 - bad) / 2) * 30
 
     return LLMJudgment(
@@ -75,5 +80,5 @@ def parse_llm_response(response_text: str) -> LLMJudgment:
         single_responsibility=data.get("single_responsibility", True),
         magic_values=data.get("magic_values", False),
         llm_score=round(llm_score, 1),
-        explanation=data.get("explanation", "")
+        explanation=data.get("explanation", ""),
     )

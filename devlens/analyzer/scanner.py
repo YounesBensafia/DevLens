@@ -6,6 +6,7 @@ Final score formula:
   30% git signals
   20% LLM qualitative judgment (binary questions)
 """
+
 from dataclasses import dataclass, field
 
 from devlens.core.git_signals import GitSignals
@@ -14,10 +15,10 @@ from devlens.core.metrics import FileMetrics
 
 RISK_THRESHOLDS = {
     "critical": (0, 35),
-    "high":     (35, 55),
-    "medium":   (55, 70),
-    "low":      (70, 85),
-    "good":     (85, 100),
+    "high": (35, 55),
+    "medium": (55, 70),
+    "low": (70, 85),
+    "good": (85, 100),
 }
 
 
@@ -57,11 +58,7 @@ def _compute_final_score(
 
     llm_score = llm.llm_score if llm is not None else 50.0
 
-    final = (
-        0.50 * base +
-        0.30 * git_score +
-        0.20 * llm_score
-    )
+    final = 0.50 * base + 0.30 * git_score + 0.20 * llm_score
     return round(final, 1)
 
 

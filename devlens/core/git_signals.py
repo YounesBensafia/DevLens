@@ -2,6 +2,7 @@
 Git signals — facts from version control history.
 Completely deterministic, no LLM.
 """
+
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -26,7 +27,7 @@ def _run_git(args: list[str], cwd: str) -> str:
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
             text=True,
-            timeout=10
+            timeout=10,
         )
         return result.stdout.strip()
     except Exception:
@@ -37,8 +38,7 @@ def get_git_signals(file_path: str, repo_root: str) -> GitSignals:
     rel_path = str(Path(file_path).relative_to(Path(repo_root)))
 
     last_date_str = _run_git(
-        ["log", "-1", "--format=%ci", "--follow", "--", rel_path],
-        cwd=repo_root
+        ["log", "-1", "--format=%ci", "--follow", "--", rel_path], cwd=repo_root
     )
     days_since = None
     if last_date_str:
@@ -50,10 +50,7 @@ def get_git_signals(file_path: str, repo_root: str) -> GitSignals:
         except Exception:
             pass
 
-    authors_out = _run_git(
-        ["log", "--follow", "--format=%ae", "--", rel_path],
-        cwd=repo_root
-    )
+    authors_out = _run_git(["log", "--follow", "--format=%ae", "--", rel_path], cwd=repo_root)
     authors = set(a for a in authors_out.splitlines() if a)
     unique_authors = len(authors)
     total_commits = len(authors_out.splitlines()) if authors_out else 0

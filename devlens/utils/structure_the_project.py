@@ -8,7 +8,7 @@ def list_non_ignored_files(folder="."):
         ["git", "ls-files", "--others", "--exclude-standard", "--cached"],
         cwd=folder,
         stdout=subprocess.PIPE,
-        text=True
+        text=True,
     )
     files = result.stdout.strip().split("\n")
     return [str(folder / f) for f in files if f]

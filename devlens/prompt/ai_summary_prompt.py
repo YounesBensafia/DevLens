@@ -18,10 +18,11 @@ def generate_ai_summary_prompt(file_content: str, file_name: str) -> str:
     """
 
 
-
 def system_message() -> str:
-    return "You are a code analysis assistant. " \
-    "Provide only a concise, direct summary of what the any file does. " \
-    "Do not show your thinking process or reasoning steps. " \
-    "Just give the final summary in 1-3 sentences." \
-    "Add some emojis to the summary"
+    return (
+        "You are a code analysis assistant. "
+        "Provide only a concise, direct summary of what the any file does. "
+        "Do not show your thinking process or reasoning steps. "
+        "Just give the final summary in 1-3 sentences."
+        "Add some emojis to the summary"
+    )

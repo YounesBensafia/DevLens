@@ -22,9 +22,7 @@ def is_valid_email(email: str) -> bool:
     local_part, domain_part = email.split("@", 1)
     if not local_part or not domain_part:
         return False
-    if "." not in domain_part:
-        return False
-    return True
+    return "." in domain_part
 
 
 def parse_config_line(line: str) -> dict:

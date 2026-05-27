@@ -16,11 +16,12 @@ def build_payload(system_msg: str, prompt_msg: str) -> dict:
         "model": MODEL_NAME,
         "messages": [
             {"role": "system", "content": system_msg},
-            {"role": "user", "content": prompt_msg}
+            {"role": "user", "content": prompt_msg},
         ],
         "temperature": TEMPERATURE,
         "max_tokens": MAX_TOKENS,
     }
+
 
 def send_request(payload: dict) -> dict:
     """Send payload to the LLM API and return parsed JSON response."""
@@ -31,12 +32,7 @@ def send_request(payload: dict) -> dict:
             "  export GROQ_API_KEY=your_key_here"
         )
     try:
-        response = requests.post(
-            GROQ_API_URL,
-            headers=get_headers(),
-            json=payload,
-            timeout=30
-        )
+        response = requests.post(GROQ_API_URL, headers=get_headers(), json=payload, timeout=30)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:

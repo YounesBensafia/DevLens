@@ -16,21 +16,16 @@ console = Console()
 
 # TODO: to enhace with more stats
 
+
 def display_code_summary(path: str):
     """Display a comprehensive code summary with professional styling"""
     console.clear()
     layout = Layout()
-    layout.split_column(
-        Layout(name="header"),
-        Layout(name="body", ratio=8)
-    )
+    layout.split_column(Layout(name="header"), Layout(name="body", ratio=8))
 
     header_text = Text("DevLens - Project Summary", style="bold white on cyan")
     header_panel = Panel(
-        Align.center(header_text),
-        border_style="cyan",
-        box=box.DOUBLE,
-        padding=(1, 2)
+        Align.center(header_text), border_style="cyan", box=box.DOUBLE, padding=(1, 2)
     )
     console.print(header_panel)
     console.print()
@@ -42,7 +37,7 @@ def display_code_summary(path: str):
             title="Warning",
             border_style="yellow",
             box=box.ROUNDED,
-            padding=(1, 2)
+            padding=(1, 2),
         )
         console.print(error_panel)
         return
@@ -53,12 +48,31 @@ def display_code_summary(path: str):
         total_lines += line_count[0]
 
     # styling
-    stats_columns = Columns([
-        Panel(f"[green bold]{total_files}[/]\n[blue]Total Files", border_style="blue", padding=(1, 2)),
-        Panel(f"[cyan bold]{total_lines}[/]\n[blue]Total Lines", border_style="blue", padding=(1, 2)),
-        Panel(f"[yellow bold]{count_directories(path)}[/]\n[blue]Directories", border_style="blue", padding=(1, 2)),
-        Panel(f"[magenta bold]{len(line_counts_by_language)}[/]\n[blue]Languages", border_style="blue", padding=(1, 2))
-    ], expand=True)
+    stats_columns = Columns(
+        [
+            Panel(
+                f"[green bold]{total_files}[/]\n[blue]Total Files",
+                border_style="blue",
+                padding=(1, 2),
+            ),
+            Panel(
+                f"[cyan bold]{total_lines}[/]\n[blue]Total Lines",
+                border_style="blue",
+                padding=(1, 2),
+            ),
+            Panel(
+                f"[yellow bold]{count_directories(path)}[/]\n[blue]Directories",
+                border_style="blue",
+                padding=(1, 2),
+            ),
+            Panel(
+                f"[magenta bold]{len(line_counts_by_language)}[/]\n[blue]Languages",
+                border_style="blue",
+                padding=(1, 2),
+            ),
+        ],
+        expand=True,
+    )
 
     console.print(stats_columns)
     console.print()
@@ -69,7 +83,7 @@ def display_code_summary(path: str):
         header_style="bold white on magenta",
         box=box.ROUNDED,
         border_style="magenta",
-        title_style="bold magenta"
+        title_style="bold magenta",
     )
     lang_table.add_column("Language", style="cyan", no_wrap=True)
     lang_table.add_column("Lines", justify="right", style="green")
@@ -79,25 +93,25 @@ def display_code_summary(path: str):
 
     for i in sorted_languages:
         percentage = (i[1][0] / total_lines) * 100 if total_lines > 0 else 0
-        lang_table.add_row(
-            f"{i[0].upper()}",
-            f"{i[1][0]}",
-            f"{percentage:.1f}%"
-        )
+        lang_table.add_row(f"{i[0].upper()}", f"{i[1][0]}", f"{percentage:.1f}%")
 
     # styling
     console.print(lang_table)
     console.print()
-    console.print(Panel(
-        f"Analysis complete! Found [green]{total_files}[/green] files with [blue]{total_lines:,}[/blue] lines of code across [cyan]{len(line_counts_by_language)}[/cyan] languages (Markdown + Programming Languages).",
-        title="Summary",
-        border_style="green",
-        padding=(1, 2)
-    ))
+    console.print(
+        Panel(
+            f"Analysis complete! Found [green]{total_files}[/green] files with [blue]{total_lines:,}[/blue] lines of code across [cyan]{len(line_counts_by_language)}[/cyan] languages (Markdown + Programming Languages).",
+            title="Summary",
+            border_style="green",
+            padding=(1, 2),
+        )
+    )
     console.print()
-    console.print(Panel(
-        f"Logical Size of the Project: [bold yellow]{get_logical_size_of_the_project(path)} MB[/bold yellow]",
-        title="Project Size",
-        border_style="yellow",
-        padding=(1, 2)
-    ))
+    console.print(
+        Panel(
+            f"Logical Size of the Project: [bold yellow]{get_logical_size_of_the_project(path)} MB[/bold yellow]",
+            title="Project Size",
+            border_style="yellow",
+            padding=(1, 2),
+        )
+    )

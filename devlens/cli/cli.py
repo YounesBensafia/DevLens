@@ -13,22 +13,25 @@ app = typer.Typer(
 @app.callback(invoke_without_command=True)
 def _root(
     ctx: typer.Context,
-
     st: str | None = typer.Option(
-        None, "-st", "--st", metavar="PATH",
-        help="Generate project statistics"
+        None, "-st", "--st", metavar="PATH", help="Generate project statistics"
     ),
     an: str | None = typer.Option(
-        None, "-an", "--an", metavar="PATH",
+        None,
+        "-an",
+        "--an",
+        metavar="PATH",
         help="Analyze code with AI-powered summaries",
     ),
     scan: str | None = typer.Option(
-        None, "-scan", "--scan", metavar="PATH",
-        help="Scan comprehension debt - score every file by how hard it is to understand"
+        None,
+        "-scan",
+        "--scan",
+        metavar="PATH",
+        help="Scan comprehension debt - score every file by how hard it is to understand",
     ),
     no_llm: bool = typer.Option(
-        False, "--no-llm",
-        help="Run -scan without LLM (faster, fully deterministic)"
+        False, "--no-llm", help="Run -scan without LLM (faster, fully deterministic)"
     ),
 ):
     chosen = sum([st is not None, an is not None, scan is not None])

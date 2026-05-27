@@ -1,6 +1,7 @@
 def load_config(path):
     """Load configuration from a JSON file."""
     import json
+
     with open(path) as f:
         return json.load(f)
 

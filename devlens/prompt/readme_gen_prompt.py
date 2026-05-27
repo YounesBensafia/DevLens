@@ -14,7 +14,14 @@ Generate a complete README.md with:
 
 Make it professional, well-formatted with proper markdown, and include relevant badges if appropriate. The README should be comprehensive but concise."""
 
-def project_context(git_root_name: str, git_structure: list, key_files: list, requirements_files: list, config_files: list) -> str:
+
+def project_context(
+    git_root_name: str,
+    git_structure: list,
+    key_files: list,
+    requirements_files: list,
+    config_files: list,
+) -> str:
     return f"""
     Project Name: {git_root_name}
     Languages: {git_structure}
@@ -23,6 +30,7 @@ def project_context(git_root_name: str, git_structure: list, key_files: list, re
     Requirements Files: {requirements_files}
     Config Files: {config_files}
     """
+
 
 def system_message() -> str:
     return "You are a technical documentation expert. Create professional, well-structured README.md files with proper markdown formatting."

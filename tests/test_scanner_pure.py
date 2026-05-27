@@ -6,8 +6,9 @@ from devlens.core.llm_judge import LLMJudgment
 from devlens.core.metrics import FileMetrics
 
 
-def _make_metrics(comprehension_score=50.0, cc=5, mi=60, doc_ratio=0.5,
-                  nesting=2, bad_name_ratio=0.1, lloc=50):
+def _make_metrics(
+    comprehension_score=50.0, cc=5, mi=60, doc_ratio=0.5, nesting=2, bad_name_ratio=0.1, lloc=50
+):
     return FileMetrics(
         path="test.py",
         cyclomatic_complexity=float(cc),
@@ -35,8 +36,15 @@ def _make_git(days=30, authors=2, commits=10, orphan=False, staleness=20.0):
     )
 
 
-def _make_llm(score=80.0, clear=True, side_effects=False, junior=True,
-              single=True, magic=False, explanation="Clean code."):
+def _make_llm(
+    score=80.0,
+    clear=True,
+    side_effects=False,
+    junior=True,
+    single=True,
+    magic=False,
+    explanation="Clean code.",
+):
     return LLMJudgment(
         function_names_clear=clear,
         undocumented_side_effects=side_effects,
@@ -84,8 +92,9 @@ def test_get_risk_level_boundaries():
 
 
 def test_get_top_issues_max_five():
-    metrics = _make_metrics(comprehension_score=30.0, cc=20, mi=30,
-                            doc_ratio=0.0, nesting=6, bad_name_ratio=0.5)
+    metrics = _make_metrics(
+        comprehension_score=30.0, cc=20, mi=30, doc_ratio=0.0, nesting=6, bad_name_ratio=0.5
+    )
     git = _make_git(days=200, authors=1, commits=5, orphan=True)
     llm = _make_llm(score=20.0, side_effects=True, junior=False, magic=True)
     issues = _get_top_issues(metrics, git, llm)

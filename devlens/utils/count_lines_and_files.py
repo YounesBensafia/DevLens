@@ -11,8 +11,10 @@ def get_language(file_path: str) -> str:
             return SUPPORTED_FILE_TYPES[extension]
     return "N/A"
 
+
 def count_lines_in_file(content: str) -> int:
     return sum(1 for _ in content.splitlines())
+
 
 def count_lines_by_language(files: list[str]):
     files_by_language = []
@@ -27,16 +29,18 @@ def count_lines_by_language(files: list[str]):
                     files_by_language.append((lang, line_count))
     return files_by_language
 
+
 def get_content_of_file(file_path: str) -> str:
     with open(file_path, encoding="utf-8", errors="ignore") as f:
         content = f.read()
         non_comment_lines = []
-        lines = content.split('\n')
+        lines = content.split("\n")
         for line in lines:
             line = line.strip()
-            if not line.startswith('#') and line:
+            if not line.startswith("#") and line:
                 non_comment_lines.append(line)
-        return '\n'.join(non_comment_lines)
+        return "\n".join(non_comment_lines)
+
 
 def classify_files_by_language(files: list[str]) -> dict[str, list[str]]:
     total = 0
