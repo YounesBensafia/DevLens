@@ -4,145 +4,139 @@
 
 <img width="100%" src="https://github.com/user-attachments/assets/1883a4eb-2892-4e9d-81cb-dc54cee2b0ea"/>
 
-**Illuminate your codebase with AI-powered analysis**
+**Codebase comprehension scanner**
 
 [![PyPI version](https://img.shields.io/pypi/v/devlens-tool?color=blue&label=PyPI)](https://pypi.org/project/devlens-tool/)
 [![Python](https://img.shields.io/pypi/pyversions/devlens-tool?color=blue)](https://pypi.org/project/devlens-tool/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![GitHub Stars](https://img.shields.io/github/stars/YounesBensafia/DevLens?style=social)](https://github.com/YounesBensafia/DevLens)
 
-[Installation](#installation) · [Features](#features) · [Usage](#usage) · [Contributing](#contributing) · [License](#license)
+[Installation](#installation) . [Usage](#usage) . [Configuration](#configuration) . [Contributing](#contributing) . [License](#license)
 
 </div>
 
 ---
 
-## Overview
+## What it does
 
-DevLens is a powerful CLI tool that delivers comprehensive insights into your codebase. It helps developers and teams **understand**, **document**, and **optimize** their software projects — powered by AI through [Groq](https://groq.com/)'s Llama models.
+DevLens scores every Python file in your project from 0 to 100 based on how hard it is to understand. It uses three layers:
 
-Whether you need a quick project summary or AI-powered code analysis, DevLens has you covered.
+- **Code metrics (50%)** -- cyclomatic complexity, maintainability index, docstring coverage, nesting depth, naming quality
+- **Git signals (30%)** -- how many authors touched the file, how long since the last change, bus factor risk
+- **AI judgment (20%)** -- optional LLM review that answers five yes/no questions about code clarity
 
----
-
-## Quick Demo
-
-<p align="center">
-  <img width="100%" src="https://github.com/user-attachments/assets/b0e6681b-9c2d-4cae-b3dd-71d599594abf" />
-</p>
+The goal is simple: show you exactly which files your team will struggle to understand, so you know where to focus refactoring.
 
 ---
 
-## Features
+## Why this is useful
 
-<table>
-  <tr>
-    <td width="50%">
-      <h3 align="center">AI-Powered Code Analysis</h3>
-      <p align="center"><i>Get intelligent summaries of every file in your project</i></p>
-      <p align="center">
-        <img src="https://github.com/user-attachments/assets/b8e9fdb9-2b19-4ff6-9c6d-72d785ce02e6" width="100%"/>
-      </p>
-    </td>
-    <td width="50%">
-      <h3 align="center">Codebase Statistics</h3>
-      <p align="center"><i>Language breakdown, line counts, and project structure</i></p>
-      <p align="center">
-        <img src="https://github.com/user-attachments/assets/990308a1-83a2-40ba-bb99-182b5ba41434" width="100%"/>
-      </p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3 align="center">Complete Project Insights</h3>
-      <p align="center"><i>Total files, directories, and detailed structure visualization</i></p>
-      <p align="center">
-        <img src="https://github.com/user-attachments/assets/88402183-93e9-48f2-bce5-2a9ae79d8fb0" width="100%"/>
-      </p>
-    </td>
-    <td width="50%">
-      <h3 align="center">Language Breakdown</h3>
-      <p align="center"><i>See exactly how your codebase is distributed across languages</i></p>
-      <p align="center">
-        <img src="https://github.com/user-attachments/assets/c32a43d2-1d00-4ea3-bec2-186efe2ea74e" width="100%"/>
-      </p>
-    </td>
-  </tr>
-
-</table>
+- Onboarding a new developer? They know which files to ask about first.
+- Planning a sprint? You see which files got worse since the last scan.
+- Reporting to a manager? You show a trend line: "Our codebase went from 45 to 62 this quarter."
 
 ---
 
-## Installation
-
-### From PyPI (Recommended)
+## Quick start
 
 ```bash
 pip install devlens-tool
 ```
 
-### Using uv
+Set your API key (for AI features):
 
 ```bash
-uv tool install devlens-tool
+export LLM_API_KEY=your_key_here
 ```
 
-### From Source
+Run a scan:
 
 ```bash
-git clone https://github.com/YounesBensafia/DevLens.git
-cd DevLens
-uv tool install .
-```
-
----
-
-## Setup
-
-DevLens uses [Groq](https://groq.com/) for AI-powered features. You'll need a free API key.
-
-**1. Get your API key** from [console.groq.com](https://console.groq.com/keys)
-
-**2. Set the environment variable:**
-
-```bash
-export GROQ_API_KEY=your_api_key_here
-```
-
-> **Tip:** Add the export line to your `~/.bashrc` or `~/.zshrc` to make it permanent.
-
----
-
-## Usage
-
-```bash
-devlens --help
-```
-
-### Commands
-
-| Command | Description |
-|---|---|
-| `devlens -st <PATH>` | Generate a comprehensive **project summary** — total files, lines, directories, language breakdown, and project structure |
-| `devlens -an <PATH>` | **AI-powered analysis** of each file using meta-llama/llama-4-scout-17b-16e-instruct |
-| `devlens -scan <PATH>` | **Comprehension debt scan** — scores every Python file 0-100 |
-| `devlens -scan <PATH> --no-llm` | Scan without AI (faster, deterministic, CI-safe) |
-
-### Examples
-
-```bash
-# Analyze the current directory
-devlens -st .
-
-# Get AI summaries for a specific project
-devlens -an /path/to/your/project
-
-# Scan comprehension debt (requires API key for LLM layer)
+cd my-project
 devlens -scan .
-
-# Fast deterministic scan (CI-safe, no API calls)
-devlens -scan . --no-llm
 ```
+
+---
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `devlens -scan <PATH>` | Full scan with all three layers (needs API key) |
+| `devlens -scan <PATH> --no-llm` | Scan without AI (deterministic, works in CI) |
+| `devlens -scan <PATH> --trend` | Show how the project score changed over time |
+| `devlens -scan <PATH> --regression` | List files that got worse since the last scan |
+| `devlens -scan <PATH> --since 14` | Compare against a scan from 14 days ago |
+| `devlens -st <PATH>` | Project statistics: files, lines, languages, directories |
+| `devlens -an <PATH>` | AI-generated one-paragraph summary of each file |
+
+---
+
+## Scan output example
+
+```
+Project Score: 62
+Files Analyzed: 47
+High Risk Files: 3
+Bus Factor Risks: 2
+
+File Comprehension Scores:
+  Risk  File                    Score      CC   MI   Docs   Git
+  high  src/parser/lexer.py     34  +- 8   18   28    0%    340d solo
+  med   src/api/handler.py      52  +- 5   12   45   10%    120d ago
+  low   src/models/user.py      72  +- 2    3   82   90%    5d ago
+  good  tests/test_utils.py     88  +- 2    1   95  100%    1d ago
+```
+
+Each score has a confidence band (+-2, +-5, or +-8) that tells you how much the three layers agree. A high spread means be skeptical of the number.
+
+---
+
+## Configuration
+
+You can change how scores are calculated by adding this to your `pyproject.toml`:
+
+```toml
+[tool.devlens]
+weights = { metrics = 0.70, git = 0.10, llm = 0.20 }
+```
+
+The defaults are 50/30/20. The three weights must add up to 1.0.
+
+---
+
+## Using a different AI provider
+
+DevLens works with any OpenAI-compatible API. Set these environment variables:
+
+```bash
+# For OpenAI
+LLM_API_URL=https://api.openai.com/v1/chat/completions
+LLM_API_KEY=sk-your-key
+LLM_MODEL=gpt-4o-mini
+
+# For local models (Ollama)
+LLM_API_URL=http://localhost:11434/v1/chat/completions
+LLM_API_KEY=ollama
+LLM_MODEL=llama3.2
+
+# For Groq (default)
+LLM_API_URL=https://api.groq.com/openai/v1/chat/completions
+LLM_API_KEY=your_groq_key
+```
+
+---
+
+## CI integration
+
+Add this to your CI pipeline:
+
+```yaml
+- name: Check code comprehension
+  run: devlens -scan . --no-llm
+```
+
+The `--no-llm` flag makes it fast and deterministic -- no API calls, no network, no randomness.
 
 ---
 
@@ -151,26 +145,29 @@ devlens -scan . --no-llm
 - [x] Project statistics and language breakdown
 - [x] AI-powered file analysis
 - [x] Comprehension debt scanning (0-100 scoring)
-- [ ] Score trend tracking over time
+- [x] Score trend tracking over time
+- [x] Configurable scoring weights
+- [x] Confidence bands on scores
+- [x] Multi-provider LLM support
 - [ ] Dependency graph visualization
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+2. Create your feature branch (`git checkout -b feature/new-thing`)
+3. Commit your changes (`git commit -m 'Add new thing'`)
+4. Push to the branch (`git push origin feature/new-thing`)
 5. Open a Pull Request
 
 ---
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+MIT. See [LICENSE](LICENSE).
 
 ---
 
