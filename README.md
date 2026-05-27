@@ -21,7 +21,7 @@
 
 DevLens is a powerful CLI tool that delivers comprehensive insights into your codebase. It helps developers and teams **understand**, **document**, and **optimize** their software projects — powered by AI through [Groq](https://groq.com/)'s Llama models.
 
-Whether you need a quick project summary, AI-generated documentation, or dead code detection, DevLens has you covered.
+Whether you need a quick project summary or AI-powered code analysis, DevLens has you covered.
 
 ---
 
@@ -68,38 +68,7 @@ Whether you need a quick project summary, AI-generated documentation, or dead co
       </p>
     </td>
   </tr>
-  <tr>
-    <td width="50%">
-      <h3 align="center">README Generator</h3>
-      <p align="center"><i>Auto-generate professional documentation for your project</i></p>
-      <p align="center">
-        <img src="https://github.com/user-attachments/assets/085614d7-3b5f-42b8-8cb4-4e821937ef82" width="100%"/>
-      </p>
-    </td>
-    <td width="50%">
-      <h3 align="center">Generated Output</h3>
-      <p align="center"><i>Clean, well-structured README tailored to your project</i></p>
-      <p align="center">
-        <img src="https://github.com/user-attachments/assets/52b7ae01-62a2-486b-89cd-af5e55d67b4d" width="100%"/>
-      </p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3 align="center">Dead Code Detection</h3>
-      <p align="center"><i>Find unused functions and imports to keep your code clean</i></p>
-      <p align="center">
-        <img src="https://github.com/user-attachments/assets/9ba1ed63-2809-41b5-94a3-9c8e8c25a50f" width="100%"/>
-      </p>
-    </td>
-    <td width="50%">
-      <h3 align="center">Issue Breakdown</h3>
-      <p align="center"><i>Get a full overview of empty files and project issues</i></p>
-      <p align="center">
-        <img src="https://github.com/user-attachments/assets/1ac36c69-7e68-4e93-af23-1c344b8de47a" width="100%"/>
-      </p>
-    </td>
-  </tr>
+
 </table>
 
 ---
@@ -156,8 +125,8 @@ devlens --help
 |---|---|
 | `devlens -st <PATH>` | Generate a comprehensive **project summary** — total files, lines, directories, language breakdown, and project structure |
 | `devlens -an <PATH>` | **AI-powered analysis** of each file using meta-llama/llama-4-scout-17b-16e-instruct |
-| `devlens -rd` | Auto-generate a professional **README.md** tailored to your project |
-| `devlens -deadcode <PATH>` | Detect **unused functions** and imports across the codebase |
+| `devlens -scan <PATH>` | **Comprehension debt scan** — scores every Python file 0-100 |
+| `devlens -scan <PATH> --no-llm` | Scan without AI (faster, deterministic, CI-safe) |
 
 ### Examples
 
@@ -168,11 +137,11 @@ devlens -st .
 # Get AI summaries for a specific project
 devlens -an /path/to/your/project
 
-# Generate a README for the current project
-devlens -rd
+# Scan comprehension debt (requires API key for LLM layer)
+devlens -scan .
 
-# Find dead code
-devlens -deadcode .
+# Fast deterministic scan (CI-safe, no API calls)
+devlens -scan . --no-llm
 ```
 
 ---
@@ -181,10 +150,9 @@ devlens -deadcode .
 
 - [x] Project statistics and language breakdown
 - [x] AI-powered file analysis
-- [x] Automatic README generation
-- [x] Dead code detection
+- [x] Comprehension debt scanning (0-100 scoring)
+- [ ] Score trend tracking over time
 - [ ] Dependency graph visualization
-- [ ] Support for more languages in dead code detection
 
 ---
 

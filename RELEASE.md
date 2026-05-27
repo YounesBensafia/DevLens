@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![GitHub Stars](https://img.shields.io/github/stars/YounesBensafia/DevLens?style=social)](https://github.com/YounesBensafia/DevLens)
 
-A CLI tool that delivers AI-powered insights into your codebase — project statistics, language breakdown, dead code detection, and automatic README generation. Powered by [Groq](https://groq.com/)'s Llama models.
+A CLI tool that delivers AI-powered insights into your codebase — project statistics, language breakdown, and comprehension debt scanning. Powered by [Groq](https://groq.com/)'s Llama models.
 
 ## What's New in v0.2.0
 
@@ -50,8 +50,8 @@ uv tool install devlens-tool --upgrade
 |---------|-------------|
 | `devlens -st <PATH>` | Project summary — files, lines, directories, language breakdown, structure |
 | `devlens -an <PATH>` | AI-powered file analysis using meta-llama/llama-4-scout-17b-16e-instruct |
-| `devlens -rd` | Auto-generate a professional README.md |
-| `devlens -deadcode <PATH>` | Detect unused functions and imports |
+| `devlens -scan <PATH>` | Comprehension debt scan — scores files 0-100 |
+| `devlens -scan <PATH> --no-llm` | Scan without AI (deterministic, CI-safe) |
 
 ## Full Changelog
 

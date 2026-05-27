@@ -13,10 +13,4 @@ def print_ai_summary(summaries):
     for file, summary in summaries:
         console.print(f"\n[underline]{file}[/underline]\n{summary}")
 
-def print_dead_files(files):
-    console.print("\n🧹 [red]Dead Code Detected:[/red]")
-    if files:
-        for f in files:
-            console.print(f"  - {f}")
-    else:
-        console.print("  ✅ No dead code found!")
+
