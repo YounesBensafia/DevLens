@@ -31,7 +31,7 @@ jobs:
         run: ruff format --check devlens/ tests/
 
       - name: Type check
-        run: mypy devlens/ --ignore-missing-imports
+        run: mypy devlens/ --ignore-missing-imports --explicit-package-bases
 
       - name: Test with coverage
         run: python -m pytest --cov=devlens --cov-report=term-missing -v
