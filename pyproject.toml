@@ -36,7 +36,7 @@ Issues = "https://github.com/YounesBensafia/DevLens/issues"
 [tool.uv]
 package = true
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
     "build>=1.4.2",
     "mypy>=1.0.0",
