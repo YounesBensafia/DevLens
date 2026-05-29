@@ -219,11 +219,11 @@ def compute_comment_ratio(diff_patches: list[str]) -> float:
         return 0.0
 
     ratio = added_comment_lines / total
-    if ratio <= 0.05:
-        return max(0.0, 50.0 - (ratio / 0.05) * 50.0)
-    if ratio < 0.40:
+    if ratio < 0.35:
         return 0.0
-    return min(100.0, (ratio - 0.40) / 0.20 * 100.0)
+    if ratio < 0.50:
+        return (ratio - 0.35) / 0.15 * 50.0
+    return 50.0 + (ratio - 0.50) / 0.50 * 50.0
 
 
 def compute_diff_description_ratio(

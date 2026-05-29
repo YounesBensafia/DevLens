@@ -1,6 +1,7 @@
 import json
 import os
 import subprocess
+from collections import Counter
 
 import pytest
 
@@ -28,9 +29,9 @@ from devlens.slop import (
 # Helper
 # ---------------------------------------------------------------------------
 
-def _make_git_repo(tmp_path, branch="main"):
+def _make_git_repo(tmp_path):
     """Initialise a git repo at tmp_path and return the Repo path."""
-    subprocess.run(["git", "init"], cwd=tmp_path, capture_output=True)
+    subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path, capture_output=True)
     subprocess.run(
         ["git", "config", "user.email", "test@devlens.io"],
         cwd=tmp_path,
