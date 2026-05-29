@@ -315,7 +315,8 @@ def test_build_summary_flagged():
         "s2": SignalResult(raw=50, weighted=7.5, verdict="WARN"),
     }
     summary = _build_summary(73.0, 60, signals)
-    assert "fail" in summary.lower()
+    assert "flagged" in summary.lower()
+    assert "73" in summary
     assert "73" in summary
 
 
