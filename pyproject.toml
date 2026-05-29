@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "devlens-tool"
 version = "0.3.0"
-description = "A cli tool to help developers understand and manage their codebases."
+description = "Scores every Python file from 0 to 100 based on how hard it is to understand, using code metrics, git signals, and optional AI."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

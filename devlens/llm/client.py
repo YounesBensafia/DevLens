@@ -1,4 +1,4 @@
-import requests
+import requests # type: ignore
 
 from devlens.config.settings import (
     LLM_API_KEY,

@@ -19,13 +19,7 @@
 
 ## What it does
 
-DevLens scores every Python file in your project from 0 to 100 based on how hard it is to understand. It uses three layers:
-
-- **Code metrics (50%)** -- cyclomatic complexity, maintainability index, docstring coverage, nesting depth, naming quality
-- **Git signals (30%)** -- how many authors touched the file, how long since the last change, bus factor risk
-- **AI judgment (20%)** -- optional LLM review that answers five yes/no questions about code clarity
-
-The goal is simple: show you exactly which files your team will struggle to understand, so you know where to focus refactoring.
+Lost in a new codebase? DevLens scans your Python project and scores every file from 0 to 100 based on how hard it is to understand. It uses code complexity metrics, git history signals, and optional AI judgment to pinpoint the files your team will struggle with. It also shows project statistics (languages, lines, directories) and can summarize each file with AI.
 
 ---
 
