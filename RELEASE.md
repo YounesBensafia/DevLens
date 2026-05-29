@@ -1,4 +1,4 @@
-# DevLens v0.4.0
+# DevLens v0.4.1
 
 [![PyPI version](https://img.shields.io/pypi/v/devlens-tool?color=blue&label=PyPI)](https://pypi.org/project/devlens-tool/)
 [![Python](https://img.shields.io/pypi/pyversions/devlens-tool?color=blue)](https://pypi.org/project/devlens-tool/)
@@ -63,7 +63,7 @@ pip install devlens-tool --upgrade
 
 ## Full Changelog
 
-https://github.com/YounesBensafia/DevLens/compare/v0.2.0...v0.4.0
+https://github.com/YounesBensafia/DevLens/compare/v0.2.0...v0.4.1
 
 ---
 
