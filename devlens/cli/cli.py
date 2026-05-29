@@ -129,11 +129,12 @@ def check_pr(
     ),
 ):
     """Detect AI-generated or low-effort PRs using heuristic signals (no LLM)."""
-    from devlens.slop import compute_slop_score
-    from rich.console import Console
-    from rich.table import Table
-    from rich.panel import Panel
     from rich import box
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
+
+    from devlens.slop import compute_slop_score
 
     result = compute_slop_score(
         repo_path=repo,
@@ -156,7 +157,7 @@ def check_pr(
             },
             "summary": result.summary,
         }
-        Console().print(j.dumps(data, indent=2))
+        print(j.dumps(data, indent=2))
     else:
         console = Console()
         emoji = "⚠️" if result.flagged else "✅"

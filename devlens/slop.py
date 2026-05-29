@@ -6,10 +6,8 @@ import re
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
-from git import Repo, InvalidGitRepositoryError
-
+from git import InvalidGitRepositoryError, Repo
 
 AI_FILLER_PHRASES = [
     "this pr", "this commit", "i have", "in this pr",
@@ -75,7 +73,7 @@ def _manual_tfidf(docstrings: list[str]) -> list[list[float]]:
 
 
 def _cosine_similarity(a: list[float], b: list[float]) -> float:
-    dot = sum(ai * bi for ai, bi in zip(a, b))
+    dot = sum(ai * bi for ai, bi in zip(a, b, strict=False))
     na = math.sqrt(sum(ai * ai for ai in a))
     nb = math.sqrt(sum(bi * bi for bi in b))
     if na == 0 or nb == 0:
@@ -120,7 +118,7 @@ def _get_verdict(raw: float) -> str:
     return "PASS"
 
 
-def _read_pr_body(pr_body: Optional[str], repo_path: str) -> Optional[str]:
+def _read_pr_body(pr_body: str | None, repo_path: str) -> str | None:
     if pr_body:
         body_path = Path(pr_body)
         if body_path.is_file():
@@ -227,7 +225,7 @@ def compute_comment_ratio(diff_patches: list[str]) -> float:
 
 
 def compute_diff_description_ratio(
-    changed_lines: int, description: Optional[str]
+    changed_lines: int, description: str | None
 ) -> float:
     """Score 0–100: large diff + tiny description + filler phrases → high."""
     desc = (description or "").strip()
@@ -336,8 +334,8 @@ def _build_summary(
 def compute_slop_score(
     repo_path: str = ".",
     base_branch: str = "main",
-    head_branch: Optional[str] = None,
-    pr_body: Optional[str] = None,
+    head_branch: str | None = None,
+    pr_body: str | None = None,
     threshold: int = 60,
 ) -> SlopResult:
     try:

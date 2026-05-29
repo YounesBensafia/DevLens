@@ -8,6 +8,13 @@ import pytest
 from devlens.slop import (
     SignalResult,
     SlopResult,
+    _build_summary,
+    _cosine_similarity,
+    _extract_docstrings,
+    _get_verdict,
+    _manual_tfidf,
+    _read_pr_body,
+    _shannon_entropy,
     compute_churn_pattern,
     compute_comment_ratio,
     compute_diff_description_ratio,
@@ -15,15 +22,7 @@ from devlens.slop import (
     compute_identifier_entropy,
     compute_new_author_risk,
     compute_slop_score,
-    _build_summary,
-    _cosine_similarity,
-    _extract_docstrings,
-    _get_verdict,
-    _manual_tfidf,
-    _shannon_entropy,
-    _read_pr_body,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helper
