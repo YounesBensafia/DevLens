@@ -413,8 +413,8 @@ def compute_slop_score(
                     pass
 
         if diff_item.diff:
-            raw = diff_item.diff
-            patch = raw.decode("utf-8", errors="ignore") if isinstance(raw, bytes) else raw
+            raw_diff = diff_item.diff
+            patch = raw_diff.decode("utf-8", errors="ignore") if isinstance(raw_diff, bytes) else raw_diff
             diff_patches.append(patch)
             for line in patch.split("\n"):
                 if line.startswith("+") and not line.startswith("+++"):
