@@ -104,6 +104,108 @@ def _run_scan(
     )
 
 
+@app.command()
+def check_pr(
+    repo: str = typer.Option(".", "--repo", help="Path to the git repository"),
+    base: str = typer.Option("main", "--base", help="Base branch (e.g. main)"),
+    head: str | None = typer.Option(
+        None, "--head", help="Head branch (default: current branch)"
+    ),
+    threshold: int = typer.Option(
+        60, "--threshold", help="Slop score threshold (0–100)"
+    ),
+    output: str = typer.Option(
+        "text", "--output", help="Output format: text or json"
+    ),
+    fail_on_slop: bool = typer.Option(
+        False,
+        "--fail-on-slop",
+        help="Exit with code 1 if slop score >= threshold",
+    ),
+    pr_body: str | None = typer.Option(
+        None,
+        "--pr-body",
+        help="PR description text or path to file containing it",
+    ),
+):
+    """Detect AI-generated or low-effort PRs using heuristic signals (no LLM)."""
+    from devlens.slop import compute_slop_score
+    from rich.console import Console
+    from rich.table import Table
+    from rich.panel import Panel
+    from rich import box
+
+    result = compute_slop_score(
+        repo_path=repo,
+        base_branch=base,
+        head_branch=head,
+        pr_body=pr_body,
+        threshold=threshold,
+    )
+
+    if output == "json":
+        import json as j
+
+        data = {
+            "slop_score": result.slop_score,
+            "threshold": result.threshold,
+            "flagged": result.flagged,
+            "signals": {
+                name: {"raw": s.raw, "weighted": s.weighted, "verdict": s.verdict}
+                for name, s in result.signals.items()
+            },
+            "summary": result.summary,
+        }
+        Console().print(j.dumps(data, indent=2))
+    else:
+        console = Console()
+        emoji = "⚠️" if result.flagged else "✅"
+        label = "POSSIBLE AI SLOP" if result.flagged else "LOOKS HUMAN"
+        color = "red" if result.flagged else "green"
+
+        console.print(
+            Panel(
+                f"[bold {color}]{emoji} DevLens Slop Report — {label}[/bold {color}]",
+                border_style=color,
+                box=box.DOUBLE,
+                padding=(1, 2),
+            )
+        )
+
+        table = Table(
+            title=f"Slop Score: {result.slop_score:.0f}/100  (threshold: {threshold})",
+            header_style="bold white on dark_blue",
+            box=box.ROUNDED,
+            border_style="blue",
+        )
+        table.add_column("Signal", style="cyan", no_wrap=True)
+        table.add_column("Raw Value", justify="right")
+        table.add_column("Weighted", justify="right")
+        table.add_column("Verdict", justify="center")
+
+        verdict_colors = {"FAIL": "bold red", "WARN": "yellow", "PASS": "green"}
+        for name, signal in result.signals.items():
+            vc = verdict_colors.get(signal.verdict, "white")
+            table.add_row(
+                name.replace("_", " "),
+                f"{signal.raw:.1f}",
+                f"{signal.weighted:.1f}",
+                f"[{vc}]{signal.verdict}[/{vc}]",
+            )
+
+        table.add_row(
+            "[bold]Total[/bold]",
+            "",
+            f"[bold]{result.slop_score:.1f}[/bold]",
+            f"[bold {color}]{label}[/bold {color}]",
+        )
+        console.print(table)
+        console.print(f"\n[dim]{result.summary}[/dim]")
+
+    if result.flagged and fail_on_slop:
+        raise typer.Exit(code=1)
+
+
 def main():
     app()
 

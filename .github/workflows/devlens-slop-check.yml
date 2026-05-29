@@ -1,0 +1,52 @@
+name: DevLens Slop Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  slop-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install DevLens
+        run: pip install devlens-tool
+
+      - name: Save PR body
+        run: echo "${{ github.event.pull_request.body }}" > .pr_body.txt
+
+      - name: Run slop check
+        id: slop
+        run: |
+          devlens check-pr \
+            --repo . \
+            --base ${{ github.event.pull_request.base.ref }} \
+            --head ${{ github.event.pull_request.head.ref }} \
+            --output json \
+            --fail-on-slop \
+            --threshold 65 > slop_report.json
+
+      - name: Post PR comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('slop_report.json', 'utf8'));
+            const emoji = report.flagged ? '\u26A0\uFE0F' : '\u2705';
+            const label = report.flagged ? 'Possible AI Slop' : 'Looks Human';
+            const body = `## ${emoji} DevLens Slop Check: ${label}\n\n**Score: ${report.slop_score}/100** (threshold: ${report.threshold})\n\n${report.summary}`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
