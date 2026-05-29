@@ -4,7 +4,7 @@
 
 <img width="100%" src="https://github.com/user-attachments/assets/1883a4eb-2892-4e9d-81cb-dc54cee2b0ea"/>
 
-**Codebase comprehension scanner**
+**Codebase comprehension scanner + AI slop detector**
 
 [![PyPI version](https://img.shields.io/pypi/v/devlens-tool?color=blue&label=PyPI)](https://pypi.org/project/devlens-tool/)
 [![Python](https://img.shields.io/pypi/pyversions/devlens-tool?color=blue)](https://pypi.org/project/devlens-tool/)
@@ -20,6 +20,8 @@
 ## What it does
 
 Lost in a new codebase? DevLens scans your Python project and scores every file from 0 to 100 based on how hard it is to understand. It uses code complexity metrics, git history signals, and optional AI judgment to pinpoint the files your team will struggle with. It also shows project statistics (languages, lines, directories) and can summarize each file with AI.
+
+DevLens also detects AI-generated or low-effort pull requests using pure heuristic signals: no LLM calls, no API costs, fully deterministic. Drop it in CI to catch slop before it merges.
 
 ---
 
@@ -55,7 +57,7 @@ devlens -scan .
 ## Commands
 
 | Command | What it does |
-|---|---|
+|---|---|---|
 | `devlens -scan <PATH>` | Full scan with all three layers (needs API key) |
 | `devlens -scan <PATH> --no-llm` | Scan without AI (deterministic, works in CI) |
 | `devlens -scan <PATH> --trend` | Show how the project score changed over time |
@@ -63,6 +65,7 @@ devlens -scan .
 | `devlens -scan <PATH> --since 14` | Compare against a scan from 14 days ago |
 | `devlens -st <PATH>` | Project statistics: files, lines, languages, directories |
 | `devlens -an <PATH>` | AI-generated one-paragraph summary of each file |
+| `devlens check-pr` | Detect AI-generated or low-effort PRs (no LLM needed) |
 
 ---
 
@@ -83,6 +86,93 @@ File Comprehension Scores:
 ```
 
 Each score has a confidence band (+-2, +-5, or +-8) that tells you how much the three layers agree. A high spread means be skeptical of the number.
+
+---
+
+## Slop Detection
+
+DevLens detects likely AI-generated or low-effort pull requests using **6 heuristic signals**: zero LLM calls, zero API cost, fully deterministic.
+
+### Signals
+
+| Signal | Weight | What it catches |
+|---|---|---|
+| `docstring_uniformity` | 20% | AI-templated docstrings (TF-IDF cosine similarity) |
+| `identifier_entropy` | 15% | Suspicious naming patterns (too random or too repetitive) |
+| `comment_to_code_ratio` | 15% | Over-commented AI code (>35% comment lines) |
+| `diff_size_vs_description_ratio` | 20% | Large diff with tiny description + AI filler phrases |
+| `churn_pattern` | 15% | High rewrite ratio (adding lines = deleting lines) |
+| `new_author_large_diff` | 15% | New contributor dumping 100+ lines |
+
+### Usage
+
+```bash
+# Check a PR branch against main
+devlens check-pr --repo . --base main --head my-feature
+
+# With PR description (for diff/description ratio)
+devlens check-pr --repo . --base main --head feature --pr-body "Adds user login"
+
+# JSON output for CI parsing
+devlens check-pr --repo . --base main --head feature --output json
+
+# Fail CI if slop score >= threshold
+devlens check-pr --repo . --base main --head feature --fail-on-slop --threshold 65
+```
+
+### Slop output example
+
+```
+╔══════════════════════════════════════════════════════════════════════╗
+║  DEVENS SLOP REPORT: POSSIBLE AI SLOP                              ║
+╚══════════════════════════════════════════════════════════════════════╝
+            Slop Score: 73/100  (threshold: 65)
+╭─────────────────────────────┬─────────┬──────────┬─────────────╮
+│ Signal                      │ Raw Val │ Weighted │   Verdict   │
+├─────────────────────────────┼─────────┼──────────┼─────────────┤
+│ docstring uniformity        │    87.0 │     17.4 │    FAIL     │
+│ identifier entropy          │    12.3 │      1.8 │    PASS     │
+│ comment to code ratio       │    55.0 │      8.3 │    WARN     │
+│ diff size vs description    │    90.0 │     18.0 │    FAIL     │
+│ churn pattern               │    45.0 │      6.8 │    WARN     │
+│ new author large diff       │    80.0 │     12.0 │    FAIL     │
+├─────────────────────────────┼─────────┼──────────┼─────────────┤
+│ Total                       │         │     73.0 │ POSSIBLE AI │
+╰─────────────────────────────┴─────────┴──────────┴─────────────╯
+```
+
+### CI integration
+
+Add this to `.github/workflows/devlens-slop-check.yml`:
+
+```yaml
+name: DevLens Slop Check
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  slop-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install DevLens
+        run: pip install devlens-tool
+      - name: Save PR body
+        run: echo "${{ github.event.pull_request.body }}" > .pr_body.txt
+      - name: Run slop check
+        run: |
+          devlens check-pr \
+            --repo . \
+            --base ${{ github.event.pull_request.base.ref }} \
+            --head ${{ github.event.pull_request.head.ref }} \
+            --output json --fail-on-slop --threshold 65
+```
 
 ---
 
@@ -143,6 +233,7 @@ The `--no-llm` flag makes it fast and deterministic -- no API calls, no network,
 - [x] Configurable scoring weights
 - [x] Confidence bands on scores
 - [x] Multi-provider LLM support
+- [x] AI slop detection (heuristic, zero LLM cost)
 - [ ] Dependency graph visualization
 
 ---
