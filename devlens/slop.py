@@ -55,25 +55,25 @@ def _manual_tfidf(docstrings: list[str]) -> list[list[float]]:
         tokens = re.findall(r"[a-z]+", doc.lower())
         tokenized.append(Counter(tokens))
 
-    vocab: set[str] = set()
+    vocab_set: set[str] = set()
     for counter in tokenized:
-        vocab.update(counter.keys())
-    vocab = sorted(vocab)
+        vocab_set.update(counter.keys())
+    vocab_list = sorted(vocab_set)
     n_docs = len(docstrings)
 
     idf: dict[str, float] = {}
-    for term in vocab:
+    for term in vocab_list:
         df = sum(1 for c in tokenized if c[term] > 0)
         idf[term] = math.log((n_docs + 1) / (df + 1)) + 1
 
-    vectors = []
+    vectors: list[list[float]] = []
     for counter in tokenized:
         total = sum(counter.values())
         if total == 0:
-            vectors.append([0.0] * len(vocab))
+            vectors.append([0.0] * len(vocab_list))
             continue
         vec = []
-        for term in vocab:
+        for term in vocab_list:
             tf = counter[term] / total
             vec.append(tf * idf[term])
         vectors.append(vec)
