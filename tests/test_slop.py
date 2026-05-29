@@ -28,6 +28,7 @@ from devlens.slop import (
 # Helper
 # ---------------------------------------------------------------------------
 
+
 def _make_git_repo(tmp_path):
     """Initialise a git repo at tmp_path and return the Repo path."""
     subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path, capture_output=True)
@@ -54,14 +55,18 @@ def _commit_file(tmp_path, filename, content, msg="commit"):
         ["git", "commit", "-m", msg],
         cwd=tmp_path,
         capture_output=True,
-        env={**os.environ, "GIT_AUTHOR_DATE": "2026-05-01T12:00:00",
-             "GIT_COMMITTER_DATE": "2026-05-01T12:00:00"},
+        env={
+            **os.environ,
+            "GIT_AUTHOR_DATE": "2026-05-01T12:00:00",
+            "GIT_COMMITTER_DATE": "2026-05-01T12:00:00",
+        },
     )
 
 
 # ---------------------------------------------------------------------------
 # _extract_docstrings
 # ---------------------------------------------------------------------------
+
 
 def test_extract_docstrings_empty():
     assert _extract_docstrings("") == []
@@ -92,6 +97,7 @@ class Bar:
 # _manual_tfidf / _cosine_similarity
 # ---------------------------------------------------------------------------
 
+
 def test_manual_tfidf_empty():
     assert _manual_tfidf([]) == []
 
@@ -120,6 +126,7 @@ def test_cosine_similarity_identical():
 # _shannon_entropy
 # ---------------------------------------------------------------------------
 
+
 def test_shannon_entropy_uniform():
     h = _shannon_entropy(Counter({"a": 1, "b": 1, "c": 1, "d": 1}))
     assert h == pytest.approx(2.0, abs=0.01)
@@ -132,6 +139,7 @@ def test_shannon_entropy_single():
 # ---------------------------------------------------------------------------
 # compute_docstring_uniformity
 # ---------------------------------------------------------------------------
+
 
 def test_docstring_uniformity_identical():
     files = [
@@ -165,6 +173,7 @@ def test_docstring_uniformity_non_python():
 # compute_identifier_entropy
 # ---------------------------------------------------------------------------
 
+
 def test_identifier_entropy_middle_band():
     """Skewed distribution → medium entropy → low score (clean signal)."""
     code = "x = 1\n" * 5 + "y = 1\n" + "z = 1\n"
@@ -190,6 +199,7 @@ def test_identifier_entropy_too_few():
 # compute_comment_ratio
 # ---------------------------------------------------------------------------
 
+
 def test_comment_ratio_overcommented():
     patches = [
         "+# Comment 1\n+# Comment 2\n+# Comment 3\n+# Comment 4\n+def foo():\n+    pass",
@@ -213,6 +223,7 @@ def test_comment_ratio_empty():
 # ---------------------------------------------------------------------------
 # compute_diff_description_ratio
 # ---------------------------------------------------------------------------
+
 
 def test_diff_desc_large_diff_no_desc():
     score = compute_diff_description_ratio(500, None)
@@ -241,6 +252,7 @@ def test_diff_desc_empty_desc_no_changes():
 # compute_churn_pattern
 # ---------------------------------------------------------------------------
 
+
 def test_churn_high():
     patches = [
         "-def old_foo():\n-    old_way()\n+def new_foo():\n+    new_way()",
@@ -265,15 +277,19 @@ def test_churn_empty():
 # compute_new_author_risk
 # ---------------------------------------------------------------------------
 
+
 def test_new_author_risk_zero_prior(tmp_path):
     repo_path = _make_git_repo(tmp_path)
     _commit_file(tmp_path, "main.py", "x = 1", "initial")
     head_sha = subprocess.run(
         ["git", "rev-parse", "HEAD"],
-        cwd=tmp_path, capture_output=True, text=True,
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
     ).stdout.strip()
 
     from git import Repo
+
     repo = Repo(repo_path)
     score = compute_new_author_risk(repo, head_sha, 200)
     # First commit for this author — prior_count includes the HEAD commit,
@@ -285,6 +301,7 @@ def test_new_author_risk_zero_prior(tmp_path):
 # SignalResult
 # ---------------------------------------------------------------------------
 
+
 def test_signal_result_post_init():
     s = SignalResult(raw=85.123, weighted=17.0246)
     assert s.raw == 85.12
@@ -294,6 +311,7 @@ def test_signal_result_post_init():
 # ---------------------------------------------------------------------------
 # _get_verdict
 # ---------------------------------------------------------------------------
+
 
 def test_get_verdict():
     assert _get_verdict(80) == "FAIL"
@@ -307,6 +325,7 @@ def test_get_verdict():
 # ---------------------------------------------------------------------------
 # _build_summary
 # ---------------------------------------------------------------------------
+
 
 def test_build_summary_flagged():
     signals = {
@@ -328,6 +347,7 @@ def test_build_summary_clean():
 # ---------------------------------------------------------------------------
 # _read_pr_body
 # ---------------------------------------------------------------------------
+
 
 def test_read_pr_body_direct_string():
     assert _read_pr_body("hello world", "/tmp") == "hello world"
@@ -355,6 +375,7 @@ def test_read_pr_body_none_missing():
 # compute_slop_score integration (using a real git repo)
 # ---------------------------------------------------------------------------
 
+
 def test_compute_slop_score_no_git(tmp_path):
     result = compute_slop_score(repo_path=str(tmp_path))
     assert isinstance(result, SlopResult)
@@ -367,12 +388,15 @@ def test_compute_slop_score_clean_pr(tmp_path):
     _commit_file(tmp_path, "main.py", "x = 1", "initial")
     subprocess.run(
         ["git", "checkout", "-b", "feature"],
-        cwd=tmp_path, capture_output=True,
+        cwd=tmp_path,
+        capture_output=True,
     )
     _commit_file(tmp_path, "utils.py", "def add(a, b):\n    return a + b", "add util")
 
     result = compute_slop_score(
-        repo_path=repo_path, base_branch="main", head_branch="feature",
+        repo_path=repo_path,
+        base_branch="main",
+        head_branch="feature",
         pr_body="Add utility function for addition",
     )
     assert 0 <= result.slop_score <= 100
@@ -384,7 +408,9 @@ def test_compute_slop_score_identical_branches(tmp_path):
     repo_path = _make_git_repo(tmp_path)
     _commit_file(tmp_path, "main.py", "x = 1", "initial")
     result = compute_slop_score(
-        repo_path=repo_path, base_branch="main", head_branch="main",
+        repo_path=repo_path,
+        base_branch="main",
+        head_branch="main",
     )
     assert 0 <= result.slop_score <= 100
 
@@ -395,12 +421,15 @@ def test_compute_slop_score_score_range(tmp_path):
     _commit_file(tmp_path, "main.py", "x = 1", "initial")
     subprocess.run(
         ["git", "checkout", "-b", "big-change"],
-        cwd=tmp_path, capture_output=True,
+        cwd=tmp_path,
+        capture_output=True,
     )
     _commit_file(tmp_path, "big.py", "# comment\n" * 50 + "x = 1\n" * 50, "big change")
 
     result = compute_slop_score(
-        repo_path=repo_path, base_branch="main", head_branch="big-change",
+        repo_path=repo_path,
+        base_branch="main",
+        head_branch="big-change",
     )
     assert 0 <= result.slop_score <= 100
 
@@ -409,50 +438,70 @@ def test_compute_slop_score_score_range(tmp_path):
 # CLI integration (typer subcommand)
 # ---------------------------------------------------------------------------
 
+
 def test_cli_help():
     """Ensure check-pr appears in help output."""
     import subprocess as sp
+
     result = sp.run(
         ["python", "-m", "devlens.cli.cli", "check-pr", "--help"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     assert result.returncode == 0
     assert "check-pr" in result.stdout or "Detect AI-generated" in result.stdout
 
 
-def test_cli_text_output(tmp_path, monkeypatch):
+def test_cli_text_output(tmp_path):
     """Run check-pr from CLI with text output."""
-    repo_path = _make_git_repo(tmp_path)
+    _make_git_repo(tmp_path)
     _commit_file(tmp_path, "main.py", "x = 1", "initial")
 
     import subprocess as sp
+
     result = sp.run(
         [
-            "python", "-m", "devlens.cli.cli", "check-pr",
-            "--repo", str(tmp_path),
-            "--base", "main",
-            "--head", "main",
+            "python",
+            "-m",
+            "devlens.cli.cli",
+            "check-pr",
+            "--repo",
+            str(tmp_path),
+            "--base",
+            "main",
+            "--head",
+            "main",
         ],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     assert "Slop Report" in result.stdout or "Slop Score" in result.stdout
 
 
 def test_cli_json_output(tmp_path):
     """Run check-pr with --output json produces valid JSON."""
-    repo_path = _make_git_repo(tmp_path)
+    _make_git_repo(tmp_path)
     _commit_file(tmp_path, "main.py", "x = 1", "initial")
 
     import subprocess as sp
+
     result = sp.run(
         [
-            "python", "-m", "devlens.cli.cli", "check-pr",
-            "--repo", str(tmp_path),
-            "--base", "main",
-            "--head", "main",
-            "--output", "json",
+            "python",
+            "-m",
+            "devlens.cli.cli",
+            "check-pr",
+            "--repo",
+            str(tmp_path),
+            "--base",
+            "main",
+            "--head",
+            "main",
+            "--output",
+            "json",
         ],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     data = json.loads(result.stdout)
     assert "slop_score" in data
@@ -463,19 +512,28 @@ def test_cli_json_output(tmp_path):
 
 def test_cli_fail_on_slop_exit_code(tmp_path):
     """--fail-on-slop should not exit 1 for a clean PR."""
-    repo_path = _make_git_repo(tmp_path)
+    _make_git_repo(tmp_path)
     _commit_file(tmp_path, "main.py", "x = 1", "initial")
 
     import subprocess as sp
+
     result = sp.run(
         [
-            "python", "-m", "devlens.cli.cli", "check-pr",
-            "--repo", str(tmp_path),
-            "--base", "main",
-            "--head", "main",
+            "python",
+            "-m",
+            "devlens.cli.cli",
+            "check-pr",
+            "--repo",
+            str(tmp_path),
+            "--base",
+            "main",
+            "--head",
+            "main",
             "--fail-on-slop",
-            "--threshold", "0",
+            "--threshold",
+            "0",
         ],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     assert result.returncode == 1  # threshold 0 means almost everything is flagged

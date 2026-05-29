@@ -108,15 +108,9 @@ def _run_scan(
 def check_pr(
     repo: str = typer.Option(".", "--repo", help="Path to the git repository"),
     base: str = typer.Option("main", "--base", help="Base branch (e.g. main)"),
-    head: str | None = typer.Option(
-        None, "--head", help="Head branch (default: current branch)"
-    ),
-    threshold: int = typer.Option(
-        60, "--threshold", help="Slop score threshold (0–100)"
-    ),
-    output: str = typer.Option(
-        "text", "--output", help="Output format: text or json"
-    ),
+    head: str | None = typer.Option(None, "--head", help="Head branch (default: current branch)"),
+    threshold: int = typer.Option(60, "--threshold", help="Slop score threshold (0–100)"),
+    output: str = typer.Option("text", "--output", help="Output format: text or json"),
     fail_on_slop: bool = typer.Option(
         False,
         "--fail-on-slop",

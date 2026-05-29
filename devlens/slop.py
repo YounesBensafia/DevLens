@@ -10,9 +10,18 @@ from pathlib import Path
 from git import InvalidGitRepositoryError, Repo
 
 AI_FILLER_PHRASES = [
-    "this pr", "this commit", "i have", "in this pr",
-    "as per", "leverage", "utilize", "this change",
-    "implemented", "updated the", "adds", "fixes",
+    "this pr",
+    "this commit",
+    "i have",
+    "in this pr",
+    "as per",
+    "leverage",
+    "utilize",
+    "this change",
+    "implemented",
+    "updated the",
+    "adds",
+    "fixes",
 ]
 
 
@@ -224,9 +233,7 @@ def compute_comment_ratio(diff_patches: list[str]) -> float:
     return 50.0 + (ratio - 0.50) / 0.50 * 50.0
 
 
-def compute_diff_description_ratio(
-    changed_lines: int, description: str | None
-) -> float:
+def compute_diff_description_ratio(changed_lines: int, description: str | None) -> float:
     """Score 0–100: large diff + tiny description + filler phrases → high."""
     desc = (description or "").strip()
 
@@ -280,9 +287,7 @@ def compute_churn_pattern(diff_patches: list[str]) -> float:
     return 50 + (churn_ratio - 0.6) / 0.4 * 50
 
 
-def compute_new_author_risk(
-    repo: Repo, head_commit_hexsha: str, added_lines: int
-) -> float:
+def compute_new_author_risk(repo: Repo, head_commit_hexsha: str, added_lines: int) -> float:
     """Score 0–100: new author + large diff = high risk."""
     try:
         head_commit = repo.commit(head_commit_hexsha)
@@ -294,9 +299,7 @@ def compute_new_author_risk(
         return 0.0
 
     try:
-        prior_count = sum(
-            1 for _ in repo.iter_commits(author=author_email, max_count=1000)
-        )
+        prior_count = sum(1 for _ in repo.iter_commits(author=author_email, max_count=1000))
     except Exception:
         prior_count = 1
 
@@ -307,9 +310,7 @@ def compute_new_author_risk(
     return 0.0
 
 
-def _build_summary(
-    slop_score: float, threshold: int, signals: dict[str, SignalResult]
-) -> str:
+def _build_summary(slop_score: float, threshold: int, signals: dict[str, SignalResult]) -> str:
     failing = [name for name, s in signals.items() if s.verdict == "FAIL"]
     warning = [name for name, s in signals.items() if s.verdict == "WARN"]
 
@@ -443,9 +444,7 @@ def compute_slop_score(
     )
 
     raw = compute_churn_pattern(diff_patches)
-    signals["churn_pattern"] = SignalResult(
-        raw=raw, weighted=raw * 0.15, verdict=_get_verdict(raw)
-    )
+    signals["churn_pattern"] = SignalResult(raw=raw, weighted=raw * 0.15, verdict=_get_verdict(raw))
 
     try:
         head_commit_hexsha = repo.commit(head).hexsha
