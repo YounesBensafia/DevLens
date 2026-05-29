@@ -92,7 +92,7 @@ def _cosine_similarity(a: list[float], b: list[float]) -> float:
 
 def _extract_docstrings(source: str) -> list[str]:
     """Extract all docstrings from Python source using AST."""
-    docstrings = []
+    docstrings: list[str] = []
     try:
         tree = ast.parse(source)
     except SyntaxError:
@@ -413,7 +413,8 @@ def compute_slop_score(
                     pass
 
         if diff_item.diff:
-            patch = diff_item.diff.decode("utf-8", errors="ignore")
+            raw = diff_item.diff
+            patch = raw.decode("utf-8", errors="ignore") if isinstance(raw, bytes) else raw
             diff_patches.append(patch)
             for line in patch.split("\n"):
                 if line.startswith("+") and not line.startswith("+++"):
