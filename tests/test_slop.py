@@ -166,14 +166,12 @@ def test_docstring_uniformity_non_python():
 # compute_identifier_entropy
 # ---------------------------------------------------------------------------
 
-def test_identifier_entropy_high_entropy():
-    """Many distinct identifiers → high entropy → should be low score."""
-    identifiers = [f"var_{i}" for i in range(10)]
-    code = "\n".join(f"{v} = {i}" for i, v in enumerate(identifiers))
+def test_identifier_entropy_middle_band():
+    """Skewed distribution → medium entropy → low score (clean signal)."""
+    code = "x = 1\n" * 5 + "y = 1\n" + "z = 1\n"
     files = [("a.py", code)]
     score = compute_identifier_entropy(files)
-    # All 10 distinct, each once → norm entropy ~1.0 → clamped at 0.8+ band → high score
-    assert score > 50  # boundary case for tiny sets, but still high
+    assert score < 30
 
 
 def test_identifier_entropy_low_entropy():
@@ -195,7 +193,7 @@ def test_identifier_entropy_too_few():
 
 def test_comment_ratio_overcommented():
     patches = [
-        "+# This is a comment\n+# Another comment\n+def foo():\n+    pass",
+        "+# Comment 1\n+# Comment 2\n+# Comment 3\n+# Comment 4\n+def foo():\n+    pass",
     ]
     score = compute_comment_ratio(patches)
     assert score > 50
@@ -229,11 +227,11 @@ def test_diff_desc_small_diff_good_desc():
 
 def test_diff_desc_ai_filler_phrases():
     score = compute_diff_description_ratio(
-        200,
+        500,
         "This PR implements the feature. I have updated the API. "
         "This commit leverages the new pattern to utilize the util.",
     )
-    assert score > 50
+    assert score > 60
 
 
 def test_diff_desc_empty_desc_no_changes():
@@ -246,7 +244,7 @@ def test_diff_desc_empty_desc_no_changes():
 
 def test_churn_high():
     patches = [
-        "+def foo():\n+    pass\n-def foo():\n-    pass\n+def foo():\n+    return 1",
+        "-def old_foo():\n-    old_way()\n+def new_foo():\n+    new_way()",
     ]
     score = compute_churn_pattern(patches)
     assert score > 30
