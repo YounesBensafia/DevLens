@@ -57,7 +57,7 @@ devlens -scan .
 ## Commands
 
 | Command | What it does |
-|---|---|---|
+|---|---|
 | `devlens -scan <PATH>` | Full scan with all three layers (needs API key) |
 | `devlens -scan <PATH> --no-llm` | Scan without AI (deterministic, works in CI) |
 | `devlens -scan <PATH> --trend` | Show how the project score changed over time |
