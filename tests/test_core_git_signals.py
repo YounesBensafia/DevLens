@@ -86,9 +86,7 @@ def _commit_n_times(tmp_path, test_file, content_template, n, user_email="solo@d
     import os
 
     subprocess.run(["git", "init"], cwd=tmp_path, capture_output=True)
-    subprocess.run(
-        ["git", "config", "user.email", user_email], cwd=tmp_path, capture_output=True
-    )
+    subprocess.run(["git", "config", "user.email", user_email], cwd=tmp_path, capture_output=True)
     subprocess.run(["git", "config", "user.name", "Solo Dev"], cwd=tmp_path, capture_output=True)
     for i in range(n):
         test_file.write_text(content_template.format(i=i))
