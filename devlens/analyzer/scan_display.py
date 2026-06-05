@@ -8,7 +8,6 @@ from pathlib import Path
 
 from rich import box
 from rich.align import Align
-from rich.columns import Columns
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import (  # type: ignore
@@ -51,14 +50,6 @@ RISK_COLORS = {
     "good": "green",
 }
 
-RISK_EMOJI = {
-    "critical": "critical",
-    "high": "high",
-    "medium": "medium",
-    "low": "low",
-    "good": "good",
-}
-
 
 def _score_bar(score: float, width: int = 20, confidence: str = "") -> str:
     filled = int((score / 100) * width)
@@ -92,33 +83,20 @@ def _print_summary(report: ProjectReport):
             f"\n[dim]weights: mét {w['metrics']:.0%} git {w['git']:.0%} llm {w['llm']:.0%}[/dim]"
         )
 
-    console.print(
-        Columns(
-            [
-                Panel(
-                    f"[{color} bold]{score}[/]\n[white]Project Score{weight_info}",
-                    border_style=color,
-                    padding=(1, 2),
-                ),
-                Panel(
-                    f"[white bold]{len(report.files)}[/]\n[white]Files Analyzed",
-                    border_style="blue",
-                    padding=(1, 2),
-                ),
-                Panel(
-                    f"[red bold]{dist.get('critical', 0) + dist.get('high', 0)}[/]\n[white]High Risk Files",
-                    border_style="red",
-                    padding=(1, 2),
-                ),
-                Panel(
-                    f"[yellow bold]{len(report.bus_factor_risks)}[/]\n[white]Bus Factor Risks",
-                    border_style="yellow",
-                    padding=(1, 2),
-                ),
-            ],
-            expand=True,
-        )
+    grid = Table.grid(padding=(1, 2))
+    grid.add_column(justify="center")
+    grid.add_column(justify="center")
+    grid.add_column(justify="center")
+    grid.add_column(justify="center")
+
+    grid.add_row(
+        Panel(f"[{color} bold]{score}[/]\nProject Score{weight_info}", border_style=color, padding=(1, 2)),
+        Panel(f"[bold]{len(report.files)}[/]\nFiles Analyzed", border_style="blue", padding=(1, 2)),
+        Panel(f"[red bold]{dist.get('critical', 0) + dist.get('high', 0)}[/]\nHigh Risk Files", border_style="red", padding=(1, 2)),
+        Panel(f"[yellow bold]{len(report.bus_factor_risks)}[/]\nBus Factor Risks", border_style="yellow", padding=(1, 2)),
     )
+
+    console.print(grid)
     console.print()
 
 
@@ -127,19 +105,24 @@ def _print_table(report: ProjectReport):
         title="File Comprehension Scores",
         header_style="bold white on dark_blue",
         box=box.ROUNDED,
-        border_style="blue",
+        border_style="bright_blue",
         show_lines=True,
     )
-    table.add_column("Risk", width=6, justify="center")
-    table.add_column("File", style="cyan", min_width=30)
-    table.add_column("Score", min_width=30)
+    table.add_column("Risk", width=8, justify="center", no_wrap=True)
+    table.add_column("File", style="cyan", min_width=28, max_width=50)
+    table.add_column("Score", min_width=28)
     table.add_column("CC", justify="right", width=5)
-    table.add_column("MI", justify="right", width=6)
-    table.add_column("Docs", justify="right", width=6)
-    table.add_column("Git", width=16)
-    table.add_column("Top Issue", style="dim white", min_width=35)
+    table.add_column("MI", justify="right", width=5)
+    table.add_column("Docs", justify="right", width=5)
+    table.add_column("Git", width=14)
+    table.add_column("Top Issue", style="dim white", min_width=30, max_width=45)
 
+    prev_risk = None
     for r in report.files:
+        if prev_risk is not None and r.risk_level != prev_risk:
+            table.add_section()
+        prev_risk = r.risk_level
+
         git_info = ""
         if r.git:
             days = r.git.days_since_last_change
@@ -153,8 +136,9 @@ def _print_table(report: ProjectReport):
 
         color = RISK_COLORS.get(r.risk_level, "white")
         confidence = r.breakdown.confidence_band if r.breakdown else ""
+        risk_label = f"[{color}]{r.risk_level.upper()}[/]"
         table.add_row(
-            f"[{color}]{RISK_EMOJI.get(r.risk_level, '')}[/]",
+            risk_label,
             r.path,
             _score_bar(r.final_score, confidence=confidence),
             str(r.metrics.max_cyclomatic_complexity or "-"),
@@ -171,50 +155,64 @@ def _print_table(report: ProjectReport):
 def _print_critical(report: ProjectReport):
     if not report.most_critical:
         return
-    console.print(
-        Panel(
-            "[bold red]Critical Files - Fix These First[/bold red]",
-            border_style="red",
-            box=box.HEAVY,
-        )
+    table = Table(
+        title="Critical Files",
+        header_style="bold white on red",
+        box=box.ROUNDED,
+        border_style="red",
+        show_lines=True,
     )
+    table.add_column("#", width=3, justify="center", style="dim")
+    table.add_column("File", style="cyan", min_width=28, max_width=50)
+    table.add_column("Score", justify="center", width=8)
+    table.add_column("Issues Found", style="dim white", min_width=30)
+
     for i, r in enumerate(report.most_critical, 1):
-        issues_text = "\n".join(f"  - {issue}" for issue in r.top_issues)
-        llm_note = ""
+        score_color = "red" if r.final_score < 50 else "yellow"
+        issues = r.top_issues if r.top_issues else ["-"]
+        issues_text = "\n".join(issues)
         if r.llm and r.llm.explanation:
-            llm_note = f"\n  [dim italic]AI: {r.llm.explanation}[/dim italic]"
-        console.print(
-            Panel(
-                f"[yellow]Score: {r.final_score}/100[/yellow]\n{issues_text}{llm_note}",
-                title=f"[red]#{i} {r.path}[/red]",
-                title_align="left",
-                border_style="red",
-                box=box.ROUNDED,
-                padding=(0, 2),
-            )
+            issues_text += f"\n[dim]AI: {r.llm.explanation}[/dim]"
+        table.add_row(
+            str(i),
+            r.path,
+            f"[{score_color}]{r.final_score:.0f}[/{score_color}]",
+            issues_text,
         )
+
+    console.print(table)
     console.print()
 
 
 def _print_bus_factor(report: ProjectReport):
     if not report.bus_factor_risks:
         return
-    console.print(
-        Panel(
-            "[bold yellow]Bus Factor Risks - Only 1 Person Understands These[/bold yellow]",
-            border_style="yellow",
-            box=box.HEAVY,
-        )
+    table = Table(
+        title="Bus Factor Risks - Solo Maintained Files",
+        header_style="bold white on dark_goldenrod",
+        box=box.ROUNDED,
+        border_style="yellow",
+        show_lines=True,
     )
+    table.add_column("File", style="cyan", min_width=28, max_width=50)
+    table.add_column("Authors", justify="right", width=8)
+    table.add_column("Commits", justify="right", width=8)
+    table.add_column("Last Change", justify="right", width=12)
+    table.add_column("Score", justify="center", width=8)
+
     for r in report.bus_factor_risks:
         g = r.git
         if g is None:
             continue
-        console.print(
-            f"  [yellow]solo[/yellow]  [cyan]{r.path}[/cyan]  "
-            f"[dim]({g.unique_authors} author, {g.total_commits} commits, "
-            f"last: {g.days_since_last_change}d ago, score: {r.final_score})[/dim]"
+        table.add_row(
+            r.path,
+            str(g.unique_authors),
+            str(g.total_commits),
+            f"{g.days_since_last_change}d ago",
+            f"[yellow]{r.final_score:.0f}[/yellow]",
         )
+
+    console.print(table)
     console.print()
 
 
@@ -234,25 +232,37 @@ def _print_footer(report: ProjectReport):
 def _print_trend(snapshots):
     if len(snapshots) < 2:
         return
-    lines = [f"Project Score Trend (last {len(snapshots)} scans):"]
+    table = Table(
+        title=f"Score Trend (last {len(snapshots)} scans)",
+        header_style="bold white on dark_cyan",
+        box=box.ROUNDED,
+        border_style="cyan",
+        show_lines=True,
+    )
+    table.add_column("Date", width=12, no_wrap=True)
+    table.add_column("Score", justify="center", width=8)
+    table.add_column("Bar", min_width=28)
+    table.add_column("Delta", justify="right", width=10)
+
     for i, s in enumerate(snapshots[-6:]):
         ts = s.timestamp[:10] if len(s.timestamp) >= 10 else s.timestamp
         filled = int((s.avg_score / 100) * 25)
         bar = "█" * filled + "░" * (25 - filled)
+        bar_color = "green" if s.avg_score >= 70 else "yellow" if s.avg_score >= 50 else "red"
+
         delta = ""
         if i > 0:
             prev = snapshots[-6:][i - 1]
             d = s.avg_score - prev.avg_score
-            symbol = "▲" if d > 0 else "▼" if d < 0 else "─"
-            delta = f"  {symbol} {abs(d):+.1f}"
-        marker = "  ← current" if i == len(snapshots[-6:]) - 1 else ""
-        lines.append(f"  {ts}  {bar}  {s.avg_score:.0f}{delta}{marker}")
-    console.print(Panel("\n".join(lines), title="Trend", border_style="cyan"))
+            d_color = "green" if d > 0 else "red" if d < 0 else "white"
+            sign = "+" if d > 0 else ""
+            delta = f"[{d_color}]{sign}{d:.1f}[/{d_color}]"
+
+        marker = " <- current" if i == len(snapshots[-6:]) - 1 else ""
+        table.add_row(ts, f"[{bar_color}]{s.avg_score:.0f}[/{bar_color}]", f"[{bar_color}]{bar}[/{bar_color}]", delta)
+
+    console.print(table)
     console.print()
-
-
-def _trend_color(score: float) -> str:
-    return "green" if score >= 70 else "yellow" if score >= 50 else "red"
 
 
 def _print_regressions(deltas):
@@ -260,12 +270,21 @@ def _print_regressions(deltas):
     if not regressions:
         return
     regressions = dict(sorted(regressions.items(), key=lambda x: x[1]["delta"]))
-    lines = []
+    table = Table(
+        title="Regressions",
+        header_style="bold white on red",
+        box=box.ROUNDED,
+        border_style="red",
+        show_lines=True,
+    )
+    table.add_column("File", style="cyan", min_width=28, max_width=55)
+    table.add_column("Previous", justify="right", width=10)
+    table.add_column("Current", justify="right", width=10)
+    table.add_column("Delta", justify="right", width=8)
+
     for path, d in regressions.items():
-        lines.append(
-            f"  [red]✗[/] {path}  {d['from']:.0f} → {d['to']:.0f}  [red]{d['delta']:+.1f}[/]"
-        )
-    console.print(Panel("\n".join(lines), title="Regressions", border_style="red"))
+        table.add_row(path, f"{d['from']:.0f}", f"{d['to']:.0f}", f"[red]{d['delta']:+.1f}[/red]")
+    console.print(table)
     console.print()
 
 
@@ -274,12 +293,21 @@ def _print_improvements(deltas):
     if not improvements:
         return
     improvements = dict(sorted(improvements.items(), key=lambda x: -x[1]["delta"]))
-    lines = []
+    table = Table(
+        title="Improvements",
+        header_style="bold white on green",
+        box=box.ROUNDED,
+        border_style="green",
+        show_lines=True,
+    )
+    table.add_column("File", style="cyan", min_width=28, max_width=55)
+    table.add_column("Previous", justify="right", width=10)
+    table.add_column("Current", justify="right", width=10)
+    table.add_column("Delta", justify="right", width=8)
+
     for path, d in improvements.items():
-        lines.append(
-            f"  [green]✓[/] {path}  {d['from']:.0f} → {d['to']:.0f}  [green]{d['delta']:+.1f}[/]"
-        )
-    console.print(Panel("\n".join(lines), title="Improvements", border_style="green"))
+        table.add_row(path, f"{d['from']:.0f}", f"{d['to']:.0f}", f"[green]{d['delta']:+.1f}[/green]")
+    console.print(table)
     console.print()
 
 

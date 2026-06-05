@@ -102,12 +102,12 @@ def ai_summarize_code(path: str, max_files=10):
                     # end styling
 
                 except Exception as e:
-                    error_msg = f"❌ Analysis failed: {str(e)}"
+                    error_msg = f"Analysis failed: {str(e)}"
                     summaries.append((file_path, error_msg))
                     # start styling
                     error_panel = Panel(
                         Text(error_msg, style="red"),
-                        title=f"⚠️  {file_path}",
+                        title=f"[ERROR] {file_path}",
                         subtitle=f"[dim]{os.path.basename(file_path)}[/dim]",
                         title_align="left",
                         border_style="red",
@@ -120,7 +120,7 @@ def ai_summarize_code(path: str, max_files=10):
     console.print()
     # end styling
 
-    success_count = len([s for s in summaries if not s[1].startswith("❌")])
+    success_count = len([s for s in summaries if not s[1].startswith("Analysis failed")])
     error_count = len(summaries) - success_count
 
     # start styling

@@ -154,13 +154,12 @@ def check_pr(
         print(j.dumps(data, indent=2))
     else:
         console = Console()
-        emoji = "⚠️" if result.flagged else "✅"
-        label = "POSSIBLE AI SLOP" if result.flagged else "LOOKS HUMAN"
+        label = "FLAGGED - POSSIBLE AI SLOP" if result.flagged else "PASSED - LOOKS HUMAN"
         color = "red" if result.flagged else "green"
 
         console.print(
             Panel(
-                f"[bold {color}]{emoji} DevLens Slop Report — {label}[/bold {color}]",
+                f"[bold {color}]DevLens Slop Report — {label}[/bold {color}]",
                 border_style=color,
                 box=box.DOUBLE,
                 padding=(1, 2),
@@ -171,7 +170,8 @@ def check_pr(
             title=f"Slop Score: {result.slop_score:.0f}/100  (threshold: {threshold})",
             header_style="bold white on dark_blue",
             box=box.ROUNDED,
-            border_style="blue",
+            border_style="bright_blue",
+            show_lines=True,
         )
         table.add_column("Signal", style="cyan", no_wrap=True)
         table.add_column("Raw Value", justify="right")
@@ -192,10 +192,17 @@ def check_pr(
             "[bold]Total[/bold]",
             "",
             f"[bold]{result.slop_score:.1f}[/bold]",
-            f"[bold {color}]{label}[/bold {color}]",
+            f"[bold {color}]{'FLAGGED' if result.flagged else 'PASSED'}[/bold {color}]",
         )
         console.print(table)
-        console.print(f"\n[dim]{result.summary}[/dim]")
+        console.print(
+            Panel(
+                result.summary,
+                border_style="blue",
+                box=box.SIMPLE,
+                padding=(0, 2),
+            )
+        )
 
     if result.flagged and fail_on_slop:
         raise typer.Exit(code=1)
