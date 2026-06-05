@@ -278,7 +278,10 @@ def test_churn_empty():
 # ---------------------------------------------------------------------------
 
 
-def test_new_author_risk_zero_prior(tmp_path):
+def test_new_author_risk_smooth_curve(tmp_path):
+    """Smooth curve: first-time contributor + large diff scores mid-range; veteran scores low."""
+    import math
+
     repo_path = _make_git_repo(tmp_path)
     _commit_file(tmp_path, "main.py", "x = 1", "initial")
     head_sha = subprocess.run(
@@ -291,10 +294,28 @@ def test_new_author_risk_zero_prior(tmp_path):
     from git import Repo
 
     repo = Repo(repo_path)
-    score = compute_new_author_risk(repo, head_sha, 200)
-    # First commit for this author — prior_count includes the HEAD commit,
-    # so it will be 1.
-    assert 0 <= score <= 100
+
+    # First-time author (prior_count == 1 after the initial commit), 200 added lines.
+    # Expected: 100 * exp(-1/3) * (200/500) ≈ 28.6
+    score_new = compute_new_author_risk(repo, head_sha, 200)
+    assert 15 <= score_new <= 45, f"Expected mid-range score for new author, got {score_new}"
+
+    # Zero lines added → score must be 0 regardless of author history
+    score_zero_lines = compute_new_author_risk(repo, head_sha, 0)
+    assert score_zero_lines == 0.0
+
+    # Directly validate formula: a veteran (30 prior commits) + large diff should be near 0
+    # prior_count=30 → exp(-10) ≈ 4.5e-5 → score ≈ 0
+    familiarity_veteran = math.exp(-30 / 3)
+    size_factor = 500 / (300 + 500)
+    expected_veteran = 100.0 * familiarity_veteran * size_factor
+    assert expected_veteran < 1.0, "Veteran with large diff should score < 1"
+
+    # Monotonicity: more added lines → higher score (holding prior_count fixed)
+    familiarity = math.exp(-1 / 3)
+    score_50 = 100 * familiarity * (50 / 350)
+    score_300 = 100 * familiarity * (300 / 600)
+    assert score_50 < score_300
 
 
 # ---------------------------------------------------------------------------
