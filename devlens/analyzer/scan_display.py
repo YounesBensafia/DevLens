@@ -357,7 +357,7 @@ def run_scan_with_progress(
             git = None
             if repo_root:
                 with contextlib.suppress(Exception):
-                    git = get_git_signals(file_path, repo_root)
+                    git = get_git_signals(file_path, repo_root, file_size_lines=metrics.loc)
 
             llm = None
             if use_llm and send_request_fn and build_payload_fn:
