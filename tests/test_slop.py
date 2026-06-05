@@ -463,9 +463,10 @@ def test_compute_slop_score_score_range(tmp_path):
 def test_cli_help():
     """Ensure check-pr appears in help output."""
     import subprocess as sp
+    import sys
 
     result = sp.run(
-        ["python", "-m", "devlens.cli.cli", "check-pr", "--help"],
+        [sys.executable, "-m", "devlens.cli.cli", "check-pr", "--help"],
         capture_output=True,
         text=True,
     )
@@ -479,10 +480,11 @@ def test_cli_text_output(tmp_path):
     _commit_file(tmp_path, "main.py", "x = 1", "initial")
 
     import subprocess as sp
+    import sys
 
     result = sp.run(
         [
-            "python",
+            sys.executable,
             "-m",
             "devlens.cli.cli",
             "check-pr",
@@ -505,10 +507,11 @@ def test_cli_json_output(tmp_path):
     _commit_file(tmp_path, "main.py", "x = 1", "initial")
 
     import subprocess as sp
+    import sys
 
     result = sp.run(
         [
-            "python",
+            sys.executable,
             "-m",
             "devlens.cli.cli",
             "check-pr",
@@ -537,10 +540,11 @@ def test_cli_fail_on_slop_exit_code(tmp_path):
     _commit_file(tmp_path, "main.py", "x = 1", "initial")
 
     import subprocess as sp
+    import sys
 
     result = sp.run(
         [
-            "python",
+            sys.executable,
             "-m",
             "devlens.cli.cli",
             "check-pr",
