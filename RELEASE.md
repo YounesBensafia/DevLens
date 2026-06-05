@@ -1,4 +1,4 @@
-# DevLens v0.4.1
+# DevLens v0.4.4
 
 [![PyPI version](https://img.shields.io/pypi/v/devlens-tool?color=blue&label=PyPI)](https://pypi.org/project/devlens-tool/)
 [![Python](https://img.shields.io/pypi/pyversions/devlens-tool?color=blue)](https://pypi.org/project/devlens-tool/)
@@ -6,6 +6,25 @@
 [![GitHub Stars](https://img.shields.io/github/stars/YounesBensafia/DevLens?style=social)](https://github.com/YounesBensafia/DevLens)
 
 Scores every Python file from 0 to 100 based on how hard it is to understand, using code metrics, git signals, and optional AI.
+
+## What's New in v0.4.4
+
+### Enhanced Terminal UI
+
+All display modules have been overhauled for a cleaner, more professional look:
+
+- **File score table**: `ROUNDED` box style with row separator lines and risk-group sections (MEDIUM/LOW/GOOD)
+- **Summary grid**: `Table.grid` replaces `Columns` for consistent 4-panel alignment
+- **Critical files**: Compact single table instead of 5 individual panels
+- **Bus factor / Trend / Regressions**: All migrated from plain text to Rich tables
+- **No emojis**: All UI indicators are text-based (FLAGGED/PASSED, +/- deltas)
+- **Consistent box styling** across `-st`, `-scan`, and `check-pr` commands
+
+### Scoring Improvements
+
+- Fixed score inflation when LLM layer is skipped — weights are now properly renormalized
+- Refined bus-factor risk scoring with smoother curves and canonical commit counting
+- Git signals now receive accurate file line counts for better staleness estimates
 
 ## What's New in v0.4.0
 
@@ -44,6 +63,7 @@ Track project history over time with `--snapshot`, `--trend`, and `--regression`
 - Fixed mypy types across the entire codebase
 - Fixed `GROQ_API_KEY` handling for CI safety
 - Fixed coverage and linting pipeline
+- Fixed phantom score inflation when LLM is disabled
 
 ## Install / Upgrade
 
@@ -63,7 +83,7 @@ pip install devlens-tool --upgrade
 
 ## Full Changelog
 
-https://github.com/YounesBensafia/DevLens/compare/v0.2.0...v0.4.1
+https://github.com/YounesBensafia/DevLens/compare/v0.2.0...v0.4.4
 
 ---
 
