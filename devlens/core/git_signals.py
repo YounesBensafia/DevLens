@@ -34,7 +34,7 @@ def _run_git(args: list[str], cwd: str) -> str:
         return ""
 
 
-def get_git_signals(file_path: str, repo_root: str) -> GitSignals:
+def get_git_signals(file_path: str, repo_root: str, file_size_lines: int = 0) -> GitSignals:
     rel_path = str(Path(file_path).relative_to(Path(repo_root)))
 
     last_date_str = _run_git(
@@ -53,8 +53,23 @@ def get_git_signals(file_path: str, repo_root: str) -> GitSignals:
     authors_out = _run_git(["log", "--follow", "--format=%ae", "--", rel_path], cwd=repo_root)
     authors = set(a for a in authors_out.splitlines() if a)
     unique_authors = len(authors)
-    total_commits = len(authors_out.splitlines()) if authors_out else 0
-    is_orphan = unique_authors == 1
+
+    # Use `git rev-list --count` for an unambiguous commit count.
+    # Counting email lines from --format=%ae is fragile: empty emails or
+    # multi-line values can silently inflate the count. rev-list --count
+    # outputs a single integer and is both faster and canonical.
+    count_out = _run_git(["rev-list", "--count", "HEAD", "--", rel_path], cwd=repo_root)
+    try:
+        total_commits = int(count_out)
+    except ValueError:
+        # Fall back to email-line count if rev-list is unavailable
+        total_commits = len(authors_out.splitlines()) if authors_out else 0
+
+    # A file is a real bus-factor risk only when it has meaningful history
+    # (≥10 commits) AND is non-trivial in size (≥50 lines).
+    # A brand-new solo file or a tiny helper module has no meaningful
+    # bus-factor risk yet and should not pollute the report.
+    is_orphan = unique_authors == 1 and total_commits >= 10 and file_size_lines >= 50
 
     staleness = 0.0
     if days_since is not None:

@@ -9,19 +9,20 @@ from pathlib import Path
 
 from git import InvalidGitRepositoryError, Repo
 
+# Kept strictly to phrases that are distinctly AI/corporate-template language.
+# Common English words like "adds", "fixes", "implements" were removed — they
+# appear in perfectly legitimate PR descriptions and caused false positives.
 AI_FILLER_PHRASES = [
-    "this pr",
-    "this commit",
-    "i have",
-    "in this pr",
-    "as per",
     "leverage",
     "utilize",
-    "this change",
-    "implemented",
-    "updated the",
-    "adds",
-    "fixes",
+    "as per",
+    "going forward",
+    "moving forward",
+    "please note that",
+    "it is worth noting",
+    "in order to",
+    "this pr implements",
+    "this commit introduces",
 ]
 
 
@@ -288,7 +289,33 @@ def compute_churn_pattern(diff_patches: list[str]) -> float:
 
 
 def compute_new_author_risk(repo: Repo, head_commit_hexsha: str, added_lines: int) -> float:
-    """Score 0–100: new author + large diff = high risk."""
+    """
+    Score 0–100: new author + large diff = high risk.
+
+    Uses a smooth multiplicative formula instead of binary cliff-edge thresholds:
+
+        score = 100 * exp(-prior_count / 3) * (added_lines / (300 + added_lines))
+
+    Familiarity factor  exp(-prior_count / 3):
+      decays from 1.0 at 0 prior commits to ~0.05 at 10 commits — risk halves
+      roughly every 3 commits, so a veteran contributor scores near 0.
+
+    Size factor  added_lines / (300 + added_lines):
+      a saturating (soft-sigmoid) function that reaches 0.50 at the
+      300-line "large diff" baseline and asymptotes to 1.0 — never a cliff.
+
+    Multiplying both means a large diff from a veteran ≈ 0, while a small
+    diff from a brand-new author scores low-to-mid rather than zero.
+
+    Sample outputs:
+      prior_count=0,  added_lines=50   → ~14
+      prior_count=0,  added_lines=200  → ~40
+      prior_count=2,  added_lines=199  → ~20
+      prior_count=3,  added_lines=100  → ~9
+      prior_count=10, added_lines=500  → ~2
+    """
+    import math
+
     try:
         head_commit = repo.commit(head_commit_hexsha)
         author_email = head_commit.author.email
@@ -303,11 +330,10 @@ def compute_new_author_risk(repo: Repo, head_commit_hexsha: str, added_lines: in
     except Exception:
         prior_count = 1
 
-    if prior_count == 0 and added_lines > 100:
-        return 100.0
-    if prior_count < 3 and added_lines > 200:
-        return 80.0
-    return 0.0
+    familiarity = math.exp(-prior_count / 3)
+    size_factor = added_lines / (300 + added_lines) if added_lines > 0 else 0.0
+    score = 100.0 * familiarity * size_factor
+    return round(min(100.0, max(0.0, score)), 1)
 
 
 def _build_summary(slop_score: float, threshold: int, signals: dict[str, SignalResult]) -> str:
