@@ -76,7 +76,16 @@ def _compute_final_score(
 ) -> float:
     w = weights or DEFAULT_WEIGHTS
     m_score, g_score, l_score = _compute_layer_scores(metrics, git, llm)
-    final = w["metrics"] * m_score + w["git"] * g_score + w["llm"] * l_score
+
+    if llm is None:
+        # Redistribute the LLM weight proportionally so the score reflects
+        # only the layers that actually ran. Without this, --no-llm silently
+        # injects a phantom 50.0 contribution (llm_weight * 50 = 10 pts).
+        total = w["metrics"] + w["git"]
+        final = (w["metrics"] / total) * m_score + (w["git"] / total) * g_score
+    else:
+        final = w["metrics"] * m_score + w["git"] * g_score + w["llm"] * l_score
+
     return round(final, 1)
 
 

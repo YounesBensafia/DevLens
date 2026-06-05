@@ -57,9 +57,12 @@ def _make_llm(
 
 
 def test_compute_final_score_all_layers_defaults():
+    """No git, no LLM: weights renormalize to metrics=1.0 (only layer present)."""
     metrics = _make_metrics(comprehension_score=80.0)
     score = _compute_final_score(metrics, git=None, llm=None)
-    expected = 0.50 * 80.0 + 0.30 * 100.0 + 0.20 * 50.0
+    # With llm=None and git=None, git defaults to 100.0, weights renormalize:
+    # total = 0.50 + 0.30 = 0.80; metrics_w = 0.50/0.80 = 0.625, git_w = 0.375
+    expected = (0.50 / 0.80) * 80.0 + (0.30 / 0.80) * 100.0
     assert score == pytest.approx(expected, abs=0.1)
 
 
@@ -73,12 +76,14 @@ def test_compute_final_score_all_layers():
 
 
 def test_compute_final_score_orphan_penalty():
+    """No LLM: weights renormalize across metrics+git; orphan applies 0.85 multiplier."""
     metrics = _make_metrics(comprehension_score=50.0)
     git = _make_git(staleness=20.0, orphan=True)
     llm = None
     score = _compute_final_score(metrics, git, llm)
     orphan_git_score = (100.0 - 20.0) * 0.85
-    expected = 0.50 * 50.0 + 0.30 * orphan_git_score + 0.20 * 50.0
+    # LLM weight redistributed: metrics_w = 0.625, git_w = 0.375
+    expected = (0.50 / 0.80) * 50.0 + (0.30 / 0.80) * orphan_git_score
     assert score == pytest.approx(expected, abs=0.1)
 
 
