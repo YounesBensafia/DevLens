@@ -90,10 +90,22 @@ def _print_summary(report: ProjectReport):
     grid.add_column(justify="center")
 
     grid.add_row(
-        Panel(f"[{color} bold]{score}[/]\nProject Score{weight_info}", border_style=color, padding=(1, 2)),
+        Panel(
+            f"[{color} bold]{score}[/]\nProject Score{weight_info}",
+            border_style=color,
+            padding=(1, 2),
+        ),
         Panel(f"[bold]{len(report.files)}[/]\nFiles Analyzed", border_style="blue", padding=(1, 2)),
-        Panel(f"[red bold]{dist.get('critical', 0) + dist.get('high', 0)}[/]\nHigh Risk Files", border_style="red", padding=(1, 2)),
-        Panel(f"[yellow bold]{len(report.bus_factor_risks)}[/]\nBus Factor Risks", border_style="yellow", padding=(1, 2)),
+        Panel(
+            f"[red bold]{dist.get('critical', 0) + dist.get('high', 0)}[/]\nHigh Risk Files",
+            border_style="red",
+            padding=(1, 2),
+        ),
+        Panel(
+            f"[yellow bold]{len(report.bus_factor_risks)}[/]\nBus Factor Risks",
+            border_style="yellow",
+            padding=(1, 2),
+        ),
     )
 
     console.print(grid)
@@ -258,7 +270,12 @@ def _print_trend(snapshots):
             sign = "+" if d > 0 else ""
             delta = f"[{d_color}]{sign}{d:.1f}[/{d_color}]"
 
-        table.add_row(ts, f"[{bar_color}]{s.avg_score:.0f}[/{bar_color}]", f"[{bar_color}]{bar}[/{bar_color}]", delta)
+        table.add_row(
+            ts,
+            f"[{bar_color}]{s.avg_score:.0f}[/{bar_color}]",
+            f"[{bar_color}]{bar}[/{bar_color}]",
+            delta,
+        )
 
     console.print(table)
     console.print()
@@ -305,7 +322,9 @@ def _print_improvements(deltas):
     table.add_column("Delta", justify="right", width=8)
 
     for path, d in improvements.items():
-        table.add_row(path, f"{d['from']:.0f}", f"{d['to']:.0f}", f"[green]{d['delta']:+.1f}[/green]")
+        table.add_row(
+            path, f"{d['from']:.0f}", f"{d['to']:.0f}", f"[green]{d['delta']:+.1f}[/green]"
+        )
     console.print(table)
     console.print()
 
