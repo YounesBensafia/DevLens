@@ -258,7 +258,6 @@ def _print_trend(snapshots):
             sign = "+" if d > 0 else ""
             delta = f"[{d_color}]{sign}{d:.1f}[/{d_color}]"
 
-        marker = " <- current" if i == len(snapshots[-6:]) - 1 else ""
         table.add_row(ts, f"[{bar_color}]{s.avg_score:.0f}[/{bar_color}]", f"[{bar_color}]{bar}[/{bar_color}]", delta)
 
     console.print(table)
